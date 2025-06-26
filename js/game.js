@@ -5,21 +5,27 @@ class Game {
         
         // Game state
         this.isRunning = false;
-        this.lastTime = 0;
-        this.deltaTime = 0;
+        this.needsRedraw = true;
         
         // Canvas dimensions
         this.width = 800;
         this.height = 600;
         
+        // Scene management
+        this.scene = 'level'; // menus|level
+        
         // Input handling
         this.keys = {};
+        this.keysPressed = {}; // For single keypress detection
         this.mouse = {
             x: 0,
             y: 0,
-            left: false,
-            right: false
+            clicked: false
         };
+        
+        // Initialize modules
+        this.menuManager = new MenuManager(this);
+        this.levelManager = new LevelManager(this);
         
         this.init();
     }
@@ -41,31 +47,30 @@ class Game {
     setupEventListeners() {
         // Keyboard events
         window.addEventListener('keydown', (e) => {
+            if (!this.keys[e.code]) {
+                this.keysPressed[e.code] = true; // Single press detection
+            }
             this.keys[e.code] = true;
+            this.handleKeyPress(e.code);
             e.preventDefault(); // Prevent default browser behavior
         });
         
         window.addEventListener('keyup', (e) => {
             this.keys[e.code] = false;
+            this.keysPressed[e.code] = false;
             e.preventDefault();
         });
         
-        // Mouse events
+        // Minimal mouse events (mainly for UI)
         this.canvas.addEventListener('mousemove', (e) => {
             const rect = this.canvas.getBoundingClientRect();
             this.mouse.x = e.clientX - rect.left;
             this.mouse.y = e.clientY - rect.top;
         });
         
-        this.canvas.addEventListener('mousedown', (e) => {
-            if (e.button === 0) this.mouse.left = true;
-            if (e.button === 2) this.mouse.right = true;
-            e.preventDefault();
-        });
-        
-        this.canvas.addEventListener('mouseup', (e) => {
-            if (e.button === 0) this.mouse.left = false;
-            if (e.button === 2) this.mouse.right = false;
+        this.canvas.addEventListener('click', (e) => {
+            this.mouse.clicked = true;
+            this.handleMouseClick(this.mouse.x, this.mouse.y);
             e.preventDefault();
         });
         
@@ -78,15 +83,6 @@ class Game {
         window.addEventListener('resize', () => {
             this.handleResize();
         });
-        
-        // Handle focus/blur for pause functionality
-        window.addEventListener('blur', () => {
-            this.pause();
-        });
-        
-        window.addEventListener('focus', () => {
-            if (this.isRunning) this.resume();
-        });
     }
     
     handleResize() {
@@ -97,83 +93,41 @@ class Game {
     start() {
         if (!this.isRunning) {
             this.isRunning = true;
-            this.lastTime = performance.now();
-            this.gameLoop();
+            this.render(); // Initial render
             console.log('Game started');
         }
     }
     
-    pause() {
-        this.isRunning = false;
-        console.log('Game paused');
-    }
-    
-    resume() {
-        if (!this.isRunning) {
-            this.isRunning = true;
-            this.lastTime = performance.now();
-            this.gameLoop();
-            console.log('Game resumed');
+    // Trigger a redraw when needed (turn-based, event-driven)
+    requestRedraw() {
+        if (this.isRunning && this.needsRedraw) {
+            this.needsRedraw = false;
+            this.render();
         }
     }
     
-    gameLoop(currentTime = 0) {
-        if (!this.isRunning) return;
+    // Handle key presses based on current scene
+    handleKeyPress(keyCode) {
+        this.needsRedraw = true;
         
-        // Calculate delta time
-        this.deltaTime = (currentTime - this.lastTime) / 1000;
-        this.lastTime = currentTime;
+        switch (this.scene) {
+            case 'menus':
+                this.menuManager.handleMainMenuInput(keyCode);
+                break;
+            case 'level':
+                this.levelManager.handleGameInput(keyCode);
+                break;
+        }
         
-        // Cap delta time to prevent large jumps
-        this.deltaTime = Math.min(this.deltaTime, 1/30);
-        
-        // Update game logic
-        this.update(this.deltaTime);
-        
-        // Render game
-        this.render();
-        
-        // Continue the loop
-        requestAnimationFrame((time) => this.gameLoop(time));
+        this.requestRedraw();
     }
     
-    update(deltaTime) {
-        // Game logic updates go here
-        // This is where you'll add your game-specific update logic
-        
-        // Example: Handle input
-        this.handleInput();
-    }
-    
-    handleInput() {
-        // Handle keyboard input
-        if (this.keys['KeyW'] || this.keys['ArrowUp']) {
-            // Move up
-        }
-        if (this.keys['KeyS'] || this.keys['ArrowDown']) {
-            // Move down
-        }
-        if (this.keys['KeyA'] || this.keys['ArrowLeft']) {
-            // Move left
-        }
-        if (this.keys['KeyD'] || this.keys['ArrowRight']) {
-            // Move right
-        }
-        if (this.keys['Space']) {
-            // Action
-        }
-        if (this.keys['Escape']) {
-            // Pause or menu
-            this.pause();
-        }
-        
-        // Handle mouse input
-        if (this.mouse.left) {
-            // Left click action
-        }
-        if (this.mouse.right) {
-            // Right click action
-        }
+    // Handle minimal mouse input (mainly for UI buttons)
+    handleMouseClick(x, y) {
+        // You can add click handling for UI buttons here if needed
+        // For now, just trigger a redraw
+        this.needsRedraw = true;
+        this.requestRedraw();
     }
     
     render() {
@@ -185,39 +139,15 @@ class Game {
         this.ctx.strokeStyle = '#fff';
         this.ctx.font = '16px Courier New';
         
-        // Render game objects here
-        this.renderGame();
-        
-        // Render UI
-        this.renderUI();
-    }
-    
-    renderGame() {
-        // Main game rendering goes here
-        // This is where you'll draw your game objects
-        
-        // Example: Draw a simple placeholder
-        this.ctx.fillStyle = '#0f0';
-        this.ctx.fillRect(this.width / 2 - 25, this.height / 2 - 25, 50, 50);
-    }
-    
-    renderUI() {
-        // UI rendering goes here
-        // This is for canvas-based UI elements
-        
-        // Example: FPS counter
-        const fps = Math.round(1 / this.deltaTime);
-        this.ctx.fillStyle = '#fff';
-        this.ctx.font = '14px Courier New';
-        this.ctx.fillText(`FPS: ${fps}`, 10, 20);
-        
-        // Example: Mouse position
-        this.ctx.fillText(`Mouse: ${this.mouse.x}, ${this.mouse.y}`, 10, 40);
-        
-        // Example: Instructions
-        this.ctx.fillStyle = '#aaa';
-        this.ctx.font = '12px Courier New';
-        this.ctx.fillText('WASD/Arrow Keys to move, Space for action, ESC to pause', 10, this.height - 10);
+        // Render based on current scene
+        switch (this.scene) {
+            case 'menus':
+                this.menuManager.render();
+                break;
+            case 'level':
+                this.levelManager.renderGame(this.ctx);
+                break;
+        }
     }
     
     // Utility methods
