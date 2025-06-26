@@ -1,7 +1,0 @@
-[package]
-name = "aerial-spell"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-tetra = "0.8"
