@@ -40,63 +40,35 @@ class LevelManager {
     const { width, height } = this.game;
 
     // Game area background
-    this.game.drawRect(50, 50, width - 100, height - 150, "#222", true);
-    this.game.drawRect(50, 50, width - 100, height - 150, "#fff", false);
+    this.game.drawRect(0, 0, width, height, { fill: "#C5BAB5" });
 
-    // Level info
-    this.game.drawText(`Level: ${this.state.currentLevel}`, 60, 30, {
-      font: "16px Courier New",
-      color: "#fff",
+    // Draw a 8x8 grid of 64px squares. They alternate between CFC6BD and E2D8D4
+    for (let i = 0; i < 8; i++) {
+      for (let j = 0; j < 8; j++) {
+        const color = (i + j) % 2 === 0 ? "#CFC6BD" : "#E2D8D4";
+        this.game.drawRect(i * 64 + 32, j * 64 + 32, 64, 64, { fill: color });
+      }
+    }
+
+    this.game.drawRect(32, 32, 512, 512, {
+      fill: '',
+      stroke: "#BDAFA1",
+      strokeWidth: 4,
     });
 
-    this.game.drawText(`Turn: ${this.state.turnCount}`, width - 100, 30, {
-      font: "16px Courier New",
-      color: "#fff",
+    this.game.drawRect(576, 32, 208, 512, {
+      fill: '#E2D8D4',
+      stroke: "#BDAFA1",
+      strokeWidth: 4,
     });
 
     // Render level-specific content
     this.renderLevelContent(this.state);
-
-    // Game instructions
-    this.game.drawText(
-      "WASD/Arrows to move, Space for action, ESC to go back",
-      width / 2,
-      height - 30,
-      {
-        font: "12px Courier New",
-        align: "center",
-        color: "#aaa",
-      }
-    );
   }
 
   // Level-specific content rendering (override this for different level types)
   renderLevelContent(state) {
     const { width, height } = this.game;
-
-    // Placeholder game content
-    this.game.drawText("Game content goes here", width / 2, height / 2, {
-      font: "20px Courier New",
-      align: "center",
-      color: "#666",
-    });
-
-    // You can add level-specific rendering logic here
-    // For example, different rendering based on state.currentLevel
-    switch (this.state.currentLevel) {
-      case 1:
-        this.renderLevel1(this.state);
-        break;
-      case 2:
-        this.renderLevel2(this.state);
-        break;
-      case 3:
-        this.renderLevel3(this.state);
-        break;
-      default:
-        // Default level rendering
-        break;
-    }
   }
 
   // Example level-specific rendering methods
