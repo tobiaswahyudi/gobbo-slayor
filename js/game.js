@@ -27,6 +27,8 @@ class Game {
     this.menuManager = new MenuManager(this);
     this.levelManager = new LevelManager(this);
 
+    this.preloadFinished = false;
+
     this.init();
   }
 
@@ -96,7 +98,10 @@ class Game {
       this.render(); // Initial render
       console.log("Game started");
 
-      this.preloadImages(ALL_ASSETS);
+      this.preloadImages(ALL_ASSETS).then(() => {
+        this.preloadFinished = true;
+        this.requestRedraw();
+      });
     }
   }
 
@@ -133,6 +138,8 @@ class Game {
   }
 
   render() {
+    if (!this.preloadFinished) return;
+
     // Clear canvas
     this.ctx.clearRect(0, 0, this.width, this.height);
 
@@ -174,11 +181,11 @@ class Game {
   // Preload multiple images
   async preloadImages(imagePaths) {
     try {
-      const promises = imagePaths.map(path => this.loadImage(path));
+      const promises = imagePaths.map((path) => this.loadImage(path));
       await Promise.all(promises);
-      console.log('All images preloaded');
+      console.log("All images preloaded");
     } catch (error) {
-      console.error('Error preloading images:', error);
+      console.error("Error preloading images:", error);
     }
   }
 
