@@ -323,7 +323,7 @@ class LevelManager {
     );
     outline.lineTo(
       this.cellCenter(leftmostCell.x),
-      this.cellCenter(leftmostCell.y - 0.5)
+      this.cellCenter(leftmostCell.y + 0.5)
     );
 
     this.game.drawPath(outline, {
@@ -461,6 +461,10 @@ class LevelManager {
     this.state.player.y += deltaY;
   }
 
+  checkAimArea(x, y) {
+    return this.state.aimArea.find((a) => a.x === x && a.y === y);
+  }
+
   // Handle player actions (like interactions, attacks, etc.)
   handleAction() {
     // Add your action logic here
@@ -479,6 +483,43 @@ class LevelManager {
     this.state.remainingBombs--;
 
     this.animating = Animation.EXPLODING;
+
+    this.state.gobbos.forEach((gobbo) => {
+      const aim = this.checkAimArea(
+        gobbo.x - this.state.player.x,
+        gobbo.y - this.state.player.y
+      );
+      if (aim) {
+        this.killGobbo(gobbo, aim);
+      }
+    });
+  }
+
+  killGobbo(gobbo, aim) {
+    this.state.gobbos = this.state.gobbos.filter((g) => g !== gobbo);
+    switch (gobbo.hatType) {
+      case HatType.REMOVE:
+        this.state.aimArea = this.state.aimArea.filter(
+          (a) => a.x !== aim.x || a.y !== aim.y
+        );
+        break;
+      case HatType.HORIZONTAL:
+        if (!this.checkAimArea(aim.x - 1, aim.y)) {
+          this.state.aimArea.push(new Position(aim.x - 1, aim.y));
+        }
+        if (!this.checkAimArea(aim.x + 1, aim.y)) {
+          this.state.aimArea.push(new Position(aim.x + 1, aim.y));
+        }
+        break;
+      case HatType.VERTICAL:
+        if (!this.checkAimArea(aim.x, aim.y - 1)) {
+          this.state.aimArea.push(new Position(aim.x, aim.y - 1));
+        }
+        if (!this.checkAimArea(aim.x, aim.y + 1)) {
+          this.state.aimArea.push(new Position(aim.x, aim.y + 1));
+        }
+        break;
+    }
   }
 
   // Check if level is completed, failed, etc.
