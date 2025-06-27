@@ -16,7 +16,17 @@ class Position {
     this.x = x;
     this.y = y;
   }
+
+  add(other) {
+    return new Position(this.x + other.x, this.y + other.y);
+  }
 }
+
+const SQUARE_SIZE = 64;
+const HALF_SQUARE_SIZE = SQUARE_SIZE / 2;
+const GRID_SIZE = 8;
+const SPRITE_SIZE = 56;
+const SPRITE_PADDING = (SQUARE_SIZE - SPRITE_SIZE) / 2;
 
 class Gobbo extends Position {
   constructor(x, y, direction, hatType) {
@@ -32,11 +42,11 @@ class LevelManager {
     this.state = {
       currentLevel: 1,
       turnCount: 0,
-      player: new Position(0, 0),
+      player: new Position(1, 3),
       gobbos: [
         new Gobbo(4, 1, Direction.DOWN, HatType.VERTICAL),
-        new Gobbo(5, 3, Direction.RIGHT, HatType.HORIZONTAL),
-        new Gobbo(3, 6, Direction.RIGHT, HatType.REMOVE),
+        new Gobbo(5, 3, Direction.RIGHT, HatType.REMOVE),
+        new Gobbo(3, 6, Direction.RIGHT, HatType.HORIZONTAL),
       ],
       walls: [
         new Position(2, 5),
@@ -46,6 +56,7 @@ class LevelManager {
         new Position(3, 5),
         new Position(4, 3),
       ],
+      aimArea: [new Position(2, 0), new Position(2, -1), new Position(3, 0)],
     };
   }
 
@@ -92,10 +103,18 @@ class LevelManager {
     this.game.drawRect(0, 0, width, height, { fill: "#C5BAB5" });
 
     // Draw a 8x8 grid of 64px squares. They alternate between CFC6BD and E2D8D4
-    for (let i = 0; i < 8; i++) {
-      for (let j = 0; j < 8; j++) {
+    for (let i = 0; i < GRID_SIZE; i++) {
+      for (let j = 0; j < GRID_SIZE; j++) {
         const color = (i + j) % 2 === 0 ? "#CFC6BD" : "#E2D8D4";
-        this.game.drawRect(i * 64 + 32, j * 64 + 32, 64, 64, { fill: color });
+        this.game.drawRect(
+          i * SQUARE_SIZE + HALF_SQUARE_SIZE,
+          j * SQUARE_SIZE + HALF_SQUARE_SIZE,
+          SQUARE_SIZE,
+          SQUARE_SIZE,
+          {
+            fill: color,
+          }
+        );
       }
     }
 
@@ -116,47 +135,60 @@ class LevelManager {
   }
 
   cellCenter(num) {
-    return num * 64 + 32;
+    return num * SQUARE_SIZE + HALF_SQUARE_SIZE;
   }
 
   // Level-specific content rendering (override this for different level types)
   renderLevelContent() {
     this.game.drawImage(
       ASSETS.SPRITE.WIZ,
-      this.cellCenter(this.state.player.x) + 8,
-      this.cellCenter(this.state.player.y) + 8,
-      48,
-      48
+      this.cellCenter(this.state.player.x) + SPRITE_PADDING,
+      this.cellCenter(this.state.player.y) + SPRITE_PADDING,
+      SPRITE_SIZE,
+      SPRITE_SIZE
     );
     this.state.gobbos.forEach((gobbo) => this.renderGobbo(gobbo));
     this.state.walls.forEach((wall) => this.renderWall(wall));
+    this.state.aimArea.forEach((area) =>
+      this.renderAimArea(area.add(this.state.player))
+    );
   }
 
   renderGobbo(gobbo) {
     console.log(gobbo);
     this.game.drawImage(
       ASSETS.SPRITE.GOBBO,
-      this.cellCenter(gobbo.x) + 8,
-      this.cellCenter(gobbo.y) + 8,
-      48,
-      48
+      this.cellCenter(gobbo.x) + SPRITE_PADDING,
+      this.cellCenter(gobbo.y) + SPRITE_PADDING,
+      SPRITE_SIZE,
+      SPRITE_SIZE
     );
     this.game.drawImage(
       ASSETS.SPRITE.HAT[gobbo.hatType],
-      this.cellCenter(gobbo.x) + 8,
-      this.cellCenter(gobbo.y) + 8,
-      48,
-      48
+      this.cellCenter(gobbo.x) + SPRITE_PADDING,
+      this.cellCenter(gobbo.y) + SPRITE_PADDING,
+      SPRITE_SIZE,
+      SPRITE_SIZE
     );
   }
 
   renderWall(wall) {
     this.game.drawImage(
       ASSETS.SPRITE.CRATE,
-      this.cellCenter(wall.x) + 8,
-      this.cellCenter(wall.y) + 8,
-      48,
-      48
+      this.cellCenter(wall.x) + SPRITE_PADDING,
+      this.cellCenter(wall.y) + SPRITE_PADDING,
+      SPRITE_SIZE,
+      SPRITE_SIZE
+    );
+  }
+
+  renderAimArea(area) {
+    this.game.drawRect(
+      this.cellCenter(area.x),
+      this.cellCenter(area.y),
+      SQUARE_SIZE,
+      SQUARE_SIZE,
+      { fill: "#ffa05766" }
     );
   }
 
