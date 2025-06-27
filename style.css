@@ -23,6 +23,10 @@ body {
     display: block;
     background-color: #111;
     cursor: crosshair;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: -webkit-crisp-edges;
+    -ms-interpolation-mode: nearest-neighbor;
+    image-rendering: pixelated;
 }
 
 #ui-overlay {

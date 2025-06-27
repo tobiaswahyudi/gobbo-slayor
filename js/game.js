@@ -28,6 +28,7 @@ class Game {
     this.levelManager = new LevelManager(this);
 
     this.preloadFinished = false;
+    this.loadedImages = new Map();
 
     this.init();
   }
@@ -37,11 +38,8 @@ class Game {
     this.canvas.width = this.width;
     this.canvas.height = this.height;
 
-    // Setup event listeners
     this.setupEventListeners();
-
-    // Configure canvas context
-    this.ctx.imageSmoothingEnabled = false; // For pixel-perfect rendering
+    this.ctx.imageSmoothingEnabled = false;
 
     console.log("Game initialized");
   }
@@ -161,9 +159,6 @@ class Game {
         break;
     }
   }
-
-  // Image loading and caching
-  loadedImages = new Map();
 
   async loadImage(src) {
     if (this.loadedImages.has(src)) {
