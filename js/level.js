@@ -17,13 +17,38 @@ const HatType = {
 };
 
 class Position {
-  constructor(x, y) {
+  constructor(x = 0, y = 0) {
     this.x = x;
     this.y = y;
   }
 
   add(other) {
     return new Position(this.x + other.x, this.y + other.y);
+  }
+
+  zero() {
+    this.x = 0;
+    this.y = 0;
+    return this;
+  }
+
+  randomize() {
+    this.x = Math.random() * 2 - 1;
+    this.y = Math.random() * 2 - 1;
+    return this;
+  }
+
+  normalize() {
+    const len = Math.hypot(this.x, this.y);
+    this.x /= len;
+    this.y /= len;
+    return this;
+  }
+
+  scale(factor) {
+    this.x *= factor;
+    this.y *= factor;
+    return this;
   }
 }
 
@@ -66,6 +91,8 @@ class LevelManager {
     };
     this.animating = Animation.NONE;
     this.frame = 0;
+
+    this.juiceOffset = new Position(0, 0);
   }
 
   // Level Input Handling
@@ -117,8 +144,8 @@ class LevelManager {
       for (let j = 0; j < GRID_SIZE; j++) {
         const color = (i + j) % 2 === 0 ? "#CFC6BD" : "#E2D8D4";
         this.game.drawRect(
-          i * SQUARE_SIZE + HALF_SQUARE_SIZE,
-          j * SQUARE_SIZE + HALF_SQUARE_SIZE,
+          i * SQUARE_SIZE + HALF_SQUARE_SIZE + this.juiceOffset.x * 0.5,
+          j * SQUARE_SIZE + HALF_SQUARE_SIZE + this.juiceOffset.y * 0.5,
           SQUARE_SIZE,
           SQUARE_SIZE,
           {
@@ -128,71 +155,156 @@ class LevelManager {
       }
     }
 
-    this.game.drawRect(32, 32, 512, 512, {
-      fill: "",
-      stroke: "#BDAFA1",
-      strokeWidth: 4,
-    });
+    this.game.drawRect(
+      32 + this.juiceOffset.x * 0.5,
+      32 + this.juiceOffset.y * 0.5,
+      512,
+      512,
+      {
+        fill: "",
+        stroke: "#BDAFA1",
+        strokeWidth: 4,
+      }
+    );
 
-    this.game.drawRect(576, 32, 208, 512, {
-      fill: "#E2D8D4",
-      stroke: "#BDAFA1",
-      strokeWidth: 4,
-    });
+    this.game.drawRect(
+      576 + this.juiceOffset.x * 0.5,
+      32 + this.juiceOffset.y * 0.5,
+      208,
+      512,
+      {
+        fill: "#E2D8D4",
+        stroke: "#BDAFA1",
+        strokeWidth: 4,
+      }
+    );
 
-    this.game.drawText("Level 1", 680, 44, {
-      color: "#000",
-      font: "bold 24px Courier New",
-      align: "center",
-    });
+    this.game.drawText(
+      "Level 1",
+      680 + this.juiceOffset.x,
+      44 + this.juiceOffset.y,
+      {
+        color: "#000",
+        font: "bold 24px Courier New",
+        align: "center",
+      }
+    );
 
-    this.game.drawRect(600, 78, 160, 0, {
-      fill: "",
-      stroke: "#000",
-      strokeWidth: 2,
-    });
+    this.game.drawRect(
+      600 + this.juiceOffset.x,
+      78 + this.juiceOffset.y,
+      160,
+      0,
+      {
+        fill: "",
+        stroke: "#000",
+        strokeWidth: 2,
+      }
+    );
 
-    this.game.drawImage(ASSETS.SPRITE.GOBBO, 608, 80, 64, 64);
+    this.game.drawImage(
+      ASSETS.SPRITE.GOBBO,
+      608 + this.juiceOffset.x,
+      80 + this.juiceOffset.y,
+      64,
+      64
+    );
 
-    this.game.drawText(`x${this.state.gobbos.length}`, 688, 106, {
-      color: "#000",
-      font: "bold 40px Courier New",
-      align: "left",
-    });
+    this.game.drawText(
+      `x${this.state.gobbos.length}`,
+      688 + this.juiceOffset.x,
+      106 + this.juiceOffset.y,
+      {
+        color: "#000",
+        font: "bold 40px Courier New",
+        align: "left",
+      }
+    );
 
-    this.game.drawImage(ASSETS.SPRITE.GOBBO, 608, 80, 64, 64);
+    this.game.drawImage(
+      ASSETS.SPRITE.GOBBO,
+      608 + this.juiceOffset.x,
+      80 + this.juiceOffset.y,
+      64,
+      64
+    );
 
-    this.game.drawText(`x${this.state.gobbos.length}`, 688, 106, {
-      color: "#000",
-      font: "bold 40px Courier New",
-      align: "left",
-    });
+    this.game.drawText(
+      `x${this.state.gobbos.length}`,
+      688 + this.juiceOffset.x,
+      106 + this.juiceOffset.y,
+      {
+        color: "#000",
+        font: "bold 40px Courier New",
+        align: "left",
+      }
+    );
 
-    this.game.drawImage(ASSETS.UI.MANA, 608, 152, 64, 64);
+    this.game.drawImage(
+      ASSETS.UI.MANA,
+      608 + this.juiceOffset.x,
+      152 + this.juiceOffset.y,
+      64,
+      64
+    );
 
-    this.game.drawText(`x${this.state.remainingBombs}`, 688, 178, {
-      color: "#000",
-      font: "bold 40px Courier New",
-      align: "left",
-    });
+    this.game.drawText(
+      `x${this.state.remainingBombs}`,
+      688 + this.juiceOffset.x,
+      178 + this.juiceOffset.y,
+      {
+        color: "#000",
+        font: "bold 40px Courier New",
+        align: "left",
+      }
+    );
 
-    this.game.drawText("Hats", 680, 280, {
-      color: "#000",
-      font: "bold 24px Courier New",
-      align: "center",
-    });
+    this.game.drawText(
+      "Hats",
+      680 + this.juiceOffset.x,
+      280 + this.juiceOffset.y,
+      {
+        color: "#000",
+        font: "bold 24px Courier New",
+        align: "center",
+      }
+    );
 
-    this.game.drawRect(600, 314, 160, 0, {
-      fill: "",
-      stroke: "#000",
-      strokeWidth: 2,
-    });
+    this.game.drawRect(
+      600 + this.juiceOffset.x,
+      314 + this.juiceOffset.y,
+      160,
+      0,
+      {
+        fill: "",
+        stroke: "#000",
+        strokeWidth: 2,
+      }
+    );
 
-    this.game.drawImage(ASSETS.UI.HAT[HatType.HORIZONTAL], 608, 332, 64, 64);
+    this.game.drawImage(
+      ASSETS.UI.HAT[HatType.HORIZONTAL],
+      608 + this.juiceOffset.x,
+      332 + this.juiceOffset.y,
+      64,
+      64
+    );
 
-    this.game.drawImage(ASSETS.UI.HAT[HatType.REMOVE], 688, 332, 64, 64);
+    this.game.drawImage(
+      ASSETS.UI.HAT[HatType.REMOVE],
+      688 + this.juiceOffset.x,
+      332 + this.juiceOffset.y,
+      64,
+      64
+    );
 
-    this.game.drawImage(ASSETS.UI.HAT[HatType.VERTICAL], 608, 412, 64, 64);
+    this.game.drawImage(
+      ASSETS.UI.HAT[HatType.VERTICAL],
+      608 + this.juiceOffset.x,
+      412 + this.juiceOffset.y,
+      64,
+      64
+    );
 
     // Render level-specific content
     this.renderLevelContent();
@@ -203,8 +315,10 @@ class LevelManager {
     }
 
     this.frame++;
+    this.juiceOffset.randomize().normalize().scale(6 - this.frame).scale(1.5);
 
-    if (this.animating === Animation.EXPLODING && this.frame >= 4) {
+    if (this.animating === Animation.EXPLODING && this.frame >= 5) {
+      this.juiceOffset.zero();
       this.animating = Animation.NONE;
       this.frame = 0;
     }
@@ -220,8 +334,8 @@ class LevelManager {
   renderLevelContent() {
     this.game.drawImage(
       ASSETS.SPRITE.WIZ,
-      this.cellCenter(this.state.player.x) + SPRITE_PADDING,
-      this.cellCenter(this.state.player.y) + SPRITE_PADDING,
+      this.cellCenter(this.state.player.x) + SPRITE_PADDING + this.juiceOffset.x,
+      this.cellCenter(this.state.player.y) + SPRITE_PADDING + this.juiceOffset.y,
       SPRITE_SIZE,
       SPRITE_SIZE
     );
@@ -234,15 +348,15 @@ class LevelManager {
     console.log(gobbo);
     this.game.drawImage(
       ASSETS.SPRITE.GOBBO,
-      this.cellCenter(gobbo.x) + SPRITE_PADDING,
-      this.cellCenter(gobbo.y) + SPRITE_PADDING,
+      this.cellCenter(gobbo.x) + SPRITE_PADDING + this.juiceOffset.x,
+      this.cellCenter(gobbo.y) + SPRITE_PADDING + this.juiceOffset.y,
       SPRITE_SIZE,
       SPRITE_SIZE
     );
     this.game.drawImage(
       ASSETS.SPRITE.HAT[gobbo.hatType],
-      this.cellCenter(gobbo.x) + SPRITE_PADDING,
-      this.cellCenter(gobbo.y) + SPRITE_PADDING,
+      this.cellCenter(gobbo.x) + SPRITE_PADDING + this.juiceOffset.x,
+      this.cellCenter(gobbo.y) + SPRITE_PADDING + this.juiceOffset.y,
       SPRITE_SIZE,
       SPRITE_SIZE
     );
@@ -251,8 +365,8 @@ class LevelManager {
   renderWall(wall) {
     this.game.drawImage(
       ASSETS.SPRITE.CRATE,
-      this.cellCenter(wall.x) + SPRITE_PADDING,
-      this.cellCenter(wall.y) + SPRITE_PADDING,
+      this.cellCenter(wall.x) + SPRITE_PADDING + this.juiceOffset.x,
+      this.cellCenter(wall.y) + SPRITE_PADDING + this.juiceOffset.y,
       SPRITE_SIZE,
       SPRITE_SIZE
     );
@@ -277,7 +391,11 @@ class LevelManager {
       aimAreaLookup[area.x][area.y] = true;
       this.renderAimArea(area);
       if (this.animating === Animation.EXPLODING) {
-        this.renderExplosion(area, this.frame);
+        this.renderExplosion(
+          this.cellCenter(area.x) + this.juiceOffset.x,
+          this.cellCenter(area.y) + this.juiceOffset.y,
+          this.frame
+        );
       }
     });
 
@@ -285,25 +403,25 @@ class LevelManager {
 
     areas.forEach((area) => {
       if (!this.isInAimArea(area.x - 1, area.y, aimAreaLookup)) {
-        outline.moveTo(this.cellCenter(area.x), this.cellCenter(area.y));
-        outline.lineTo(this.cellCenter(area.x), this.cellCenter(area.y + 1));
+        outline.moveTo(this.cellCenter(area.x) + this.juiceOffset.x, this.cellCenter(area.y) + this.juiceOffset.y);
+        outline.lineTo(this.cellCenter(area.x) + this.juiceOffset.x, this.cellCenter(area.y + 1) + this.juiceOffset.y);
       }
       if (!this.isInAimArea(area.x + 1, area.y, aimAreaLookup)) {
-        outline.moveTo(this.cellCenter(area.x + 1), this.cellCenter(area.y));
+        outline.moveTo(this.cellCenter(area.x + 1) + this.juiceOffset.x, this.cellCenter(area.y) + this.juiceOffset.y);
         outline.lineTo(
-          this.cellCenter(area.x + 1),
-          this.cellCenter(area.y + 1)
+          this.cellCenter(area.x + 1) + this.juiceOffset.x,
+          this.cellCenter(area.y + 1) + this.juiceOffset.y
         );
       }
       if (!this.isInAimArea(area.x, area.y - 1, aimAreaLookup)) {
-        outline.moveTo(this.cellCenter(area.x), this.cellCenter(area.y));
-        outline.lineTo(this.cellCenter(area.x + 1), this.cellCenter(area.y));
+        outline.moveTo(this.cellCenter(area.x) + this.juiceOffset.x, this.cellCenter(area.y) + this.juiceOffset.y);
+        outline.lineTo(this.cellCenter(area.x + 1) + this.juiceOffset.x, this.cellCenter(area.y) + this.juiceOffset.y);
       }
       if (!this.isInAimArea(area.x, area.y + 1, aimAreaLookup)) {
-        outline.moveTo(this.cellCenter(area.x), this.cellCenter(area.y + 1));
+        outline.moveTo(this.cellCenter(area.x) + this.juiceOffset.x, this.cellCenter(area.y + 1) + this.juiceOffset.y);
         outline.lineTo(
-          this.cellCenter(area.x + 1),
-          this.cellCenter(area.y + 1)
+          this.cellCenter(area.x + 1) + this.juiceOffset.x,
+          this.cellCenter(area.y + 1) + this.juiceOffset.y
         );
       }
     });
@@ -320,12 +438,12 @@ class LevelManager {
     const magicStaffY = (11.5 / 32) * SPRITE_SIZE + SPRITE_PADDING;
 
     outline.moveTo(
-      this.cellCenter(this.state.player.x) + magicStaffX,
-      this.cellCenter(this.state.player.y) + magicStaffY
+      this.cellCenter(this.state.player.x) + magicStaffX + this.juiceOffset.x,
+      this.cellCenter(this.state.player.y) + magicStaffY + this.juiceOffset.y
     );
     outline.lineTo(
-      this.cellCenter(leftmostCell.x),
-      this.cellCenter(leftmostCell.y + 0.5)
+      this.cellCenter(leftmostCell.x) + this.juiceOffset.x,
+      this.cellCenter(leftmostCell.y + 0.5) + this.juiceOffset.y
     );
 
     this.game.drawPath(outline, {
@@ -336,28 +454,21 @@ class LevelManager {
 
   renderAimArea(area) {
     this.game.drawRect(
-      this.cellCenter(area.x),
-      this.cellCenter(area.y),
+      this.cellCenter(area.x) + this.juiceOffset.x,
+      this.cellCenter(area.y) + this.juiceOffset.y,
       SQUARE_SIZE,
       SQUARE_SIZE,
       { fill: this.state.remainingBombs > 0 ? "#ffa05766" : "#ababab66" }
     );
   }
 
-  renderExplosion(area, frame) {
-    this.game.drawImage(
-      ASSETS.SPRITE.EXPLOSION,
-      this.cellCenter(area.x),
-      this.cellCenter(area.y),
-      SQUARE_SIZE,
-      SQUARE_SIZE,
-      {
-        x: 32 * (frame % 4),
-        y: 0,
-        width: 32,
-        height: 32,
-      }
-    );
+  renderExplosion(x, y, frame, size = SQUARE_SIZE) {
+    this.game.drawImage(ASSETS.SPRITE.EXPLOSION, x, y, size, size, {
+      x: 32 * (frame % 4),
+      y: 0,
+      width: 32,
+      height: 32,
+    });
   }
 
   getDirVec(direction) {
@@ -495,6 +606,8 @@ class LevelManager {
         this.killGobbo(gobbo, aim);
       }
     });
+
+    this.makeMove()
   }
 
   killGobbo(gobbo, aim) {
