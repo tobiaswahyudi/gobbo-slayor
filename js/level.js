@@ -658,15 +658,19 @@ class LevelManager {
 
     this.animating = Animation.EXPLODING;
 
+    const gobbosToKill = [];
+
     this.state.gobbos.forEach((gobbo) => {
       const aim = this.checkAimArea(
         gobbo.x - this.state.player.x,
         gobbo.y - this.state.player.y
       );
       if (aim) {
-        this.killGobbo(gobbo, aim);
+        gobbosToKill.push([gobbo, aim]);
       }
     });
+
+    gobbosToKill.forEach(([gobbo, aim]) => this.killGobbo(gobbo, aim));
 
     this.makeMove();
   }
