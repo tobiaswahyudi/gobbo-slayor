@@ -1,3 +1,5 @@
+const MS_PER_FRAME = 30;
+
 class Game {
   constructor() {
     this.canvas = document.getElementById("gameCanvas");
@@ -5,7 +7,6 @@ class Game {
 
     // Game state
     this.isRunning = false;
-    this.needsRedraw = true;
 
     // Canvas dimensions
     this.width = 816;
@@ -106,16 +107,13 @@ class Game {
 
   // Trigger a redraw when needed (turn-based, event-driven)
   requestRedraw() {
-    if (this.isRunning && this.needsRedraw) {
-      this.needsRedraw = false;
+    if (this.isRunning) {
       this.render();
     }
   }
 
   // Handle key presses based on current scene
   handleKeyPress(keyCode) {
-    this.needsRedraw = true;
-
     switch (this.scene) {
       case "menus":
         this.menuManager.handleMainMenuInput(keyCode);
@@ -132,9 +130,6 @@ class Game {
 
   // Handle minimal mouse input (mainly for UI buttons)
   handleMouseClick(x, y) {
-    // You can add click handling for UI buttons here if needed
-    // For now, just trigger a redraw
-    this.needsRedraw = true;
     this.requestRedraw();
   }
 
@@ -149,14 +144,22 @@ class Game {
     this.ctx.strokeStyle = "#fff";
     this.ctx.font = "16px Courier New";
 
+    let anotherRender = false;
+
     // Render based on current scene
     switch (this.scene) {
       case "menus":
         this.menuManager.render();
         break;
       case "level":
-        this.levelManager.renderGame(this.ctx);
+        anotherRender = this.levelManager.renderGame(this.ctx);
         break;
+    }
+
+    if(anotherRender) {
+      setTimeout(() => {
+        this.requestRedraw();
+      }, MS_PER_FRAME);
     }
   }
 
@@ -188,14 +191,17 @@ class Game {
   }
 
   // Draw image utility
-  drawImage(src, x, y, width = null, height = null) {
+  drawImage(src, x, y, width = null, height = null, clip = {}) {
+    const { x: clipX, y: clipY, width: clipWidth, height: clipHeight } = clip;
     const img = this.loadedImages.get(src);
     if (!img) {
       console.warn(`Image not loaded: ${src}`);
       return;
     }
 
-    if (width && height) {
+    if (Object.keys(clip).length > 0) {
+      this.ctx.drawImage(img, clipX, clipY, clipWidth, clipHeight, x, y, width, height);
+    } else if (width && height) {
       this.ctx.drawImage(img, x, y, width, height);
     } else {
       this.ctx.drawImage(img, x, y);

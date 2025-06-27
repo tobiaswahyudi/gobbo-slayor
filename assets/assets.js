@@ -8,6 +8,7 @@ const ASSETS = {
         REMOVE: "assets/sprite/hat_no.png",
     },
     WIZ: "assets/sprite/wiz.png",
+    EXPLOSION: "assets/sprite/explosion.png",
   },
   UI: {
     HAT: {

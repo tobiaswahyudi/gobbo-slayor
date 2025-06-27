@@ -5,6 +5,11 @@ const Direction = {
   RIGHT: "right",
 };
 
+const Animation = {
+  NONE: false,
+  EXPLODING: "EXPLODING",
+};
+
 const HatType = {
   VERTICAL: "VERTICAL",
   HORIZONTAL: "HORIZONTAL",
@@ -58,10 +63,13 @@ class LevelManager {
       ],
       aimArea: [new Position(2, 0), new Position(2, -1), new Position(3, 0)],
     };
+    this.animating = Animation.NONE;
+    this.frame = 0;
   }
 
   // Level Input Handling
   handleGameInput(keyCode) {
+    if (this.animating) return;
     switch (keyCode) {
       case "ArrowUp":
       case "KeyW":
@@ -84,7 +92,7 @@ class LevelManager {
         return true;
         break;
       case "Space":
-        this.makeMove("action");
+        this.handleAction();
         return true;
         break;
       case "Escape":
@@ -96,6 +104,7 @@ class LevelManager {
   }
 
   // Level Rendering
+  // returns true if another re-render is needed
   renderGame() {
     const { width, height } = this.game;
 
@@ -132,6 +141,20 @@ class LevelManager {
 
     // Render level-specific content
     this.renderLevelContent();
+
+    console.log(this.animating, this.frame);
+    if(this.animating === Animation.NONE) {
+        return false;
+    }
+    
+    this.frame++;
+
+    if (this.animating === Animation.EXPLODING && this.frame >= 4) {
+        this.animating = Animation.NONE;
+        this.frame = 0;
+    }
+
+    return true;
   }
 
   cellCenter(num) {
@@ -195,6 +218,9 @@ class LevelManager {
       if (this.isOutOfBounds(area.x, area.y)) return;
       aimAreaLookup[area.x][area.y] = true;
       this.renderAimArea(area);
+      if (this.animating === Animation.EXPLODING) {
+        this.renderExplosion(area, this.frame);
+      }
     });
 
     const outline = new Path2D();
@@ -255,6 +281,22 @@ class LevelManager {
       SQUARE_SIZE,
       SQUARE_SIZE,
       { fill: "#ffa05766" }
+    );
+  }
+
+  renderExplosion(area, frame) {
+    this.game.drawImage(
+      ASSETS.SPRITE.EXPLOSION,
+      this.cellCenter(area.x),
+      this.cellCenter(area.y),
+      SQUARE_SIZE,
+      SQUARE_SIZE,
+      {
+        x: 32 * (frame % 4),
+        y: 0,
+        width: 32,
+        height: 32,
+      }
     );
   }
 
@@ -371,6 +413,8 @@ class LevelManager {
     // - Activating switches
 
     console.log("Player performed an action");
+
+    this.animating = Animation.EXPLODING;
   }
 
   // Check if level is completed, failed, etc.
