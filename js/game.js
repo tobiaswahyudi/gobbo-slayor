@@ -41,6 +41,8 @@ class Game {
 
     this.setupEventListeners();
     this.ctx.imageSmoothingEnabled = false;
+    this.ctx.textRendering = "geometricPrecision";
+
 
     console.log("Game initialized");
   }

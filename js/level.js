@@ -139,6 +139,96 @@ class LevelManager {
       strokeWidth: 4,
     });
 
+    this.game.drawText("Level 1", 680, 44, {
+        color: "#000",
+        font: "bold 24px Courier New",
+        align: "center",
+    });
+
+    this.game.drawRect(600, 78, 160, 0, {
+        fill: "",
+        stroke: "#000",
+        strokeWidth: 2,
+    });
+
+    this.game.drawImage(
+        ASSETS.SPRITE.GOBBO,
+        608,
+        80,
+        64,
+        64
+    );
+
+    this.game.drawText(`x${this.state.gobbos.length}`, 688, 106, {
+        color: "#000",
+        font: "bold 40px Courier New",
+        align: "left",
+    });
+
+    this.game.drawImage(
+        ASSETS.SPRITE.GOBBO,
+        608,
+        80,
+        64,
+        64
+    );
+
+    this.game.drawText(`x${this.state.gobbos.length}`, 688, 106, {
+        color: "#000",
+        font: "bold 40px Courier New",
+        align: "left",
+    });
+
+    this.game.drawImage(
+        ASSETS.UI.MANA,
+        608,
+        152,
+        64,
+        64
+    );
+
+    this.game.drawText(`x2`, 688, 178, {
+        color: "#000",
+        font: "bold 40px Courier New",
+        align: "left",
+    });
+
+    this.game.drawText("Hats", 680, 280, {
+        color: "#000",
+        font: "bold 24px Courier New",
+        align: "center",
+    });
+
+    this.game.drawRect(600, 314, 160, 0, {
+        fill: "",
+        stroke: "#000",
+        strokeWidth: 2,
+    });
+
+    this.game.drawImage(
+        ASSETS.UI.HAT[HatType.HORIZONTAL],
+        608,
+        332,
+        64,
+        64
+    );
+
+    this.game.drawImage(
+        ASSETS.UI.HAT[HatType.REMOVE],
+        688,
+        332,
+        64,
+        64
+    );
+
+    this.game.drawImage(
+        ASSETS.UI.HAT[HatType.VERTICAL],
+        608,
+        412,
+        64,
+        64
+    );
+
     // Render level-specific content
     this.renderLevelContent();
 
