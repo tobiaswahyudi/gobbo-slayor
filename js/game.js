@@ -95,6 +95,8 @@ class Game {
       this.isRunning = true;
       this.render(); // Initial render
       console.log("Game started");
+
+      this.preloadImages(ALL_ASSETS);
     }
   }
 
@@ -147,6 +149,51 @@ class Game {
       case "level":
         this.levelManager.renderGame(this.ctx);
         break;
+    }
+  }
+
+  // Image loading and caching
+  loadedImages = new Map();
+  
+  async loadImage(src) {
+    if (this.loadedImages.has(src)) {
+      return this.loadedImages.get(src);
+    }
+    
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => {
+        this.loadedImages.set(src, img);
+        resolve(img);
+      };
+      img.onerror = reject;
+      img.src = src;
+    });
+  }
+  
+  // Preload multiple images
+  async preloadImages(imagePaths) {
+    try {
+      const promises = imagePaths.map(path => this.loadImage(path));
+      await Promise.all(promises);
+      console.log('All images preloaded');
+    } catch (error) {
+      console.error('Error preloading images:', error);
+    }
+  }
+
+  // Draw image utility
+  drawImage(src, x, y, width = null, height = null) {
+    const img = this.loadedImages.get(src);
+    if (!img) {
+      console.warn(`Image not loaded: ${src}`);
+      return;
+    }
+    
+    if (width && height) {
+      this.ctx.drawImage(img, x, y, width, height);
+    } else {
+      this.ctx.drawImage(img, x, y);
     }
   }
 
