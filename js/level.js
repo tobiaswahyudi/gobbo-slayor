@@ -74,9 +74,9 @@ class LevelManager {
       turnCount: 0,
       player: new Position(1, 3),
       gobbos: [
-        new Gobbo(4, 1, Direction.DOWN, HatType.VERTICAL),
+        new Gobbo(4, 1, Direction.DOWN, HatType.HORIZONTAL),
         new Gobbo(5, 3, Direction.RIGHT, HatType.REMOVE),
-        new Gobbo(3, 6, Direction.RIGHT, HatType.HORIZONTAL),
+        new Gobbo(3, 6, Direction.RIGHT, HatType.VERTICAL),
       ],
       walls: [
         new Position(2, 5),
