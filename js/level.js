@@ -215,7 +215,7 @@ class LevelManager {
     );
 
     this.game.drawText(
-      "Level 1",
+      `Level ${this.state.currentLevel}`,
       680 + this.juiceOffset.x,
       44 + this.juiceOffset.y,
       {
