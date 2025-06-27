@@ -149,9 +149,7 @@ class LevelManager {
     );
     this.state.gobbos.forEach((gobbo) => this.renderGobbo(gobbo));
     this.state.walls.forEach((wall) => this.renderWall(wall));
-    this.state.aimArea.forEach((area) =>
-      this.renderAimArea(area.add(this.state.player))
-    );
+    this.renderAimAreas();
   }
 
   renderGobbo(gobbo) {
@@ -182,6 +180,74 @@ class LevelManager {
     );
   }
 
+  isInAimArea(x, y, lookup) {
+    return !this.isOutOfBounds(x, y) && lookup[x][y];
+  }
+
+  renderAimAreas() {
+    const aimAreaLookup = new Array(GRID_SIZE)
+      .fill(null)
+      .map(() => new Array(GRID_SIZE).fill(false));
+
+    const areas = this.state.aimArea.map((area) => area.add(this.state.player));
+
+    areas.forEach((area) => {
+      if (this.isOutOfBounds(area.x, area.y)) return;
+      aimAreaLookup[area.x][area.y] = true;
+      this.renderAimArea(area);
+    });
+
+    const outline = new Path2D();
+
+    areas.forEach((area) => {
+      if (this.isOutOfBounds(area.x, area.y)) return;
+      if (!this.isInAimArea(area.x - 1, area.y, aimAreaLookup)) {
+        outline.moveTo(this.cellCenter(area.x), this.cellCenter(area.y));
+        outline.lineTo(this.cellCenter(area.x), this.cellCenter(area.y + 1));
+      }
+      if (!this.isInAimArea(area.x + 1, area.y, aimAreaLookup)) {
+        outline.moveTo(this.cellCenter(area.x + 1), this.cellCenter(area.y));
+        outline.lineTo(
+          this.cellCenter(area.x + 1),
+          this.cellCenter(area.y + 1)
+        );
+      }
+      if (!this.isInAimArea(area.x, area.y - 1, aimAreaLookup)) {
+        outline.moveTo(this.cellCenter(area.x), this.cellCenter(area.y));
+        outline.lineTo(this.cellCenter(area.x + 1), this.cellCenter(area.y));
+      }
+      if (!this.isInAimArea(area.x, area.y + 1, aimAreaLookup)) {
+        outline.moveTo(this.cellCenter(area.x), this.cellCenter(area.y + 1));
+        outline.lineTo(
+          this.cellCenter(area.x + 1),
+          this.cellCenter(area.y + 1)
+        );
+      }
+    });
+
+    const leftmostCellPos = areas.reduce(
+      (min, area) => (area.x < min ? area.x : min),
+      GRID_SIZE
+    );
+    const leftmostCell = areas.find((area) => area.x === leftmostCellPos);
+
+    // draw a line from THE MIDDLE OF THE MAGIC STAFF at (28, 12)
+
+    const magicStaffX = (27/32) * SPRITE_SIZE + SPRITE_PADDING;
+    const magicStaffY = (12/32) * SPRITE_SIZE + SPRITE_PADDING;
+
+    outline.moveTo(
+      this.cellCenter(this.state.player.x) + magicStaffX,
+      this.cellCenter(this.state.player.y) + magicStaffY
+    );
+    outline.lineTo(
+      this.cellCenter(leftmostCell.x),
+      this.cellCenter(leftmostCell.y-0.5)
+    );
+
+    this.game.drawPath(outline, { stroke: "#FF6F00", strokeWidth: 4 });
+  }
+
   renderAimArea(area) {
     this.game.drawRect(
       this.cellCenter(area.x),
@@ -210,10 +276,14 @@ class LevelManager {
     return [0, 0];
   }
 
+  isOutOfBounds(x, y) {
+    return x < 0 || x > 7 || y < 0 || y > 7;
+  }
+
   verifyMoveBounds(srcX, srcY, moveX, moveY) {
     const newX = srcX + moveX;
     const newY = srcY + moveY;
-    if (newX < 0 || newX > 7 || newY < 0 || newY > 7) {
+    if (this.isOutOfBounds(newX, newY)) {
       return false;
     }
     if (this.state.walls.some((wall) => wall.x === newX && wall.y === newY)) {

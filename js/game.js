@@ -247,6 +247,17 @@ class Game {
     if (strokeWidth) this.ctx.strokeRect(x, y, width, height);
   }
 
+  drawPath(path, params = {}) {
+    const { fill, stroke, strokeWidth, filled } = this.getDrawParams(params);
+
+    this.ctx.strokeStyle = stroke;
+    this.ctx.fillStyle = fill;
+    this.ctx.lineWidth = strokeWidth;
+
+    if (filled) this.ctx.fill(path);
+    if (strokeWidth) this.ctx.stroke(path);
+  }
+
   drawCircle(x, y, radius, color = "#fff", filled = true) {
     this.ctx.beginPath();
     this.ctx.arc(x, y, radius, 0, Math.PI * 2);
