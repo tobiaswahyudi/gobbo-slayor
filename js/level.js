@@ -1,9 +1,51 @@
+const Direction = {
+  UP: "up",
+  DOWN: "down",
+  LEFT: "left",
+  RIGHT: "right",
+};
+
+const HatType = {
+  VERTICAL: "VERTICAL",
+  HORIZONTAL: "HORIZONTAL",
+  REMOVE: "REMOVE",
+};
+
+class Position {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+  }
+}
+
+class Gobbo extends Position {
+  constructor(x, y, direction, hatType) {
+    super(x, y);
+    this.direction = direction;
+    this.hatType = hatType;
+  }
+}
+
 class LevelManager {
   constructor(game) {
     this.game = game;
     this.state = {
       currentLevel: 1,
       turnCount: 0,
+      player: new Position(0, 0),
+      gobbos: [
+        new Gobbo(4, 1, Direction.DOWN, HatType.VERTICAL),
+        new Gobbo(5, 3, Direction.RIGHT, HatType.HORIZONTAL),
+        new Gobbo(3, 6, Direction.RIGHT, HatType.REMOVE),
+      ],
+      walls: [
+        new Position(2, 5),
+        new Position(2, 6),
+        new Position(2, 7),
+        new Position(3, 1),
+        new Position(3, 5),
+        new Position(4, 3),
+      ],
     };
   }
 
@@ -58,40 +100,115 @@ class LevelManager {
     }
 
     this.game.drawRect(32, 32, 512, 512, {
-      fill: '',
+      fill: "",
       stroke: "#BDAFA1",
       strokeWidth: 4,
     });
 
     this.game.drawRect(576, 32, 208, 512, {
-      fill: '#E2D8D4',
+      fill: "#E2D8D4",
       stroke: "#BDAFA1",
       strokeWidth: 4,
     });
 
     // Render level-specific content
-    this.renderLevelContent(this.state);
+    this.renderLevelContent();
+  }
+
+  cellCenter(num) {
+    return num * 64 + 32;
   }
 
   // Level-specific content rendering (override this for different level types)
-  renderLevelContent(state) {
-    const { width, height } = this.game;
+  renderLevelContent() {
+    this.game.drawImage(
+      ASSETS.SPRITE.WIZ,
+      this.cellCenter(this.state.player.x) + 8,
+      this.cellCenter(this.state.player.y) + 8,
+      48,
+      48
+    );
+    this.state.gobbos.forEach((gobbo) => this.renderGobbo(gobbo));
+    this.state.walls.forEach((wall) => this.renderWall(wall));
   }
 
-  // Example level-specific rendering methods
-  renderLevel1(state) {
-    // Level 1 specific content
-    // Add your level 1 game objects, obstacles, etc.
+  renderGobbo(gobbo) {
+    console.log(gobbo);
+    this.game.drawImage(
+      ASSETS.SPRITE.GOBBO,
+      this.cellCenter(gobbo.x) + 8,
+      this.cellCenter(gobbo.y) + 8,
+      48,
+      48
+    );
+    this.game.drawImage(
+      ASSETS.SPRITE.HAT[gobbo.hatType],
+      this.cellCenter(gobbo.x) + 8,
+      this.cellCenter(gobbo.y) + 8,
+      48,
+      48
+    );
   }
 
-  renderLevel2(state) {
-    // Level 2 specific content
-    // Add your level 2 game objects, obstacles, etc.
+  renderWall(wall) {
+    this.game.drawImage(
+      ASSETS.SPRITE.CRATE,
+      this.cellCenter(wall.x) + 8,
+      this.cellCenter(wall.y) + 8,
+      48,
+      48
+    );
   }
 
-  renderLevel3(state) {
-    // Level 3 specific content
-    // Add your level 3 game objects, obstacles, etc.
+  getDirVec(direction) {
+    switch (direction) {
+      case "up":
+        return [0, -1];
+        break;
+      case "down":
+        return [0, 1];
+        break;
+      case "left":
+        return [-1, 0];
+        break;
+      case "right":
+        return [1, 0];
+        break;
+    }
+    return [0, 0];
+  }
+
+  verifyMoveBounds(srcX, srcY, moveX, moveY) {
+    const newX = srcX + moveX;
+    const newY = srcY + moveY;
+    if (newX < 0 || newX > 7 || newY < 0 || newY > 7) {
+      return false;
+    }
+    if (this.state.walls.some((wall) => wall.x === newX && wall.y === newY)) {
+      return false;
+    }
+    return true;
+  }
+
+  tryMove(src, moveX, moveY) {
+    if (!this.verifyMoveBounds(src.x, src.y, moveX, moveY)) return false;
+    src.x += moveX;
+    src.y += moveY;
+    return true;
+  }
+
+  bounceDirection(direction) {
+    switch (direction) {
+      case Direction.UP:
+        return Direction.DOWN;
+      case Direction.DOWN:
+        return Direction.UP;
+      case Direction.LEFT:
+        return Direction.RIGHT;
+      case Direction.RIGHT:
+        return Direction.LEFT;
+    }
+    return direction;
   }
 
   // Game Logic
@@ -104,27 +221,17 @@ class LevelManager {
     // Increment turn counter for any action
     this.state.turnCount++;
 
-    // Add your game logic here based on the direction/action
-    switch (direction) {
-      case "up":
-        this.handleMovement(0, -1);
-        break;
-      case "down":
-        this.handleMovement(0, 1);
-        break;
-      case "left":
-        this.handleMovement(-1, 0);
-        break;
-      case "right":
-        this.handleMovement(1, 0);
-        break;
-      case "action":
-        this.handleAction();
-        break;
-    }
+    const dirVec = this.getDirVec(direction);
+    const ok = this.tryMove(this.state.player, dirVec[0], dirVec[1]);
+    if (!ok) return;
 
-    // Check for level completion, game over, etc.
-    this.checkLevelStatus(this.state);
+    // move gobbos
+    this.state.gobbos.forEach((gobbo) => {
+      if (!this.tryMove(gobbo, ...this.getDirVec(gobbo.direction))) {
+        gobbo.direction = this.bounceDirection(gobbo.direction);
+        this.tryMove(gobbo, ...this.getDirVec(gobbo.direction));
+      }
+    });
   }
 
   // Handle player movement
@@ -137,6 +244,19 @@ class LevelManager {
     // - Updating game state
 
     console.log(`Player attempting to move by (${deltaX}, ${deltaY})`);
+
+    if (
+      this.state.player.x + deltaX < 0 ||
+      this.state.player.x + deltaX > 7 ||
+      this.state.player.y + deltaY < 0 ||
+      this.state.player.y + deltaY > 7
+    ) {
+      console.log("Player attempted to move out of bounds");
+      return false;
+    }
+
+    this.state.player.x += deltaX;
+    this.state.player.y += deltaY;
   }
 
   // Handle player actions (like interactions, attacks, etc.)
@@ -179,6 +299,3 @@ class LevelManager {
     // Reset level state here
   }
 }
-
-// Export for use in main game
-window.LevelManager = LevelManager;
