@@ -267,10 +267,13 @@ class LevelManager {
       .fill(null)
       .map(() => new Array(GRID_SIZE).fill(false));
 
-    const areas = this.state.aimArea.map((area) => area.add(this.state.player));
+    const areas = this.state.aimArea
+      .map((area) => area.add(this.state.player))
+      .filter((area) => !this.isOutOfBounds(area.x, area.y));
+
+    if (areas.length == 0) return;
 
     areas.forEach((area) => {
-      if (this.isOutOfBounds(area.x, area.y)) return;
       aimAreaLookup[area.x][area.y] = true;
       this.renderAimArea(area);
       if (this.animating === Animation.EXPLODING) {
@@ -281,7 +284,6 @@ class LevelManager {
     const outline = new Path2D();
 
     areas.forEach((area) => {
-      if (this.isOutOfBounds(area.x, area.y)) return;
       if (!this.isInAimArea(area.x - 1, area.y, aimAreaLookup)) {
         outline.moveTo(this.cellCenter(area.x), this.cellCenter(area.y));
         outline.lineTo(this.cellCenter(area.x), this.cellCenter(area.y + 1));
