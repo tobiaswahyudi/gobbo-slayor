@@ -62,6 +62,7 @@ class LevelManager {
         new Position(4, 3),
       ],
       aimArea: [new Position(2, 0), new Position(2, -1), new Position(3, 0)],
+      remainingBombs: 2,
     };
     this.animating = Animation.NONE;
     this.frame = 0;
@@ -140,108 +141,72 @@ class LevelManager {
     });
 
     this.game.drawText("Level 1", 680, 44, {
-        color: "#000",
-        font: "bold 24px Courier New",
-        align: "center",
+      color: "#000",
+      font: "bold 24px Courier New",
+      align: "center",
     });
 
     this.game.drawRect(600, 78, 160, 0, {
-        fill: "",
-        stroke: "#000",
-        strokeWidth: 2,
+      fill: "",
+      stroke: "#000",
+      strokeWidth: 2,
     });
 
-    this.game.drawImage(
-        ASSETS.SPRITE.GOBBO,
-        608,
-        80,
-        64,
-        64
-    );
+    this.game.drawImage(ASSETS.SPRITE.GOBBO, 608, 80, 64, 64);
 
     this.game.drawText(`x${this.state.gobbos.length}`, 688, 106, {
-        color: "#000",
-        font: "bold 40px Courier New",
-        align: "left",
+      color: "#000",
+      font: "bold 40px Courier New",
+      align: "left",
     });
 
-    this.game.drawImage(
-        ASSETS.SPRITE.GOBBO,
-        608,
-        80,
-        64,
-        64
-    );
+    this.game.drawImage(ASSETS.SPRITE.GOBBO, 608, 80, 64, 64);
 
     this.game.drawText(`x${this.state.gobbos.length}`, 688, 106, {
-        color: "#000",
-        font: "bold 40px Courier New",
-        align: "left",
+      color: "#000",
+      font: "bold 40px Courier New",
+      align: "left",
     });
 
-    this.game.drawImage(
-        ASSETS.UI.MANA,
-        608,
-        152,
-        64,
-        64
-    );
+    this.game.drawImage(ASSETS.UI.MANA, 608, 152, 64, 64);
 
-    this.game.drawText(`x2`, 688, 178, {
-        color: "#000",
-        font: "bold 40px Courier New",
-        align: "left",
+    this.game.drawText(`x${this.state.remainingBombs}`, 688, 178, {
+      color: "#000",
+      font: "bold 40px Courier New",
+      align: "left",
     });
 
     this.game.drawText("Hats", 680, 280, {
-        color: "#000",
-        font: "bold 24px Courier New",
-        align: "center",
+      color: "#000",
+      font: "bold 24px Courier New",
+      align: "center",
     });
 
     this.game.drawRect(600, 314, 160, 0, {
-        fill: "",
-        stroke: "#000",
-        strokeWidth: 2,
+      fill: "",
+      stroke: "#000",
+      strokeWidth: 2,
     });
 
-    this.game.drawImage(
-        ASSETS.UI.HAT[HatType.HORIZONTAL],
-        608,
-        332,
-        64,
-        64
-    );
+    this.game.drawImage(ASSETS.UI.HAT[HatType.HORIZONTAL], 608, 332, 64, 64);
 
-    this.game.drawImage(
-        ASSETS.UI.HAT[HatType.REMOVE],
-        688,
-        332,
-        64,
-        64
-    );
+    this.game.drawImage(ASSETS.UI.HAT[HatType.REMOVE], 688, 332, 64, 64);
 
-    this.game.drawImage(
-        ASSETS.UI.HAT[HatType.VERTICAL],
-        608,
-        412,
-        64,
-        64
-    );
+    this.game.drawImage(ASSETS.UI.HAT[HatType.VERTICAL], 608, 412, 64, 64);
 
     // Render level-specific content
     this.renderLevelContent();
 
     console.log(this.animating, this.frame);
-    if(this.animating === Animation.NONE) {
-        return false;
+    if (this.animating === Animation.NONE) {
+      return false;
     }
-    
+
     this.frame++;
 
     if (this.animating === Animation.EXPLODING && this.frame >= 4) {
-        this.animating = Animation.NONE;
-        this.frame = 0;
+      this.animating = Animation.NONE;
+      this.frame = 0;
     }
 
     return true;
@@ -349,8 +314,8 @@ class LevelManager {
 
     // draw a line from THE MIDDLE OF THE MAGIC STAFF at (28, 12)
 
-    const magicStaffX = (27/32) * SPRITE_SIZE + SPRITE_PADDING;
-    const magicStaffY = (12/32) * SPRITE_SIZE + SPRITE_PADDING;
+    const magicStaffX = (27 / 32) * SPRITE_SIZE + SPRITE_PADDING;
+    const magicStaffY = (12 / 32) * SPRITE_SIZE + SPRITE_PADDING;
 
     outline.moveTo(
       this.cellCenter(this.state.player.x) + magicStaffX,
@@ -358,10 +323,13 @@ class LevelManager {
     );
     outline.lineTo(
       this.cellCenter(leftmostCell.x),
-      this.cellCenter(leftmostCell.y-0.5)
+      this.cellCenter(leftmostCell.y - 0.5)
     );
 
-    this.game.drawPath(outline, { stroke: "#FF6F00", strokeWidth: 4 });
+    this.game.drawPath(outline, {
+      stroke: this.state.remainingBombs > 0 ? "#FF6F00" : "#808080",
+      strokeWidth: 4,
+    });
   }
 
   renderAimArea(area) {
@@ -370,7 +338,7 @@ class LevelManager {
       this.cellCenter(area.y),
       SQUARE_SIZE,
       SQUARE_SIZE,
-      { fill: "#ffa05766" }
+      { fill: this.state.remainingBombs > 0 ? "#ffa05766" : "#ababab66" }
     );
   }
 
@@ -503,6 +471,12 @@ class LevelManager {
     // - Activating switches
 
     console.log("Player performed an action");
+
+    if (this.state.remainingBombs == 0) {
+      return;
+    }
+
+    this.state.remainingBombs--;
 
     this.animating = Animation.EXPLODING;
   }
