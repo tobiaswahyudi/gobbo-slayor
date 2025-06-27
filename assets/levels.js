@@ -14,4 +14,18 @@ const LEVEL_1 = `
 3,0
 `
 
-const CURRENT_LEVEL = LEVEL_1;
+// Level 0, 3 bombs
+const LEVEL_0 = `
+0 3
+..|..|..|..|..|..|..|..
+..|..|..|..|Cr|Hr|Cr|..
+..|Cr|..|..|Cr|Vr|Cr|..
+Cr|Wz|Cr|..|Cr|Vr|Cr|..
+..|Cr|..|..|Cr|Vr|Cr|..
+..|..|..|..|Cr|Xr|Cr|..
+..|..|..|..|..|..|..|..
+..|..|..|..|..|..|..|..
+4,0
+`
+
+const CURRENT_LEVEL = LEVEL_0;
