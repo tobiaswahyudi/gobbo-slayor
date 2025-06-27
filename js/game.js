@@ -53,8 +53,9 @@ class Game {
         this.keysPressed[e.code] = true; // Single press detection
       }
       this.keys[e.code] = true;
-      this.handleKeyPress(e.code);
-      e.preventDefault(); // Prevent default browser behavior
+      if (this.handleKeyPress(e.code)) {
+        e.preventDefault();
+      }
     });
 
     window.addEventListener("keyup", (e) => {
@@ -122,7 +123,9 @@ class Game {
         this.menuManager.handleMainMenuInput(keyCode);
         break;
       case "level":
-        this.levelManager.handleGameInput(keyCode);
+        if (!this.levelManager.handleGameInput(keyCode)) {
+          return false;
+        }
         break;
     }
 
@@ -161,12 +164,12 @@ class Game {
 
   // Image loading and caching
   loadedImages = new Map();
-  
+
   async loadImage(src) {
     if (this.loadedImages.has(src)) {
       return this.loadedImages.get(src);
     }
-    
+
     return new Promise((resolve, reject) => {
       const img = new Image();
       img.onload = () => {
@@ -177,7 +180,7 @@ class Game {
       img.src = src;
     });
   }
-  
+
   // Preload multiple images
   async preloadImages(imagePaths) {
     try {
@@ -196,7 +199,7 @@ class Game {
       console.warn(`Image not loaded: ${src}`);
       return;
     }
-    
+
     if (width && height) {
       this.ctx.drawImage(img, x, y, width, height);
     } else {

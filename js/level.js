@@ -13,25 +13,32 @@ class LevelManager {
       case "ArrowUp":
       case "KeyW":
         this.makeMove("up");
+        return true;
         break;
       case "ArrowDown":
       case "KeyS":
         this.makeMove("down");
+        return true;
         break;
       case "ArrowLeft":
       case "KeyA":
         this.makeMove("left");
+        return true;
         break;
       case "ArrowRight":
       case "KeyD":
         this.makeMove("right");
+        return true;
         break;
       case "Space":
         this.makeMove("action");
+        return true;
         break;
       case "Escape":
         this.game.gameState.level = "selection";
-        break;
+        return true;
+      default:
+        return false;
     }
   }
 
