@@ -316,8 +316,8 @@ class LevelManager {
 
     // draw a line from THE MIDDLE OF THE MAGIC STAFF at (28, 12)
 
-    const magicStaffX = (27 / 32) * SPRITE_SIZE + SPRITE_PADDING;
-    const magicStaffY = (12 / 32) * SPRITE_SIZE + SPRITE_PADDING;
+    const magicStaffX = (27.5 / 32) * SPRITE_SIZE + SPRITE_PADDING;
+    const magicStaffY = (11.5 / 32) * SPRITE_SIZE + SPRITE_PADDING;
 
     outline.moveTo(
       this.cellCenter(this.state.player.x) + magicStaffX,
@@ -329,7 +329,7 @@ class LevelManager {
     );
 
     this.game.drawPath(outline, {
-      stroke: this.state.remainingBombs > 0 ? "#FF6F00" : "#808080",
+      stroke: this.state.remainingBombs > 0 ? "#FF6F00" : "#808080A0",
       strokeWidth: 4,
     });
   }
