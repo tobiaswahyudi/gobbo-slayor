@@ -1,8 +1,8 @@
 const Direction = {
-  UP: "up",
-  DOWN: "down",
-  LEFT: "left",
-  RIGHT: "right",
+  UP: "u",
+  DOWN: "d",
+  LEFT: "l",
+  RIGHT: "r",
 };
 
 const Animation = {
@@ -11,9 +11,9 @@ const Animation = {
 };
 
 const HatType = {
-  VERTICAL: "VERTICAL",
-  HORIZONTAL: "HORIZONTAL",
-  REMOVE: "REMOVE",
+  VERTICAL: "V",
+  HORIZONTAL: "H",
+  REMOVE: "X",
 };
 
 class Position {
@@ -66,29 +66,64 @@ class Gobbo extends Position {
   }
 }
 
+class LevelState {
+  constructor() {
+    this.currentLevel = 1;
+    this.turnCount = 0;
+    this.player = new Position(0, 0);
+    this.gobbos = [];
+    this.walls = [];
+    this.aimArea = [];
+    this.remainingBombs = 2;
+  }
+
+  parse(levelString) {
+    const lines = levelString.split("\n");
+
+    const headline = lines[1].split(" ");
+    this.currentLevel = parseInt(headline[0]);
+    this.turnCount = 0;
+    this.remainingBombs = parseInt(headline[1]);
+
+    for (let y = 0; y < 8; y++) {
+      const line = lines[y + 2];
+      const cells = line.split("|");
+
+      for (let x = 0; x < 8; x++) {
+        const cell = cells[x];
+        switch (cell[0]) {
+          case "C":
+            this.walls.push(new Position(x, y));
+            break;
+          case "H":
+          case "V":
+          case "X":
+            const direction = cell[1];
+            const hatType = cell[0];
+            this.gobbos.push(new Gobbo(x, y, direction, hatType));
+            break;
+          case "W":
+            this.player = new Position(x, y);
+            break;
+        }
+      }
+    }
+    for (let line = 10; line < lines.length; line++) {
+      const coords = lines[line].split(",");
+      if (coords.length < 2) continue;
+      this.aimArea.push(new Position(parseInt(coords[0]), parseInt(coords[1])));
+    }
+
+    console.log(this.aimArea);
+  }
+}
+
 class LevelManager {
   constructor(game) {
     this.game = game;
-    this.state = {
-      currentLevel: 1,
-      turnCount: 0,
-      player: new Position(1, 3),
-      gobbos: [
-        new Gobbo(4, 1, Direction.DOWN, HatType.HORIZONTAL),
-        new Gobbo(5, 3, Direction.RIGHT, HatType.REMOVE),
-        new Gobbo(3, 6, Direction.RIGHT, HatType.VERTICAL),
-      ],
-      walls: [
-        new Position(2, 5),
-        new Position(2, 6),
-        new Position(2, 7),
-        new Position(3, 1),
-        new Position(3, 5),
-        new Position(4, 3),
-      ],
-      aimArea: [new Position(2, 0), new Position(2, -1), new Position(3, 0)],
-      remainingBombs: 2,
-    };
+    this.state = new LevelState();
+    this.state.parse(CURRENT_LEVEL);
+
     this.animating = Animation.NONE;
     this.frame = 0;
 
@@ -101,22 +136,22 @@ class LevelManager {
     switch (keyCode) {
       case "ArrowUp":
       case "KeyW":
-        this.makeMove("up");
+        this.makeMove(Direction.UP);
         return true;
         break;
       case "ArrowDown":
       case "KeyS":
-        this.makeMove("down");
+        this.makeMove(Direction.DOWN);
         return true;
         break;
       case "ArrowLeft":
       case "KeyA":
-        this.makeMove("left");
+        this.makeMove(Direction.LEFT);
         return true;
         break;
       case "ArrowRight":
       case "KeyD":
-        this.makeMove("right");
+        this.makeMove(Direction.RIGHT);
         return true;
         break;
       case "Space":
@@ -315,7 +350,11 @@ class LevelManager {
     }
 
     this.frame++;
-    this.juiceOffset.randomize().normalize().scale(6 - this.frame).scale(1.5);
+    this.juiceOffset
+      .randomize()
+      .normalize()
+      .scale(6 - this.frame)
+      .scale(1.5);
 
     if (this.animating === Animation.EXPLODING && this.frame >= 5) {
       this.juiceOffset.zero();
@@ -334,8 +373,12 @@ class LevelManager {
   renderLevelContent() {
     this.game.drawImage(
       ASSETS.SPRITE.WIZ,
-      this.cellCenter(this.state.player.x) + SPRITE_PADDING + this.juiceOffset.x,
-      this.cellCenter(this.state.player.y) + SPRITE_PADDING + this.juiceOffset.y,
+      this.cellCenter(this.state.player.x) +
+        SPRITE_PADDING +
+        this.juiceOffset.x,
+      this.cellCenter(this.state.player.y) +
+        SPRITE_PADDING +
+        this.juiceOffset.y,
       SPRITE_SIZE,
       SPRITE_SIZE
     );
@@ -403,22 +446,40 @@ class LevelManager {
 
     areas.forEach((area) => {
       if (!this.isInAimArea(area.x - 1, area.y, aimAreaLookup)) {
-        outline.moveTo(this.cellCenter(area.x) + this.juiceOffset.x, this.cellCenter(area.y) + this.juiceOffset.y);
-        outline.lineTo(this.cellCenter(area.x) + this.juiceOffset.x, this.cellCenter(area.y + 1) + this.juiceOffset.y);
+        outline.moveTo(
+          this.cellCenter(area.x) + this.juiceOffset.x,
+          this.cellCenter(area.y) + this.juiceOffset.y
+        );
+        outline.lineTo(
+          this.cellCenter(area.x) + this.juiceOffset.x,
+          this.cellCenter(area.y + 1) + this.juiceOffset.y
+        );
       }
       if (!this.isInAimArea(area.x + 1, area.y, aimAreaLookup)) {
-        outline.moveTo(this.cellCenter(area.x + 1) + this.juiceOffset.x, this.cellCenter(area.y) + this.juiceOffset.y);
+        outline.moveTo(
+          this.cellCenter(area.x + 1) + this.juiceOffset.x,
+          this.cellCenter(area.y) + this.juiceOffset.y
+        );
         outline.lineTo(
           this.cellCenter(area.x + 1) + this.juiceOffset.x,
           this.cellCenter(area.y + 1) + this.juiceOffset.y
         );
       }
       if (!this.isInAimArea(area.x, area.y - 1, aimAreaLookup)) {
-        outline.moveTo(this.cellCenter(area.x) + this.juiceOffset.x, this.cellCenter(area.y) + this.juiceOffset.y);
-        outline.lineTo(this.cellCenter(area.x + 1) + this.juiceOffset.x, this.cellCenter(area.y) + this.juiceOffset.y);
+        outline.moveTo(
+          this.cellCenter(area.x) + this.juiceOffset.x,
+          this.cellCenter(area.y) + this.juiceOffset.y
+        );
+        outline.lineTo(
+          this.cellCenter(area.x + 1) + this.juiceOffset.x,
+          this.cellCenter(area.y) + this.juiceOffset.y
+        );
       }
       if (!this.isInAimArea(area.x, area.y + 1, aimAreaLookup)) {
-        outline.moveTo(this.cellCenter(area.x) + this.juiceOffset.x, this.cellCenter(area.y + 1) + this.juiceOffset.y);
+        outline.moveTo(
+          this.cellCenter(area.x) + this.juiceOffset.x,
+          this.cellCenter(area.y + 1) + this.juiceOffset.y
+        );
         outline.lineTo(
           this.cellCenter(area.x + 1) + this.juiceOffset.x,
           this.cellCenter(area.y + 1) + this.juiceOffset.y
@@ -473,16 +534,16 @@ class LevelManager {
 
   getDirVec(direction) {
     switch (direction) {
-      case "up":
+      case Direction.UP:
         return [0, -1];
         break;
-      case "down":
+      case Direction.DOWN:
         return [0, 1];
         break;
-      case "left":
+      case Direction.LEFT:
         return [-1, 0];
         break;
-      case "right":
+      case Direction.RIGHT:
         return [1, 0];
         break;
     }
@@ -607,7 +668,7 @@ class LevelManager {
       }
     });
 
-    this.makeMove()
+    this.makeMove();
   }
 
   killGobbo(gobbo, aim) {
