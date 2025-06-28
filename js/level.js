@@ -688,6 +688,8 @@ class LevelManager {
         this.tryMove(gobbo, ...this.getDirVec(gobbo.direction));
       }
     });
+
+    this.checkLevelStatus();
   }
 
   // Handle player movement
@@ -783,23 +785,20 @@ class LevelManager {
   }
 
   // Check if level is completed, failed, etc.
-  checkLevelStatus(state) {
-    // Add your win/lose conditions here
-    // For example:
-    // if (playerReachedGoal) {
-    //     this.completeLevel();
-    // }
-    // if (playerDied) {
-    //     this.restartLevel();
-    // }
+  checkLevelStatus() {
+    if (this.state.gobbos.length === 0) {
+      this.completeLevel();
+    } else if (this.state.remainingBombs === 0) {
+      this.restartLevel();
+    }
   }
 
   // Level completion handler
   completeLevel() {
     console.log(`Level ${this.state.currentLevel} completed!`);
 
-    // Could advance to next level or return to selection
-    // this.game.gameState.level = 'selection';
+    this.currentLevel++;
+    this.history = new LevelHistory(LEVELS[this.currentLevel]);
   }
 
   // Level restart handler
