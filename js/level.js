@@ -136,7 +136,6 @@ class LevelState {
       this.aimArea.push(new Position(parseInt(coords[0]), parseInt(coords[1])));
     }
 
-    console.log(this.aimArea);
   }
 }
 
@@ -216,7 +215,6 @@ class LevelManager {
         this.game.gameState.level = "selection";
         return true;
       case "KeyZ":
-        console.log("pop");
         this.history.pop();
         this.history.pop();
         return true;
@@ -786,14 +784,6 @@ class LevelManager {
 
   // Game Logic
   makeMove(direction) {
-    // This is where you'll implement your actual game logic
-    console.log(
-      `Making move: ${direction} on turn ${this.state.turnCount} in level ${this.state.currentLevel}`
-    );
-
-    // Increment turn counter for any action
-    this.state.turnCount++;
-
     const dirVec = this.getDirVec(direction);
     const ok = this.tryMove(this.state.player, dirVec[0], dirVec[1]);
     if (!ok) return;
@@ -811,22 +801,12 @@ class LevelManager {
 
   // Handle player movement
   handleMovement(deltaX, deltaY) {
-    // Add your movement logic here
-    // This could involve:
-    // - Updating player position
-    // - Checking collisions
-    // - Moving enemies
-    // - Updating game state
-
-    console.log(`Player attempting to move by (${deltaX}, ${deltaY})`);
-
     if (
       this.state.player.x + deltaX < 0 ||
       this.state.player.x + deltaX > 7 ||
       this.state.player.y + deltaY < 0 ||
       this.state.player.y + deltaY > 7
     ) {
-      console.log("Player attempted to move out of bounds");
       return false;
     }
 
@@ -838,17 +818,7 @@ class LevelManager {
     return this.state.aimArea.find((a) => a.x === x && a.y === y);
   }
 
-  // Handle player actions (like interactions, attacks, etc.)
   handleAction() {
-    // Add your action logic here
-    // This could involve:
-    // - Interacting with objects
-    // - Attacking enemies
-    // - Using items
-    // - Activating switches
-
-    console.log("Player performed an action");
-
     if (this.state.remainingBombs == 0) {
       return;
     }
@@ -912,7 +882,6 @@ class LevelManager {
 
   // Level completion handler
   completeLevel() {
-    console.log(`Level ${this.state.currentLevel} completed!`);
 
     this.animating = Animation.TRANSITION_OUT;
     this.frame = 0;
@@ -928,7 +897,6 @@ class LevelManager {
   // Level restart handler
   restartLevel() {
     this.state.turnCount = 0;
-    console.log(`Level ${this.state.currentLevel} restarted`);
 
     // Reset level state here
   }
