@@ -423,8 +423,9 @@ class LevelManager {
     );
 
     this.game.ctx.globalAlpha = 1;
-    
+
     if (this.currentLevel === 0) {
+      this.game.ctx.globalAlpha = 0.7;
       this.game.drawImage(
         ASSETS.UI.TITLE,
         86 + 0.5 * this.juiceOffset.x,
@@ -432,8 +433,16 @@ class LevelManager {
         384,
         128
       );
+      this.game.ctx.globalAlpha = 0.5;
+      this.game.drawImage(
+        ASSETS.UI.CREDITS,
+        352 + 0.5 * this.juiceOffset.x,
+        224 + 0.5 * this.juiceOffset.y,
+        128,
+        64
+      );
+      this.game.ctx.globalAlpha = 1;
     }
-
 
     // Render level-specific content
     this.renderLevelContent();
