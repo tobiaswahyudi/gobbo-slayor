@@ -154,12 +154,10 @@ class LevelHistory {
   }
 
   pop() {
-    console.log(this.history);
     if (this.current > 0) {
       this.history.pop();
       this.current--;
     }
-    console.log(this.history);
   }
 }
 
@@ -399,25 +397,25 @@ class LevelManager {
       64
     );
 
-    this.game.ctx.globalAlpha = 0.2;
+    this.game.ctx.globalAlpha = 0.4;
     this.game.drawImage(
       ASSETS.TUTORIAL.ATTACK,
       32 + 2 * SQUARE_SIZE + 0.5 * this.juiceOffset.x,
-      32 + 4 * SQUARE_SIZE + 0.5 * this.juiceOffset.y,
+      32 + 6 * SQUARE_SIZE + 0.5 * this.juiceOffset.y,
       SQUARE_SIZE,
       SQUARE_SIZE
     );
     this.game.drawImage(
       ASSETS.TUTORIAL.MOVE,
       32 + 1 * SQUARE_SIZE + 0.5 * this.juiceOffset.x,
-      32 + 4 * SQUARE_SIZE + 0.5 * this.juiceOffset.y,
+      32 + 6 * SQUARE_SIZE + 0.5 * this.juiceOffset.y,
       SQUARE_SIZE,
       SQUARE_SIZE
     );
     this.game.drawImage(
       ASSETS.TUTORIAL.UNDO,
       32 + 3 * SQUARE_SIZE + 0.5 * this.juiceOffset.x,
-      32 + 4 * SQUARE_SIZE + 0.5 * this.juiceOffset.y,
+      32 + 6 * SQUARE_SIZE + 0.5 * this.juiceOffset.y,
       SQUARE_SIZE,
       SQUARE_SIZE
     );
@@ -425,10 +423,10 @@ class LevelManager {
     this.game.ctx.globalAlpha = 1;
 
     if (this.currentLevel === 0) {
-      this.game.ctx.globalAlpha = 0.7;
+      this.game.ctx.globalAlpha = 0.75;
       this.game.drawImage(
         ASSETS.UI.TITLE,
-        86 + 0.5 * this.juiceOffset.x,
+        54 + 0.5 * this.juiceOffset.x,
         96 + 0.5 * this.juiceOffset.y,
         384,
         128
@@ -436,10 +434,22 @@ class LevelManager {
       this.game.ctx.globalAlpha = 0.5;
       this.game.drawImage(
         ASSETS.UI.CREDITS,
-        352 + 0.5 * this.juiceOffset.x,
+        320 + 0.5 * this.juiceOffset.x,
         224 + 0.5 * this.juiceOffset.y,
         128,
         64
+      );
+      this.game.ctx.globalAlpha = 1;
+    }
+
+    if (this.currentLevel === 0 || this.currentLevel === 2) {
+      this.game.ctx.globalAlpha = 0.5;
+      this.game.drawImage(
+        ASSETS.TUTORIAL.TOOLTIP,
+        480 + 0.5 * this.juiceOffset.x,
+        96 + 0.5 * this.juiceOffset.y,
+        64,
+        128
       );
       this.game.ctx.globalAlpha = 1;
     }

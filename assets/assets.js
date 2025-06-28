@@ -24,6 +24,7 @@ const ASSETS = {
     MOVE: "assets/ui/inst-move.png",
     ATTACK: "assets/ui/inst-attack.png",
     UNDO: "assets/ui/inst-undo.png",
+    TOOLTIP: "assets/ui/inst-tooltip.png",
   },
 };
 
