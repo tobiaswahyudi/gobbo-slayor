@@ -22,6 +22,10 @@ class Position {
     this.y = y;
   }
 
+  clone() {
+    return new Position(this.x, this.y);
+  }
+
   add(other) {
     return new Position(this.x + other.x, this.y + other.y);
   }
@@ -64,17 +68,31 @@ class Gobbo extends Position {
     this.direction = direction;
     this.hatType = hatType;
   }
+
+  clone() {
+    return new Gobbo(this.x, this.y, this.direction, this.hatType);
+  }
 }
 
 class LevelState {
   constructor() {
-    this.currentLevel = 1;
     this.turnCount = 0;
     this.player = new Position(0, 0);
     this.gobbos = [];
     this.walls = [];
     this.aimArea = [];
     this.remainingBombs = 2;
+  }
+
+  clone() {
+    const state = new LevelState();
+    state.turnCount = this.turnCount;
+    state.player = this.player.clone();
+    state.gobbos = this.gobbos.map((gobbo) => gobbo.clone());
+    state.walls = this.walls.map((wall) => wall.clone());
+    state.aimArea = this.aimArea.map((aim) => aim.clone());
+    state.remainingBombs = this.remainingBombs;
+    return state;
   }
 
   parse(levelString) {
@@ -118,11 +136,38 @@ class LevelState {
   }
 }
 
+class LevelHistory {
+  constructor(levelString) {
+    this.current = 0;
+    const firstState = new LevelState();
+    firstState.parse(levelString);
+    this.history = [firstState];
+  }
+
+  getCurrent() {
+    return this.history[this.current];
+  }
+
+  copyTop() {
+    this.history.push(this.getCurrent().clone());
+    this.current++;
+  }
+
+  pop() {
+    console.log(this.history);
+    if (this.current > 0) {
+      this.history.pop();
+      this.current--;
+    }
+    console.log(this.history);
+  }
+}
+
 class LevelManager {
   constructor(game) {
     this.game = game;
-    this.state = new LevelState();
-    this.state.parse(CURRENT_LEVEL);
+    this.currentLevel = 0;
+    this.history = new LevelHistory(LEVELS[this.currentLevel]);
 
     this.animating = Animation.NONE;
     this.frame = 0;
@@ -130,9 +175,16 @@ class LevelManager {
     this.juiceOffset = new Position(0, 0);
   }
 
+  get state() {
+    return this.history.getCurrent();
+  }
+
   // Level Input Handling
   handleGameInput(keyCode) {
     if (this.animating) return;
+
+    this.history.copyTop();
+
     switch (keyCode) {
       case "ArrowUp":
       case "KeyW":
@@ -161,7 +213,13 @@ class LevelManager {
       case "Escape":
         this.game.gameState.level = "selection";
         return true;
+      case "KeyZ":
+        console.log("pop");
+        this.history.pop();
+        this.history.pop();
+        return true;
       default:
+        this.history.pop();
         return false;
     }
   }
@@ -215,7 +273,7 @@ class LevelManager {
     );
 
     this.game.drawText(
-      `Level ${this.state.currentLevel}`,
+      `Level ${this.currentLevel}`,
       680 + this.juiceOffset.x,
       44 + this.juiceOffset.y,
       {
