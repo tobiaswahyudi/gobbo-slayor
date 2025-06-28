@@ -8,7 +8,11 @@ const Direction = {
 const Animation = {
   NONE: false,
   EXPLODING: "EXPLODING",
+  TRANSITION_OUT: "TRANSITION_OUT",
+  TRANSITION_IN: "TRANSITION_IN",
 };
+
+const TRANSITION_FRAMES = 8;
 
 const HatType = {
   VERTICAL: "V",
@@ -461,17 +465,99 @@ class LevelManager {
       return false;
     }
 
-    this.frame++;
-    this.juiceOffset
-      .randomize()
-      .normalize()
-      .scale(6 - this.frame)
-      .scale(1.5);
-
-    if (this.animating === Animation.EXPLODING && this.frame >= 5) {
+    if (
+      this.animating === Animation.TRANSITION_OUT ||
+      this.animating === Animation.TRANSITION_IN
+    ) {
       this.juiceOffset.zero();
-      this.animating = Animation.NONE;
-      this.frame = 0;
+      this.frame++;
+
+      const radFrame =
+        this.animating === Animation.TRANSITION_OUT
+          ? TRANSITION_FRAMES - this.frame
+          : this.frame;
+
+      const maxRadius = (SQUARE_SIZE * GRID_SIZE * Math.sqrt(2) + 1) / 2;
+      const radius = maxRadius * (radFrame / TRANSITION_FRAMES);
+
+      const vignette = new Path2D();
+
+      vignette.arc(
+        32 + (SQUARE_SIZE * GRID_SIZE) / 2,
+        32 + (SQUARE_SIZE * GRID_SIZE) / 2,
+        radius,
+        0,
+        Math.PI * 2
+      );
+
+      vignette.lineTo(
+        32 + SQUARE_SIZE * GRID_SIZE,
+        32 + (SQUARE_SIZE * GRID_SIZE) / 2
+      );
+
+      vignette.lineTo(
+        32 + SQUARE_SIZE * GRID_SIZE,
+        32 + SQUARE_SIZE * GRID_SIZE
+      );
+
+      vignette.lineTo(32, 32 + SQUARE_SIZE * GRID_SIZE);
+
+      vignette.lineTo(32, 32);
+
+      vignette.lineTo(32 + SQUARE_SIZE * GRID_SIZE, 32);
+
+      vignette.lineTo(
+        32 + SQUARE_SIZE * GRID_SIZE,
+        32 + (SQUARE_SIZE * GRID_SIZE) / 2
+      );
+
+      vignette.closePath();
+
+      this.game.ctx.save();
+
+      this.game.ctx.clip(vignette, "evenodd");
+
+      this.game.drawRect(
+        32,
+        32,
+        SQUARE_SIZE * GRID_SIZE,
+        SQUARE_SIZE * GRID_SIZE,
+        {
+          fill: "#BDAFA1",
+        }
+      );
+
+      this.game.ctx.restore();
+
+      if (
+        this.animating === Animation.TRANSITION_OUT &&
+        this.frame >= TRANSITION_FRAMES
+      ) {
+        this.loadNextLevel();
+      }
+
+      if (
+        this.animating === Animation.TRANSITION_IN &&
+        this.frame >= TRANSITION_FRAMES
+      ) {
+        this.animating = Animation.NONE;
+        this.frame = 0;
+      }
+    }
+
+    if (this.animating === Animation.EXPLODING) {
+      this.frame++;
+      this.juiceOffset
+        .randomize()
+        .normalize()
+        .scale(6 - this.frame)
+        .scale(1.5);
+
+      if (this.frame >= 5) {
+        this.juiceOffset.zero();
+        this.animating = Animation.NONE;
+        this.frame = 0;
+      }
     }
 
     return true;
@@ -828,8 +914,15 @@ class LevelManager {
   completeLevel() {
     console.log(`Level ${this.state.currentLevel} completed!`);
 
+    this.animating = Animation.TRANSITION_OUT;
+    this.frame = 0;
+  }
+
+  loadNextLevel() {
     this.currentLevel++;
     this.history = new LevelHistory(LEVELS[this.currentLevel]);
+    this.animating = Animation.TRANSITION_IN;
+    this.frame = 0;
   }
 
   // Level restart handler
