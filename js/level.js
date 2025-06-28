@@ -341,6 +341,30 @@ class LevelManager {
       64
     );
 
+    this.game.ctx.globalAlpha = 0.2;
+    this.game.drawImage(
+      ASSETS.TUTORIAL.ATTACK,
+      32 + 2 * SQUARE_SIZE + 0.5 * this.juiceOffset.x,
+      32 + 4 * SQUARE_SIZE + 0.5 * this.juiceOffset.y,
+      SQUARE_SIZE,
+      SQUARE_SIZE
+    );
+    this.game.drawImage(
+      ASSETS.TUTORIAL.MOVE,
+      32 + 1 * SQUARE_SIZE + 0.5 * this.juiceOffset.x,
+      32 + 4 * SQUARE_SIZE + 0.5 * this.juiceOffset.y,
+      SQUARE_SIZE,
+      SQUARE_SIZE
+    );
+    this.game.drawImage(
+      ASSETS.TUTORIAL.UNDO,
+      32 + 3 * SQUARE_SIZE + 0.5 * this.juiceOffset.x,
+      32 + 4 * SQUARE_SIZE + 0.5 * this.juiceOffset.y,
+      SQUARE_SIZE,
+      SQUARE_SIZE
+    );
+    this.game.ctx.globalAlpha = 1;
+
     // Render level-specific content
     this.renderLevelContent();
 
