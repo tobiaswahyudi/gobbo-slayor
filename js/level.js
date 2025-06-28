@@ -368,7 +368,6 @@ class LevelManager {
     // Render level-specific content
     this.renderLevelContent();
 
-    console.log(this.animating, this.frame);
     if (this.animating === Animation.NONE) {
       return false;
     }
@@ -412,7 +411,6 @@ class LevelManager {
   }
 
   renderGobbo(gobbo) {
-    console.log(gobbo);
     this.game.drawImage(
       ASSETS.SPRITE.GOBBO,
       this.cellCenter(gobbo.x) + SPRITE_PADDING + this.juiceOffset.x,
