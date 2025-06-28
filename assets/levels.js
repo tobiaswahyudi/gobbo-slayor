@@ -41,7 +41,7 @@ const LEVEL_ONE_HALF = `
 `;
 
 // Level 1, 2 bombs
-const LEVEL_1 = `
+const LEVEL_1_EVIL = `
 1 2
 ..|..|..|..|..|..|..|..
 ..|..|..|Cr|Vd|..|..|..
@@ -57,10 +57,10 @@ const LEVEL_1 = `
 `;
 
 // Level 1, 2 bombs
-const LEVEL_1_EVIL = `
+const LEVEL_1 = `
 1 2
 ..|..|..|..|..|..|..|..
-..|..|..|Cr|Hd|..|..|..
+..|..|..|Cr|Xd|..|..|..
 ..|..|..|..|..|..|..|..
 ..|Wz|..|..|Cr|Xr|..|..
 ..|..|..|..|..|..|..|..
