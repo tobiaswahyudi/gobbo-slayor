@@ -1,7 +1,10 @@
 const ASSETS = {
   SPRITE: {
     CRATE: "assets/sprite/crate.png",
-    GOBBO: "assets/sprite/gobblin.png",
+    GOBBOS: {
+      MOVE: "assets/sprite/gobblin.png",
+      SLEEP: "assets/sprite/slepgobbo.png",
+    },
     HAT: {
         V: "assets/sprite/hat_v.png",
         H: "assets/sprite/hat_h.png",

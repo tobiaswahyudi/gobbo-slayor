@@ -3,6 +3,7 @@ const Direction = {
   DOWN: "d",
   LEFT: "l",
   RIGHT: "r",
+  SLEEP: "s",
 };
 
 const Animation = {
@@ -295,7 +296,7 @@ class LevelManager {
     );
 
     this.game.drawImage(
-      ASSETS.SPRITE.GOBBO,
+      ASSETS.SPRITE.GOBBOS.MOVE,
       608 + this.juiceOffset.x,
       80 + this.juiceOffset.y,
       64,
@@ -587,13 +588,23 @@ class LevelManager {
   }
 
   renderGobbo(gobbo) {
-    this.game.drawImage(
-      ASSETS.SPRITE.GOBBO,
-      this.cellCenter(gobbo.x) + SPRITE_PADDING + this.juiceOffset.x,
-      this.cellCenter(gobbo.y) + SPRITE_PADDING + this.juiceOffset.y,
-      SPRITE_SIZE,
-      SPRITE_SIZE
-    );
+    if (gobbo.direction === Direction.SLEEP) {
+      this.game.drawImage(
+        ASSETS.SPRITE.GOBBOS.SLEEP,
+        this.cellCenter(gobbo.x) + SPRITE_PADDING + this.juiceOffset.x,
+        this.cellCenter(gobbo.y) + SPRITE_PADDING + this.juiceOffset.y,
+        SPRITE_SIZE,
+        SPRITE_SIZE
+      );
+    } else {
+      this.game.drawImage(
+        ASSETS.SPRITE.GOBBOS.MOVE,
+        this.cellCenter(gobbo.x) + SPRITE_PADDING + this.juiceOffset.x,
+        this.cellCenter(gobbo.y) + SPRITE_PADDING + this.juiceOffset.y,
+        SPRITE_SIZE,
+        SPRITE_SIZE
+      );
+    }
     this.game.drawImage(
       ASSETS.SPRITE.HAT[gobbo.hatType],
       this.cellCenter(gobbo.x) + SPRITE_PADDING + this.juiceOffset.x,
