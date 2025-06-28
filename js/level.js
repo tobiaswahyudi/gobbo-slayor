@@ -135,7 +135,6 @@ class LevelState {
       if (coords.length < 2) continue;
       this.aimArea.push(new Position(parseInt(coords[0]), parseInt(coords[1])));
     }
-
   }
 }
 
@@ -400,27 +399,31 @@ class LevelManager {
     );
 
     this.game.ctx.globalAlpha = 0.4;
-    this.game.drawImage(
-      ASSETS.TUTORIAL.ATTACK,
-      32 + 2 * SQUARE_SIZE + 0.5 * this.juiceOffset.x,
-      32 + 6 * SQUARE_SIZE + 0.5 * this.juiceOffset.y,
-      SQUARE_SIZE,
-      SQUARE_SIZE
-    );
-    this.game.drawImage(
-      ASSETS.TUTORIAL.MOVE,
-      32 + 1 * SQUARE_SIZE + 0.5 * this.juiceOffset.x,
-      32 + 6 * SQUARE_SIZE + 0.5 * this.juiceOffset.y,
-      SQUARE_SIZE,
-      SQUARE_SIZE
-    );
-    this.game.drawImage(
-      ASSETS.TUTORIAL.UNDO,
-      32 + 3 * SQUARE_SIZE + 0.5 * this.juiceOffset.x,
-      32 + 6 * SQUARE_SIZE + 0.5 * this.juiceOffset.y,
-      SQUARE_SIZE,
-      SQUARE_SIZE
-    );
+    if (this.currentLevel === 0) {
+      this.game.drawImage(
+        ASSETS.TUTORIAL.ATTACK,
+        32 + 2 * SQUARE_SIZE + 0.5 * this.juiceOffset.x,
+        32 + 6 * SQUARE_SIZE + 0.5 * this.juiceOffset.y,
+        SQUARE_SIZE,
+        SQUARE_SIZE
+      );
+      this.game.drawImage(
+        ASSETS.TUTORIAL.MOVE,
+        32 + 1 * SQUARE_SIZE + 0.5 * this.juiceOffset.x,
+        32 + 6 * SQUARE_SIZE + 0.5 * this.juiceOffset.y,
+        SQUARE_SIZE,
+        SQUARE_SIZE
+      );
+    }
+    if (this.currentLevel <= 1) {
+      this.game.drawImage(
+        ASSETS.TUTORIAL.UNDO,
+        32 + 3 * SQUARE_SIZE + 0.5 * this.juiceOffset.x,
+        32 + 6 * SQUARE_SIZE + 0.5 * this.juiceOffset.y,
+        SQUARE_SIZE,
+        SQUARE_SIZE
+      );
+    }
 
     this.game.ctx.globalAlpha = 1;
 
@@ -882,7 +885,6 @@ class LevelManager {
 
   // Level completion handler
   completeLevel() {
-
     this.animating = Animation.TRANSITION_OUT;
     this.frame = 0;
   }
