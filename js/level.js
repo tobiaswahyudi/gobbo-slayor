@@ -421,7 +421,19 @@ class LevelManager {
       SQUARE_SIZE,
       SQUARE_SIZE
     );
+
     this.game.ctx.globalAlpha = 1;
+    
+    if (this.currentLevel === 0) {
+      this.game.drawImage(
+        ASSETS.UI.TITLE,
+        86 + 0.5 * this.juiceOffset.x,
+        96 + 0.5 * this.juiceOffset.y,
+        384,
+        128
+      );
+    }
+
 
     // Render level-specific content
     this.renderLevelContent();

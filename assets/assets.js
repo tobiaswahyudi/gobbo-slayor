@@ -17,6 +17,7 @@ const ASSETS = {
         X: "assets/ui/hat_no.png",
     },
     MANA: "assets/ui/mana.png",
+    TITLE: "assets/ui/title.png",
   },
   TUTORIAL: {
     MOVE: "assets/ui/inst-move.png",
