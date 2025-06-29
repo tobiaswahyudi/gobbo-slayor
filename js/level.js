@@ -28,6 +28,9 @@ class LevelManager {
     this.animating = Animation.NONE;
     this.frame = 0;
 
+    this.canHandleInput = true;
+    this.restartHeldSince = null;
+
     this.juiceOffset = new Position(0, 0);
   }
 
@@ -38,6 +41,14 @@ class LevelManager {
   // Level Input Handling
   handleGameInput(keyCode) {
     if (this.animating) return;
+    
+    if (keyCode == "KeyUp") {
+      this.restartHeldSince = null;
+      this.canHandleInput = true;
+      return true;
+    }
+
+    if (!this.canHandleInput) return;
 
     this.history.copyTop();
 
@@ -68,6 +79,10 @@ class LevelManager {
         break;
       case "Escape":
         this.game.gameState.level = "selection";
+        return true;
+      case "KeyR":
+        this.history.pop();
+        this.handleRestartHold();
         return true;
       case "KeyZ":
         this.history.pop();
@@ -152,25 +167,6 @@ class LevelManager {
 
     this.game.drawImage(
       ASSETS.SPRITE.GOBBOS.MOVE,
-      608 + this.juiceOffset.x,
-      80 + this.juiceOffset.y,
-      64,
-      64
-    );
-
-    this.game.drawText(
-      `x${this.state.gobbos.length}`,
-      688 + this.juiceOffset.x,
-      106 + this.juiceOffset.y,
-      {
-        color: "#000",
-        font: "bold 40px Courier New",
-        align: "left",
-      }
-    );
-
-    this.game.drawImage(
-      ASSETS.SPRITE.GOBBO,
       608 + this.juiceOffset.x,
       80 + this.juiceOffset.y,
       64,
@@ -317,6 +313,68 @@ class LevelManager {
 
     // Render level-specific content
     this.renderLevelContent();
+
+    if (this.restartHeldSince) {
+      const millisDelta = new Date().getTime() - this.restartHeldSince;
+
+      const MAX_OPACITY = 0.75;
+      const VIGNETTE_OPAQUE_TIME = 600;
+      const TOOLTIP_OPAQUE_TIME = 600;
+
+      const COUNT = 3;
+      const MILLIS_PER_COUNT = 500;
+
+      const vignetteOpacity = Math.min(
+        MAX_OPACITY * (millisDelta / VIGNETTE_OPAQUE_TIME),
+        MAX_OPACITY
+      );
+
+      const tooltipOpacity = Math.min(
+        MAX_OPACITY * (millisDelta / TOOLTIP_OPAQUE_TIME),
+        MAX_OPACITY
+      );
+
+      this.game.ctx.globalAlpha = vignetteOpacity;
+
+      this.game.drawRect(
+        32 + this.juiceOffset.x * 0.5,
+        32 + this.juiceOffset.y * 0.5,
+        512,
+        512,
+        {
+          fill: "#CFC6BD",
+        }
+      );
+
+      this.game.ctx.globalAlpha = tooltipOpacity;
+
+      this.game.drawImage(
+        ASSETS.UI.RESTART,
+        32 + SQUARE_SIZE * 2,
+        32 + SQUARE_SIZE * 3,
+        256,
+        128
+      );
+
+      const count = COUNT - Math.floor(millisDelta / MILLIS_PER_COUNT);
+
+      this.game.drawText(
+        count,
+        32 + SQUARE_SIZE * 4.3,
+        32 + SQUARE_SIZE * 4.1,
+        {
+          font: "bold 40px Courier New",
+          color: "#000",
+        }
+      );
+
+      this.game.ctx.globalAlpha = 1;
+
+      if (count == 0) {
+        this.restartLevel();
+        return true;
+      }
+    }
 
     if (this.animating === Animation.NONE) {
       return false;
@@ -744,8 +802,6 @@ class LevelManager {
   checkLevelStatus() {
     if (this.state.gobbos.length === 0) {
       this.completeLevel();
-    } else if (this.state.remainingBombs === 0) {
-      this.restartLevel();
     }
   }
 
@@ -762,10 +818,18 @@ class LevelManager {
     this.frame = 0;
   }
 
+  handleRestartHold() {
+    if (!this.restartHeldSince) {
+      this.restartHeldSince = new Date().getTime();
+    }
+  }
+
   // Level restart handler
   restartLevel() {
     this.state.turnCount = 0;
-
-    // Reset level state here
+    this.canHandleInput = false;
+    this.restartHeldSince = null;
+    this.history.reset();
+    this.history;
   }
 }
