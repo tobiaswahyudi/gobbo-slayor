@@ -346,6 +346,14 @@ class LevelManager {
           this.juiceOffset
         )
       );
+      this.animations.push(
+        new JuiceAnimation(
+          this.juiceOffset,
+          EXPLOSION_FRAMES,
+          1.5,
+          (frame) => 6 - frame
+        )
+      );
     });
 
     const gobbosToKill = [];

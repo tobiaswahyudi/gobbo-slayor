@@ -7,17 +7,6 @@ const EXPLOSION_RENDER = (x, y, size, juice) => (game, frame) => {
     width: 32,
     height: 32,
   });
-
-  juice
-    .zero()
-    .randomize()
-    .normalize()
-    .scale(6 - frame)
-    .scale(1.5);
-
-  if(frame == EXPLOSION_FRAMES) {
-    juice.zero();
-  }
 };
 
 class ExplosionAnimation extends GSAnimation {
