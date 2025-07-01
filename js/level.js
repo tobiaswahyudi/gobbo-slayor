@@ -1,12 +1,3 @@
-const Animation = {
-  NONE: false,
-  EXPLODING: "EXPLODING",
-  TRANSITION_OUT: "TRANSITION_OUT",
-  TRANSITION_IN: "TRANSITION_IN",
-};
-
-const TRANSITION_FRAMES = 8;
-
 const HatType = {
   VERTICAL: "V",
   HORIZONTAL: "H",
@@ -25,8 +16,7 @@ class LevelManager {
     this.currentLevel = 0;
     this.history = new LevelHistory(LEVELS[this.currentLevel]);
 
-    this.animating = Animation.NONE;
-    this.frame = 0;
+    this.animations = [];
 
     this.canHandleInput = true;
     this.restartHeldSince = null;
@@ -40,8 +30,8 @@ class LevelManager {
 
   // Level Input Handling
   handleGameInput(keyCode) {
-    if (this.animating) return;
-    
+    // if (this.animating) return;
+
     if (keyCode == "KeyUp") {
       this.restartHeldSince = null;
       this.canHandleInput = true;
@@ -98,6 +88,8 @@ class LevelManager {
   // returns true if another re-render is needed
   renderGame() {
     const { width, height } = this.game;
+    // check now, because we need a re-render if an animation finishes this frame.
+    const NEEDS_RE_RENDER = this.animations.length > 0;
 
     // Game area background
     this.game.drawRect(0, 0, width, height, { fill: "#C5BAB5" });
@@ -314,6 +306,9 @@ class LevelManager {
     // Render level-specific content
     this.renderLevelContent();
 
+    this.animations.forEach((anim) => anim.tick(this.game));
+    this.animations = this.animations.filter((anim) => !anim.finished);
+
     if (this.restartHeldSince) {
       const millisDelta = new Date().getTime() - this.restartHeldSince;
 
@@ -376,106 +371,7 @@ class LevelManager {
       }
     }
 
-    if (this.animating === Animation.NONE) {
-      return false;
-    }
-
-    if (
-      this.animating === Animation.TRANSITION_OUT ||
-      this.animating === Animation.TRANSITION_IN
-    ) {
-      this.juiceOffset.zero();
-      this.frame++;
-
-      const radFrame =
-        this.animating === Animation.TRANSITION_OUT
-          ? TRANSITION_FRAMES - this.frame
-          : this.frame;
-
-      const maxRadius = (SQUARE_SIZE * GRID_SIZE * Math.sqrt(2) + 1) / 2;
-      const radius = maxRadius * (radFrame / TRANSITION_FRAMES);
-
-      const vignette = new Path2D();
-
-      vignette.arc(
-        32 + (SQUARE_SIZE * GRID_SIZE) / 2,
-        32 + (SQUARE_SIZE * GRID_SIZE) / 2,
-        radius,
-        0,
-        Math.PI * 2
-      );
-
-      vignette.lineTo(
-        32 + SQUARE_SIZE * GRID_SIZE,
-        32 + (SQUARE_SIZE * GRID_SIZE) / 2
-      );
-
-      vignette.lineTo(
-        32 + SQUARE_SIZE * GRID_SIZE,
-        32 + SQUARE_SIZE * GRID_SIZE
-      );
-
-      vignette.lineTo(32, 32 + SQUARE_SIZE * GRID_SIZE);
-
-      vignette.lineTo(32, 32);
-
-      vignette.lineTo(32 + SQUARE_SIZE * GRID_SIZE, 32);
-
-      vignette.lineTo(
-        32 + SQUARE_SIZE * GRID_SIZE,
-        32 + (SQUARE_SIZE * GRID_SIZE) / 2
-      );
-
-      vignette.closePath();
-
-      this.game.ctx.save();
-
-      this.game.ctx.clip(vignette, "evenodd");
-
-      this.game.drawRect(
-        32,
-        32,
-        SQUARE_SIZE * GRID_SIZE,
-        SQUARE_SIZE * GRID_SIZE,
-        {
-          fill: "#BDAFA1",
-        }
-      );
-
-      this.game.ctx.restore();
-
-      if (
-        this.animating === Animation.TRANSITION_OUT &&
-        this.frame >= TRANSITION_FRAMES
-      ) {
-        this.loadNextLevel();
-      }
-
-      if (
-        this.animating === Animation.TRANSITION_IN &&
-        this.frame >= TRANSITION_FRAMES
-      ) {
-        this.animating = Animation.NONE;
-        this.frame = 0;
-      }
-    }
-
-    if (this.animating === Animation.EXPLODING) {
-      this.frame++;
-      this.juiceOffset
-        .randomize()
-        .normalize()
-        .scale(6 - this.frame)
-        .scale(1.5);
-
-      if (this.frame >= 5) {
-        this.juiceOffset.zero();
-        this.animating = Animation.NONE;
-        this.frame = 0;
-      }
-    }
-
-    return true;
+    return NEEDS_RE_RENDER;
   }
 
   cellCenter(num) {
@@ -555,13 +451,6 @@ class LevelManager {
     areas.forEach((area) => {
       aimAreaLookup[area.x][area.y] = true;
       this.renderAimArea(area);
-      if (this.animating === Animation.EXPLODING) {
-        this.renderExplosion(
-          this.cellCenter(area.x) + this.juiceOffset.x,
-          this.cellCenter(area.y) + this.juiceOffset.y,
-          this.frame
-        );
-      }
     });
 
     const outline = new Path2D();
@@ -643,15 +532,6 @@ class LevelManager {
       SQUARE_SIZE,
       { fill: this.state.remainingBombs > 0 ? "#ffa05766" : "#ababab66" }
     );
-  }
-
-  renderExplosion(x, y, frame, size = SQUARE_SIZE) {
-    this.game.drawImage(ASSETS.SPRITE.EXPLOSION, x, y, size, size, {
-      x: 32 * (frame % 4),
-      y: 0,
-      width: 32,
-      height: 32,
-    });
   }
 
   getDirVec(direction) {
@@ -752,7 +632,20 @@ class LevelManager {
 
     this.state.remainingBombs--;
 
-    this.animating = Animation.EXPLODING;
+    const areas = this.state.aimArea
+      .map((area) => area.add(this.state.player))
+      .filter((area) => !this.isOutOfBounds(area.x, area.y));
+
+    areas.forEach((area) => {
+      this.animations.push(
+        new ExplosionAnimation(
+          this.cellCenter(area.x) + this.juiceOffset.x,
+          this.cellCenter(area.y) + this.juiceOffset.y,
+          SQUARE_SIZE,
+          this.juiceOffset
+        )
+      );
+    });
 
     const gobbosToKill = [];
 
@@ -807,15 +700,17 @@ class LevelManager {
 
   // Level completion handler
   completeLevel() {
-    this.animating = Animation.TRANSITION_OUT;
-    this.frame = 0;
+    this.animations.push(
+      new TransitionAnimation(TRANSITION_DIRECTION.OUT, () => {
+        this.loadNextLevel();
+      })
+    );
   }
 
   loadNextLevel() {
     this.currentLevel++;
     this.history = new LevelHistory(LEVELS[this.currentLevel]);
-    this.animating = Animation.TRANSITION_IN;
-    this.frame = 0;
+    this.animations.push(new TransitionAnimation(TRANSITION_DIRECTION.IN));
   }
 
   handleRestartHold() {
