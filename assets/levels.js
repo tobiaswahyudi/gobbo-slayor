@@ -1,6 +1,7 @@
 // Level 0, 3 bombs
 const LEVEL_MINUS_1 = `
-0 2
+Welcome!
+2
 ..|..|..|..|..|..|..|..
 ..|..|..|..|..|..|..|..
 ..|..|..|..|..|..|..|..
@@ -14,13 +15,14 @@ const LEVEL_MINUS_1 = `
 
 // Level 0, 3 bombs
 const LEVEL_0 = `
-0 3
+Magic Hats, what do they do?
+3
 ..|..|..|..|..|..|..|..
 ..|..|..|..|Cr|Cr|Cr|..
-..|..|..|..|Cr|Hd|Xd|..
-..|Wz|..|Cr|Vr|Cr|Cr|..
-..|..|..|..|Cr|Vr|Cr|..
-..|..|..|..|Cr|Xr|Cr|..
+..|..|..|..|Cr|Hs|Xs|..
+..|Wz|..|Cr|Vs|Cr|Cr|..
+..|..|..|..|Cr|Vs|Cr|..
+..|..|..|..|Cr|Xs|Cr|..
 ..|..|..|..|..|..|..|..
 ..|..|..|..|..|..|..|..
 4,0
@@ -28,7 +30,8 @@ const LEVEL_0 = `
 
 // Level 1.5, 2 bombs
 const LEVEL_ONE_HALF = `
-0 2
+Evasive Action
+2
 ..|..|..|..|..|..|..|..
 ..|..|..|..|..|..|..|..
 ..|..|..|..|..|..|..|..
@@ -42,7 +45,8 @@ const LEVEL_ONE_HALF = `
 
 // Level 1, 2 bombs
 const LEVEL_1_EVIL = `
-1 2
+Gobbos on a Morning Jog (Evil)
+2
 ..|..|..|..|..|..|..|..
 ..|..|..|Cr|Vd|..|..|..
 ..|..|..|..|..|..|..|..
@@ -58,7 +62,8 @@ const LEVEL_1_EVIL = `
 
 // Level 1, 2 bombs
 const LEVEL_1 = `
-1 2
+Gobbos on a Morning Jog
+2
 ..|..|..|..|..|..|..|..
 ..|..|..|Cr|Xd|..|..|..
 ..|..|..|..|..|..|..|..
@@ -74,7 +79,8 @@ const LEVEL_1 = `
 
 // Level 1, 2 bombs
 const LEVEL_2 = `
-2 3
+Don't overthink it
+3
 ..|..|..|..|..|..|..|..
 ..|..|..|Cr|..|..|..|..
 ..|..|..|..|Xd|..|..|..
@@ -91,7 +97,8 @@ const LEVEL_2 = `
 `;
 
 const LEVEL_FIN = `
-66 0
+SECRET GOBBO DANCE PARTY
+0
 Xr|..|Xr|..|Xr|..|Xr|..
 ..|Vr|..|Vr|..|Vr|..|Vr
 Hr|..|Hr|..|Hr|..|Hr|..
@@ -107,6 +114,7 @@ Xr|..|Xr|..|Xr|..|Xr|..
 `;
 
 const LEVEL_BAD = `
+This level is bad.
 300 20
 ..|..|..|..|..|..|..|..
 ..|..|..|..|..|..|..|..

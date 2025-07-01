@@ -6,6 +6,7 @@ class LevelState {
       this.walls = [];
       this.aimArea = [];
       this.remainingBombs = 2;
+      this.title = "";
     }
   
     clone() {
@@ -22,13 +23,11 @@ class LevelState {
     parse(levelString) {
       const lines = levelString.split("\n");
   
-      const headline = lines[1].split(" ");
-      this.currentLevel = parseInt(headline[0]);
-      this.turnCount = 0;
-      this.remainingBombs = parseInt(headline[1]);
+      this.title = lines[1];
+      this.remainingBombs = parseInt(lines[2]);
   
       for (let y = 0; y < 8; y++) {
-        const line = lines[y + 2];
+        const line = lines[y + 3];
         const cells = line.split("|");
   
         for (let x = 0; x < 8; x++) {
@@ -50,7 +49,7 @@ class LevelState {
           }
         }
       }
-      for (let line = 10; line < lines.length; line++) {
+      for (let line = 11; line < lines.length; line++) {
         const coords = lines[line].split(",");
         if (coords.length < 2) continue;
         this.aimArea.push(new Position(parseInt(coords[0]), parseInt(coords[1])));

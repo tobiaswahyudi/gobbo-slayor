@@ -171,7 +171,7 @@ class LevelManager {
     );
 
     this.game.drawText(
-      `x${this.state.gobbos.length}`,
+      `×${this.state.gobbos.length}`,
       688 + this.juiceOffset.x,
       106 + this.juiceOffset.y,
       {
@@ -190,7 +190,7 @@ class LevelManager {
     );
 
     this.game.drawText(
-      `x${this.state.remainingBombs}`,
+      `×${this.state.remainingBombs}`,
       688 + this.juiceOffset.x,
       178 + this.juiceOffset.y,
       {
@@ -704,6 +704,90 @@ class LevelManager {
     }
   }
 
+  renderPopupContent(game) {
+    game.drawText(
+      `Level ${this.currentLevel}`,
+      BOARD_PADDING + H_BOARD_SIZE,
+      BOARD_PADDING + H_BOARD_SIZE - 64,
+      {
+        color: "#000",
+        font: "bold 24px Courier New",
+        align: "center",
+      }
+    );
+
+    game.drawText(
+      this.state.title,
+      BOARD_PADDING + H_BOARD_SIZE,
+      BOARD_PADDING + H_BOARD_SIZE - 32,
+      {
+        color: "#000",
+        font: "16px Courier New",
+        align: "center",
+      }
+    );
+
+    game.drawText(
+      "Gobbos",
+      BOARD_PADDING + H_BOARD_SIZE - 64,
+      BOARD_PADDING + H_BOARD_SIZE + 12,
+      {
+        color: "#000",
+        font: "12px Courier New",
+        align: "center",
+      }
+    );
+
+    this.game.drawImage(
+      ASSETS.SPRITE.GOBBOS.MOVE,
+      BOARD_PADDING + H_BOARD_SIZE - 64 - 36,
+      BOARD_PADDING + H_BOARD_SIZE + 20,
+      32,
+      32
+    );
+
+    this.game.drawText(
+      `×${this.state.gobbos.length}`,
+      BOARD_PADDING + H_BOARD_SIZE - 64,
+      BOARD_PADDING + H_BOARD_SIZE + 28,
+      {
+        color: "#000",
+        font: "24px Courier New",
+        align: "left",
+      }
+    );
+
+    game.drawText(
+      "Spells",
+      BOARD_PADDING + H_BOARD_SIZE + 64,
+      BOARD_PADDING + H_BOARD_SIZE + 12,
+      {
+        color: "#000",
+        font: "12px Courier New",
+        align: "center",
+      }
+    );
+
+    this.game.drawImage(
+      ASSETS.UI.MANA,
+      BOARD_PADDING + H_BOARD_SIZE + 64 - 32,
+      BOARD_PADDING + H_BOARD_SIZE + 28,
+      24,
+      24
+    );
+
+    this.game.drawText(
+      `×${this.state.remainingBombs}`,
+      BOARD_PADDING + H_BOARD_SIZE + 64,
+      BOARD_PADDING + H_BOARD_SIZE + 28,
+      {
+        color: "#000",
+        font: "24px Courier New",
+        align: "left",
+      }
+    );
+  }
+
   // Level completion handler
   completeLevel() {
     this.animations.push(
@@ -713,18 +797,7 @@ class LevelManager {
           new PopupAnimation(
             320,
             128,
-            (game) => {
-              this.game.drawText(
-                `Level ${this.currentLevel}`,
-                BOARD_PADDING + H_BOARD_SIZE,
-                BOARD_PADDING + H_BOARD_SIZE - 50,
-                {
-                  color: "#000",
-                  font: "bold 24px Courier New",
-                  align: "center",
-                }
-              );
-            },
+            this.renderPopupContent.bind(this),
             () => {
               this.animations.push(
                 new TransitionAnimation(TRANSITION_DIRECTION.IN)
