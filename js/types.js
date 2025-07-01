@@ -34,6 +34,10 @@ class Position {
     return new Position(this.x + other.x, this.y + other.y);
   }
 
+  negate() {
+    return this.clone().scale(-1);
+  }
+
   zero() {
     this.x = 0;
     this.y = 0;
