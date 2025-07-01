@@ -1,8 +1,9 @@
-const EXPLOSION_FRAMES = 4;
+const EXPLOSION_FRAMES = 6;
 
 const EXPLOSION_RENDER = (x, y, size, juice) => (game, frame) => {
+  const picFrame = Math.floor(frame / 2)
   game.drawImage(ASSETS.SPRITE.EXPLOSION, x, y, size, size, {
-    x: 32 * (frame % 4),
+    x: 32 * (picFrame % 4),
     y: 0,
     width: 32,
     height: 32,

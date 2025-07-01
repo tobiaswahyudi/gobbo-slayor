@@ -350,7 +350,7 @@ class LevelManager {
         new JuiceAnimation(
           this.juiceOffset,
           EXPLOSION_FRAMES,
-          1.5,
+          2,
           (frame) => 6 - frame
         )
       );
