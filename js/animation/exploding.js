@@ -8,14 +8,14 @@ const EXPLOSION_RENDER = (x, y, size, juice) => (game, frame) => {
     height: 32,
   });
 
-//   juice
-//     .zero()
-//     .randomize()
-//     .normalize()
-//     .scale(6 - this.frame)
-//     .scale(1.5);
+  juice
+    .zero()
+    .randomize()
+    .normalize()
+    .scale(6 - frame)
+    .scale(1.5);
 
-  if(this.frame == EXPLOSION_FRAMES) {
+  if(frame == EXPLOSION_FRAMES) {
     juice.zero();
   }
 };
