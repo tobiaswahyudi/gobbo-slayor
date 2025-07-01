@@ -1,5 +1,8 @@
 const POPUP_FRAMES_PER_PX = 0.012;
-const POPUP_CORNER_SIZE = 32;
+const POPUP_CORNER_SLICE_SIZE = 24;
+const POPUP_NINESLICE_SIZE = 128;
+
+const POPUP_CORNER_SIZE = POPUP_CORNER_SLICE_SIZE;
 
 const RENDER_POPUP = (width, height, renderContents) => {
   const VERTICAL_FRAMES = height * POPUP_FRAMES_PER_PX;
@@ -29,7 +32,7 @@ const RENDER_POPUP = (width, height, renderContents) => {
 
     // console.log({ left, top });
 
-    game.drawRect(32, 32, BOARD_SIZE, BOARD_SIZE, {
+    game.drawRect(BOARD_PADDING, BOARD_PADDING, BOARD_SIZE, BOARD_SIZE, {
       fill: "#BDAFA1",
     });
 
@@ -43,8 +46,8 @@ const RENDER_POPUP = (width, height, renderContents) => {
       {
         x: 0,
         y: 0,
-        width: 32,
-        height: 32,
+        width: POPUP_CORNER_SLICE_SIZE,
+        height: POPUP_CORNER_SLICE_SIZE,
       }
     );
     game.drawImage(
@@ -54,10 +57,10 @@ const RENDER_POPUP = (width, height, renderContents) => {
       POPUP_CORNER_SIZE,
       POPUP_CORNER_SIZE,
       {
-        x: 96,
+        x: POPUP_NINESLICE_SIZE - POPUP_CORNER_SLICE_SIZE,
         y: 0,
-        width: 32,
-        height: 32,
+        width: POPUP_CORNER_SLICE_SIZE,
+        height: POPUP_CORNER_SLICE_SIZE,
       }
     );
     game.drawImage(
@@ -68,9 +71,9 @@ const RENDER_POPUP = (width, height, renderContents) => {
       POPUP_CORNER_SIZE,
       {
         x: 0,
-        y: 96,
-        width: 32,
-        height: 32,
+        y: POPUP_NINESLICE_SIZE - POPUP_CORNER_SLICE_SIZE,
+        width: POPUP_CORNER_SLICE_SIZE,
+        height: POPUP_CORNER_SLICE_SIZE,
       }
     );
     game.drawImage(
@@ -80,10 +83,10 @@ const RENDER_POPUP = (width, height, renderContents) => {
       POPUP_CORNER_SIZE,
       POPUP_CORNER_SIZE,
       {
-        x: 96,
-        y: 96,
-        width: 32,
-        height: 32,
+        x: POPUP_NINESLICE_SIZE - POPUP_CORNER_SLICE_SIZE,
+        y: POPUP_NINESLICE_SIZE - POPUP_CORNER_SLICE_SIZE,
+        width: POPUP_CORNER_SLICE_SIZE,
+        height: POPUP_CORNER_SLICE_SIZE,
       }
     );
     // draw center
@@ -94,10 +97,10 @@ const RENDER_POPUP = (width, height, renderContents) => {
       innerWidth,
       innerHeight,
       {
-        x: 32,
-        y: 32,
-        width: 64,
-        height: 64,
+        x: POPUP_CORNER_SLICE_SIZE,
+        y: POPUP_CORNER_SLICE_SIZE,
+        width: POPUP_NINESLICE_SIZE - POPUP_CORNER_SLICE_SIZE * 2,
+        height: POPUP_NINESLICE_SIZE - POPUP_CORNER_SLICE_SIZE * 2,
       }
     );
     // draw edges
@@ -108,10 +111,10 @@ const RENDER_POPUP = (width, height, renderContents) => {
       innerWidth,
       POPUP_CORNER_SIZE,
       {
-        x: 32,
+        x: POPUP_CORNER_SLICE_SIZE,
         y: 0,
-        width: 64,
-        height: 32,
+        width: POPUP_NINESLICE_SIZE - POPUP_CORNER_SLICE_SIZE * 2,
+        height: POPUP_CORNER_SLICE_SIZE,
       }
     );
     game.drawImage(
@@ -121,10 +124,10 @@ const RENDER_POPUP = (width, height, renderContents) => {
       innerWidth,
       POPUP_CORNER_SIZE,
       {
-        x: 32,
-        y: 96,
-        width: 64,
-        height: 32,
+        x: POPUP_CORNER_SLICE_SIZE,
+        y: POPUP_NINESLICE_SIZE - POPUP_CORNER_SLICE_SIZE,
+        width: POPUP_NINESLICE_SIZE - POPUP_CORNER_SLICE_SIZE * 2,
+        height: POPUP_CORNER_SLICE_SIZE,
       }
     );
     game.drawImage(
@@ -135,9 +138,9 @@ const RENDER_POPUP = (width, height, renderContents) => {
       innerHeight,
       {
         x: 0,
-        y: 32,
-        width: 32,
-        height: 64,
+        y: POPUP_CORNER_SLICE_SIZE,
+        width: POPUP_CORNER_SLICE_SIZE,
+        height: POPUP_NINESLICE_SIZE - POPUP_CORNER_SLICE_SIZE * 2,
       }
     );
     game.drawImage(
@@ -147,10 +150,10 @@ const RENDER_POPUP = (width, height, renderContents) => {
       POPUP_CORNER_SIZE,
       innerHeight,
       {
-        x: 96,
-        y: 32,
-        width: 32,
-        height: 64,
+        x: POPUP_NINESLICE_SIZE - POPUP_CORNER_SLICE_SIZE,
+        y: POPUP_CORNER_SLICE_SIZE,
+        width: POPUP_CORNER_SLICE_SIZE,
+        height: POPUP_NINESLICE_SIZE - POPUP_CORNER_SLICE_SIZE * 2,
       }
     );
 
