@@ -6,13 +6,13 @@ const TRANSITION_DIRECTION = {
 };
 
 const TRANSITION_RENDER = (direction) => (game, frame) => {
-  const radFrame =
+  const progress =
     direction === TRANSITION_DIRECTION.OUT
-      ? TRANSITION_FRAMES - frame
-      : frame;
+      ? 1 - frame / TRANSITION_FRAMES
+      : frame / TRANSITION_FRAMES;
 
   const maxRadius = H_BOARD_SIZE * Math.sqrt(2);
-  const radius = maxRadius * (radFrame / TRANSITION_FRAMES);
+  const radius = maxRadius * progress;
 
   const vignette = new Path2D();
 
@@ -27,6 +27,7 @@ const TRANSITION_RENDER = (direction) => (game, frame) => {
 
   game.ctx.save();
   game.ctx.clip(vignette, "evenodd");
+  game.ctx.globalAlpha = 1 - 0.6 * progress;
   game.drawRect(32, 32, BOARD_SIZE, BOARD_SIZE, {
     fill: "#BDAFA1",
   });
@@ -39,7 +40,7 @@ class TransitionAnimation extends GSAnimation {
       frames: TRANSITION_FRAMES,
       render: TRANSITION_RENDER(direction),
       callback: callback,
-      blocksInput: true
+      blocksInput: true,
     });
     this.direction = direction;
     this.name = direction + this.name;
