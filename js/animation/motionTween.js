@@ -1,8 +1,10 @@
 const MOTION_TWEEN_RENDER = (tgt, from, to, frames) => {
-  const delta = to.negate().add(from);
   return (game, frame) => {
+    const delta = from.negate().add(to);
     const progress = frame / frames;
-    tgt = from.clone().add(delta.scale(progress));
+    const res = from.clone().add(delta.scale(progress));
+    tgt.x = res.x;
+    tgt.y = res.y;
   };
 };
 

@@ -49,3 +49,5 @@ class GSAnimation {
     }
   }
 }
+
+const isGsAnimation = (obj) => obj instanceof GSAnimation;

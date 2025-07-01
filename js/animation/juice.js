@@ -1,4 +1,4 @@
-const CONSTANT_ONE = () => 1;
+const CONSTANT_ONE = (frame) => 1;
 
 const JUICE_RENDER =
   (juice, frames, magnitude, fn = CONSTANT_ONE) =>

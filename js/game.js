@@ -1,6 +1,7 @@
 const MS_PER_FRAME = 30;
 
 let requestedRedraw = null;
+const COMIC_DEBUG = false;
 
 class Game {
   constructor() {
@@ -9,6 +10,7 @@ class Game {
 
     this.progress = new GameProgress();
     this.progress.loadProgress();
+    if (COMIC_DEBUG) SETUP_CANVAS_TEST_LISTENERS(this.canvas);
 
     // Game state
     this.isRunning = false;
@@ -18,7 +20,7 @@ class Game {
     this.height = 576; // Inner: 512 = 32 * 16
 
     // Scene management
-    this.scene = "world"; // world|zone|level
+    this.scene = "comic"; // comic|menus|level
 
     // Input handling
     this.keys = {};
@@ -35,6 +37,7 @@ class Game {
     this.zoneMap = null;
     this.currentLevel = null;
     this.levelManager = null;
+    this.comic = new IntroComic(this);
 
     this.assetsPreloaded = false;
     this.loadedImages = new Map();
@@ -179,6 +182,15 @@ class Game {
         break;
       case "zone":
         anotherRender = this.zoneMap.render();
+      case "comic":
+        const comicStillGoing = COMIC_DEBUG
+          ? COMIC_TEST(this)
+          : this.comic.render();
+
+        if (!comicStillGoing) {
+          this.scene = "level";
+        }
+        anotherRender = true;
         break;
       case "level":
         anotherRender = this.levelManager.renderGame(this.ctx);

@@ -1,3 +1,5 @@
+const THUNK = () => {};
+
 const Direction = {
   UP: "u",
   DOWN: "d",
