@@ -62,6 +62,32 @@ const ASSETS = {
     },
     LOCK: "assets/worldmap/lock.png",
   },
+  COMIC: {
+    OUTLINE: "assets/comic/outlines.png",
+    P1: {
+      MASK: "assets/comic/mask-p1.png",
+      ONE: {
+        DOOR: "assets/comic/p1/p1-1-door.png",
+        WINDOW: "assets/comic/p1/p1-1-window.png",
+      },
+      TWO: {
+        DOOR: "assets/comic/p1/p1-2-door.png",
+        DOOR_FRAGMENTS: "assets/comic/p1/p1-2-doorfragments.png",
+        WINDOW: "assets/comic/p1/p1-2-window.png",
+        EXCLAMATION: "assets/comic/p1/p1-2-excl.png",
+        GOBBO: {
+          LEFT: "assets/comic/p1/p1-2-lgobbo.png",
+          RIGHT: "assets/comic/p1/p1-2-rgobbo.png",
+          WINDOW: "assets/comic/p1/p1-2-windowgobbo.png",
+        },
+        WIZ: "assets/comic/p1/p1-2-wiz.png",
+      },
+      GROUND: "assets/comic/p1/p1-ground.png",
+      SIGN: "assets/comic/p1/p1-sign.png",
+      SKY: "assets/comic/p1/p1-sky.png",
+      TOWER: "assets/comic/p1/p1-tower.png",
+    }
+  },
 };
 
 const _flatten = (obj) => {
