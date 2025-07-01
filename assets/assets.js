@@ -22,7 +22,8 @@ const ASSETS = {
     MANA: "assets/ui/mana.png",
     TITLE: "assets/ui/title.png",
     CREDITS: "assets/ui/creds.png",
-    RESTART: "assets/ui/restart.png"
+    RESTART: "assets/ui/restart.png",
+    POPUP: "assets/ui/nineslice-2.png",
   },
   TUTORIAL: {
     MOVE: "assets/ui/inst-move.png",

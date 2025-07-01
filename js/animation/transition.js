@@ -1,6 +1,4 @@
 const TRANSITION_FRAMES = 8;
-const BOARD_SIZE = 512;
-const H_BOARD_SIZE = BOARD_SIZE / 2;
 
 const TRANSITION_DIRECTION = {
   IN: "in",

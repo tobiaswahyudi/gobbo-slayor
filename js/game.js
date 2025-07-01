@@ -9,8 +9,8 @@ class Game {
     this.isRunning = false;
 
     // Canvas dimensions
-    this.width = 816;
-    this.height = 576;
+    this.width = 832; // Inner: 768 = 32 * 24
+    this.height = 576; // Inner: 512 = 32 * 16
 
     // Scene management
     this.scene = "level"; // menus|level

@@ -30,8 +30,6 @@ class LevelManager {
 
   // Level Input Handling
   handleGameInput(keyCode) {
-    // if (this.animating) return;
-
     if (keyCode == "KeyUp") {
       this.restartHeldSince = null;
       this.canHandleInput = true;
@@ -39,6 +37,13 @@ class LevelManager {
     }
 
     if (!this.canHandleInput) return;
+
+    const inputBlockedByAnimation = this.animations.some((a) => a.blocksInput);
+    this.animations.forEach((a) => {
+      if (a.needsInput) a.handleInput(keyCode);
+    });
+
+    if (inputBlockedByAnimation) return true;
 
     this.history.copyTop();
 
@@ -307,6 +312,7 @@ class LevelManager {
     this.renderLevelContent();
 
     this.animations.forEach((anim) => anim.tick(this.game));
+    // console.log("anims pre-filter", this.animations);
     this.animations = this.animations.filter((anim) => !anim.finished);
 
     if (this.restartHeldSince) {
@@ -703,6 +709,29 @@ class LevelManager {
     this.animations.push(
       new TransitionAnimation(TRANSITION_DIRECTION.OUT, () => {
         this.loadNextLevel();
+        this.animations.push(
+          new PopupAnimation(
+            320,
+            128,
+            (game) => {
+              this.game.drawText(
+                `Level ${this.currentLevel}`,
+                BOARD_PADDING + H_BOARD_SIZE,
+                BOARD_PADDING + H_BOARD_SIZE - 50,
+                {
+                  color: "#000",
+                  font: "bold 24px Courier New",
+                  align: "center",
+                }
+              );
+            },
+            () => {
+              this.animations.push(
+                new TransitionAnimation(TRANSITION_DIRECTION.IN)
+              );
+            }
+          )
+        );
       })
     );
   }
@@ -710,7 +739,6 @@ class LevelManager {
   loadNextLevel() {
     this.currentLevel++;
     this.history = new LevelHistory(LEVELS[this.currentLevel]);
-    this.animations.push(new TransitionAnimation(TRANSITION_DIRECTION.IN));
   }
 
   handleRestartHold() {

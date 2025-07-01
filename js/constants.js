@@ -1,0 +1,3 @@
+const BOARD_PADDING = 32;
+const BOARD_SIZE = 512;
+const H_BOARD_SIZE = BOARD_SIZE / 2;

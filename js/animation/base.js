@@ -11,7 +11,9 @@ class GSAnimation {
     blocksInput = false,
     frames = 0,
     render = (game, frame) => {},
-    handleInput = () => {},
+    handleInput = () => {
+      return true;
+    },
     callback = () => {},
   }) {
     this.frame = 0;
@@ -32,21 +34,20 @@ class GSAnimation {
     }
     if (this.frame < this.frames) {
       this.frame++;
-      this.render(game, this.frame);
     }
+    this.render(game, this.frame);
     if (this.frame >= this.frames && !this.needsInput) {
-      this.callback();
+      if (this.callback) this.callback();
       this.finished = true;
     }
   }
 
   handleInput(input) {
-    if (
-      this.needsInput &&
-      this.frame >= this.frames &&
-      this.inputHandler(input)
-    ) {
-      this.needsInput = false;
+    if (this.needsInput && this.frame >= this.frames) {
+      console.log("receiving input", input);
+      const res = this.inputHandler(input);
+      console.log("input received for ", this.name, res);
+      this.needsInput = res;
     }
   }
 }
