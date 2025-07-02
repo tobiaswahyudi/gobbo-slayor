@@ -1,56 +1,8 @@
-const Direction = {
-  UP: "u",
-  DOWN: "d",
-  LEFT: "l",
-  RIGHT: "r",
-};
-
-const Animation = {
-  NONE: false,
-  EXPLODING: "EXPLODING",
-};
-
 const HatType = {
   VERTICAL: "V",
   HORIZONTAL: "H",
   REMOVE: "X",
 };
-
-class Position {
-  constructor(x = 0, y = 0) {
-    this.x = x;
-    this.y = y;
-  }
-
-  add(other) {
-    return new Position(this.x + other.x, this.y + other.y);
-  }
-
-  zero() {
-    this.x = 0;
-    this.y = 0;
-    return this;
-  }
-
-  randomize() {
-    this.x = Math.random() * 2 - 1;
-    this.y = Math.random() * 2 - 1;
-    return this;
-  }
-
-  normalize() {
-    const len = Math.hypot(this.x, this.y);
-    this.x /= len;
-    this.y /= len;
-    return this;
-  }
-
-  scale(factor) {
-    this.x *= factor;
-    this.y *= factor;
-    return this;
-  }
-}
 
 const SQUARE_SIZE = 64;
 const HALF_SQUARE_SIZE = SQUARE_SIZE / 2;
@@ -58,81 +10,43 @@ const GRID_SIZE = 8;
 const SPRITE_SIZE = 56;
 const SPRITE_PADDING = (SQUARE_SIZE - SPRITE_SIZE) / 2;
 
-class Gobbo extends Position {
-  constructor(x, y, direction, hatType) {
-    super(x, y);
-    this.direction = direction;
-    this.hatType = hatType;
-  }
-}
-
-class LevelState {
-  constructor() {
-    this.currentLevel = 1;
-    this.turnCount = 0;
-    this.player = new Position(0, 0);
-    this.gobbos = [];
-    this.walls = [];
-    this.aimArea = [];
-    this.remainingBombs = 2;
-  }
-
-  parse(levelString) {
-    const lines = levelString.split("\n");
-
-    const headline = lines[1].split(" ");
-    this.currentLevel = parseInt(headline[0]);
-    this.turnCount = 0;
-    this.remainingBombs = parseInt(headline[1]);
-
-    for (let y = 0; y < 8; y++) {
-      const line = lines[y + 2];
-      const cells = line.split("|");
-
-      for (let x = 0; x < 8; x++) {
-        const cell = cells[x];
-        switch (cell[0]) {
-          case "C":
-            this.walls.push(new Position(x, y));
-            break;
-          case "H":
-          case "V":
-          case "X":
-            const direction = cell[1];
-            const hatType = cell[0];
-            this.gobbos.push(new Gobbo(x, y, direction, hatType));
-            break;
-          case "W":
-            this.player = new Position(x, y);
-            break;
-        }
-      }
-    }
-    for (let line = 10; line < lines.length; line++) {
-      const coords = lines[line].split(",");
-      if (coords.length < 2) continue;
-      this.aimArea.push(new Position(parseInt(coords[0]), parseInt(coords[1])));
-    }
-
-    console.log(this.aimArea);
-  }
-}
-
 class LevelManager {
   constructor(game) {
     this.game = game;
-    this.state = new LevelState();
-    this.state.parse(CURRENT_LEVEL);
+    this.currentLevel = 0;
+    this.history = new LevelHistory(LEVELS[this.currentLevel]);
 
-    this.animating = Animation.NONE;
-    this.frame = 0;
+    this.animations = [];
+
+    this.canHandleInput = true;
+    this.restartHeldSince = null;
 
     this.juiceOffset = new Position(0, 0);
   }
 
+  get state() {
+    return this.history.getCurrent();
+  }
+
   // Level Input Handling
   handleGameInput(keyCode) {
-    if (this.animating) return;
+    if (keyCode == "KeyUp") {
+      this.restartHeldSince = null;
+      this.canHandleInput = true;
+      return true;
+    }
+
+    if (!this.canHandleInput) return;
+
+    const inputBlockedByAnimation = this.animations.some((a) => a.blocksInput);
+    this.animations.forEach((a) => {
+      if (a.needsInput) a.handleInput(keyCode);
+    });
+
+    if (inputBlockedByAnimation) return true;
+
+    this.history.copyTop();
+
     switch (keyCode) {
       case "ArrowUp":
       case "KeyW":
@@ -161,7 +75,16 @@ class LevelManager {
       case "Escape":
         this.game.gameState.level = "selection";
         return true;
+      case "KeyR":
+        this.history.pop();
+        this.handleRestartHold();
+        return true;
+      case "KeyZ":
+        this.history.pop();
+        this.history.pop();
+        return true;
       default:
+        this.history.pop();
         return false;
     }
   }
@@ -170,6 +93,8 @@ class LevelManager {
   // returns true if another re-render is needed
   renderGame() {
     const { width, height } = this.game;
+    // check now, because we need a re-render if an animation finishes this frame.
+    const NEEDS_RE_RENDER = this.animations.length > 0;
 
     // Game area background
     this.game.drawRect(0, 0, width, height, { fill: "#C5BAB5" });
@@ -215,7 +140,7 @@ class LevelManager {
     );
 
     this.game.drawText(
-      `Level ${this.state.currentLevel}`,
+      `Level ${this.currentLevel}`,
       680 + this.juiceOffset.x,
       44 + this.juiceOffset.y,
       {
@@ -238,7 +163,7 @@ class LevelManager {
     );
 
     this.game.drawImage(
-      ASSETS.SPRITE.GOBBO,
+      ASSETS.SPRITE.GOBBOS.MOVE,
       608 + this.juiceOffset.x,
       80 + this.juiceOffset.y,
       64,
@@ -246,26 +171,7 @@ class LevelManager {
     );
 
     this.game.drawText(
-      `x${this.state.gobbos.length}`,
-      688 + this.juiceOffset.x,
-      106 + this.juiceOffset.y,
-      {
-        color: "#000",
-        font: "bold 40px Courier New",
-        align: "left",
-      }
-    );
-
-    this.game.drawImage(
-      ASSETS.SPRITE.GOBBO,
-      608 + this.juiceOffset.x,
-      80 + this.juiceOffset.y,
-      64,
-      64
-    );
-
-    this.game.drawText(
-      `x${this.state.gobbos.length}`,
+      `×${this.state.gobbos.length}`,
       688 + this.juiceOffset.x,
       106 + this.juiceOffset.y,
       {
@@ -284,7 +190,7 @@ class LevelManager {
     );
 
     this.game.drawText(
-      `x${this.state.remainingBombs}`,
+      `×${this.state.remainingBombs}`,
       688 + this.juiceOffset.x,
       178 + this.juiceOffset.y,
       {
@@ -341,28 +247,137 @@ class LevelManager {
       64
     );
 
+    this.game.ctx.globalAlpha = 0.4;
+    if (this.currentLevel === 0) {
+      this.game.drawImage(
+        ASSETS.TUTORIAL.ATTACK,
+        32 + 2 * SQUARE_SIZE + 0.5 * this.juiceOffset.x,
+        32 + 6 * SQUARE_SIZE + 0.5 * this.juiceOffset.y,
+        SQUARE_SIZE,
+        SQUARE_SIZE
+      );
+      this.game.drawImage(
+        ASSETS.TUTORIAL.MOVE,
+        32 + 1 * SQUARE_SIZE + 0.5 * this.juiceOffset.x,
+        32 + 6 * SQUARE_SIZE + 0.5 * this.juiceOffset.y,
+        SQUARE_SIZE,
+        SQUARE_SIZE
+      );
+    }
+    if (this.currentLevel <= 1) {
+      this.game.drawImage(
+        ASSETS.TUTORIAL.UNDO,
+        32 + 3 * SQUARE_SIZE + 0.5 * this.juiceOffset.x,
+        32 + 6 * SQUARE_SIZE + 0.5 * this.juiceOffset.y,
+        SQUARE_SIZE,
+        SQUARE_SIZE
+      );
+    }
+
+    this.game.ctx.globalAlpha = 1;
+
+    if (this.currentLevel === 0) {
+      this.game.ctx.globalAlpha = 0.75;
+      this.game.drawImage(
+        ASSETS.UI.TITLE,
+        54 + 0.5 * this.juiceOffset.x,
+        96 + 0.5 * this.juiceOffset.y,
+        384,
+        128
+      );
+      this.game.ctx.globalAlpha = 0.5;
+      this.game.drawImage(
+        ASSETS.UI.CREDITS,
+        320 + 0.5 * this.juiceOffset.x,
+        224 + 0.5 * this.juiceOffset.y,
+        128,
+        64
+      );
+      this.game.ctx.globalAlpha = 1;
+    }
+
+    if (this.currentLevel === 0 || this.currentLevel === 2) {
+      this.game.ctx.globalAlpha = 0.5;
+      this.game.drawImage(
+        ASSETS.TUTORIAL.TOOLTIP,
+        480 + 0.5 * this.juiceOffset.x,
+        96 + 0.5 * this.juiceOffset.y,
+        64,
+        128
+      );
+      this.game.ctx.globalAlpha = 1;
+    }
+
     // Render level-specific content
     this.renderLevelContent();
 
-    console.log(this.animating, this.frame);
-    if (this.animating === Animation.NONE) {
-      return false;
+    this.animations.forEach((anim) => anim.tick(this.game));
+    // console.log("anims pre-filter", this.animations);
+    this.animations = this.animations.filter((anim) => !anim.finished);
+
+    if (this.restartHeldSince) {
+      const millisDelta = new Date().getTime() - this.restartHeldSince;
+
+      const MAX_OPACITY = 0.75;
+      const VIGNETTE_OPAQUE_TIME = 600;
+      const TOOLTIP_OPAQUE_TIME = 600;
+
+      const COUNT = 3;
+      const MILLIS_PER_COUNT = 500;
+
+      const vignetteOpacity = Math.min(
+        MAX_OPACITY * (millisDelta / VIGNETTE_OPAQUE_TIME),
+        MAX_OPACITY
+      );
+
+      const tooltipOpacity = Math.min(
+        MAX_OPACITY * (millisDelta / TOOLTIP_OPAQUE_TIME),
+        MAX_OPACITY
+      );
+
+      this.game.ctx.globalAlpha = vignetteOpacity;
+
+      this.game.drawRect(
+        32 + this.juiceOffset.x * 0.5,
+        32 + this.juiceOffset.y * 0.5,
+        512,
+        512,
+        {
+          fill: "#CFC6BD",
+        }
+      );
+
+      this.game.ctx.globalAlpha = tooltipOpacity;
+
+      this.game.drawImage(
+        ASSETS.UI.RESTART,
+        32 + SQUARE_SIZE * 2,
+        32 + SQUARE_SIZE * 3,
+        256,
+        128
+      );
+
+      const count = COUNT - Math.floor(millisDelta / MILLIS_PER_COUNT);
+
+      this.game.drawText(
+        count,
+        32 + SQUARE_SIZE * 4.3,
+        32 + SQUARE_SIZE * 4.1,
+        {
+          font: "bold 40px Courier New",
+          color: "#000",
+        }
+      );
+
+      this.game.ctx.globalAlpha = 1;
+
+      if (count == 0) {
+        this.restartLevel();
+        return true;
+      }
     }
 
-    this.frame++;
-    this.juiceOffset
-      .randomize()
-      .normalize()
-      .scale(6 - this.frame)
-      .scale(1.5);
-
-    if (this.animating === Animation.EXPLODING && this.frame >= 5) {
-      this.juiceOffset.zero();
-      this.animating = Animation.NONE;
-      this.frame = 0;
-    }
-
-    return true;
+    return NEEDS_RE_RENDER;
   }
 
   cellCenter(num) {
@@ -388,14 +403,23 @@ class LevelManager {
   }
 
   renderGobbo(gobbo) {
-    console.log(gobbo);
-    this.game.drawImage(
-      ASSETS.SPRITE.GOBBO,
-      this.cellCenter(gobbo.x) + SPRITE_PADDING + this.juiceOffset.x,
-      this.cellCenter(gobbo.y) + SPRITE_PADDING + this.juiceOffset.y,
-      SPRITE_SIZE,
-      SPRITE_SIZE
-    );
+    if (gobbo.direction === Direction.SLEEP) {
+      this.game.drawImage(
+        ASSETS.SPRITE.GOBBOS.SLEEP,
+        this.cellCenter(gobbo.x) + SPRITE_PADDING + this.juiceOffset.x,
+        this.cellCenter(gobbo.y) + SPRITE_PADDING + this.juiceOffset.y,
+        SPRITE_SIZE,
+        SPRITE_SIZE
+      );
+    } else {
+      this.game.drawImage(
+        ASSETS.SPRITE.GOBBOS.MOVE,
+        this.cellCenter(gobbo.x) + SPRITE_PADDING + this.juiceOffset.x,
+        this.cellCenter(gobbo.y) + SPRITE_PADDING + this.juiceOffset.y,
+        SPRITE_SIZE,
+        SPRITE_SIZE
+      );
+    }
     this.game.drawImage(
       ASSETS.SPRITE.HAT[gobbo.hatType],
       this.cellCenter(gobbo.x) + SPRITE_PADDING + this.juiceOffset.x,
@@ -433,13 +457,6 @@ class LevelManager {
     areas.forEach((area) => {
       aimAreaLookup[area.x][area.y] = true;
       this.renderAimArea(area);
-      if (this.animating === Animation.EXPLODING) {
-        this.renderExplosion(
-          this.cellCenter(area.x) + this.juiceOffset.x,
-          this.cellCenter(area.y) + this.juiceOffset.y,
-          this.frame
-        );
-      }
     });
 
     const outline = new Path2D();
@@ -523,15 +540,6 @@ class LevelManager {
     );
   }
 
-  renderExplosion(x, y, frame, size = SQUARE_SIZE) {
-    this.game.drawImage(ASSETS.SPRITE.EXPLOSION, x, y, size, size, {
-      x: 32 * (frame % 4),
-      y: 0,
-      width: 32,
-      height: 32,
-    });
-  }
-
   getDirVec(direction) {
     switch (direction) {
       case Direction.UP:
@@ -589,14 +597,6 @@ class LevelManager {
 
   // Game Logic
   makeMove(direction) {
-    // This is where you'll implement your actual game logic
-    console.log(
-      `Making move: ${direction} on turn ${this.state.turnCount} in level ${this.state.currentLevel}`
-    );
-
-    // Increment turn counter for any action
-    this.state.turnCount++;
-
     const dirVec = this.getDirVec(direction);
     const ok = this.tryMove(this.state.player, dirVec[0], dirVec[1]);
     if (!ok) return;
@@ -608,26 +608,18 @@ class LevelManager {
         this.tryMove(gobbo, ...this.getDirVec(gobbo.direction));
       }
     });
+
+    this.checkLevelStatus();
   }
 
   // Handle player movement
   handleMovement(deltaX, deltaY) {
-    // Add your movement logic here
-    // This could involve:
-    // - Updating player position
-    // - Checking collisions
-    // - Moving enemies
-    // - Updating game state
-
-    console.log(`Player attempting to move by (${deltaX}, ${deltaY})`);
-
     if (
       this.state.player.x + deltaX < 0 ||
       this.state.player.x + deltaX > 7 ||
       this.state.player.y + deltaY < 0 ||
       this.state.player.y + deltaY > 7
     ) {
-      console.log("Player attempted to move out of bounds");
       return false;
     }
 
@@ -639,24 +631,27 @@ class LevelManager {
     return this.state.aimArea.find((a) => a.x === x && a.y === y);
   }
 
-  // Handle player actions (like interactions, attacks, etc.)
   handleAction() {
-    // Add your action logic here
-    // This could involve:
-    // - Interacting with objects
-    // - Attacking enemies
-    // - Using items
-    // - Activating switches
-
-    console.log("Player performed an action");
-
     if (this.state.remainingBombs == 0) {
       return;
     }
 
     this.state.remainingBombs--;
 
-    this.animating = Animation.EXPLODING;
+    const areas = this.state.aimArea
+      .map((area) => area.add(this.state.player))
+      .filter((area) => !this.isOutOfBounds(area.x, area.y));
+
+    areas.forEach((area) => {
+      this.animations.push(
+        new ExplosionAnimation(
+          this.cellCenter(area.x) + this.juiceOffset.x,
+          this.cellCenter(area.y) + this.juiceOffset.y,
+          SQUARE_SIZE,
+          this.juiceOffset
+        )
+      );
+    });
 
     const gobbosToKill = [];
 
@@ -703,30 +698,134 @@ class LevelManager {
   }
 
   // Check if level is completed, failed, etc.
-  checkLevelStatus(state) {
-    // Add your win/lose conditions here
-    // For example:
-    // if (playerReachedGoal) {
-    //     this.completeLevel();
-    // }
-    // if (playerDied) {
-    //     this.restartLevel();
-    // }
+  checkLevelStatus() {
+    if (this.state.gobbos.length === 0) {
+      this.completeLevel();
+    }
+  }
+
+  renderPopupContent(game) {
+    game.drawText(
+      `Level ${this.currentLevel}`,
+      BOARD_PADDING + H_BOARD_SIZE,
+      BOARD_PADDING + H_BOARD_SIZE - 64,
+      {
+        color: "#000",
+        font: "bold 24px Courier New",
+        align: "center",
+      }
+    );
+
+    game.drawText(
+      this.state.title,
+      BOARD_PADDING + H_BOARD_SIZE,
+      BOARD_PADDING + H_BOARD_SIZE - 32,
+      {
+        color: "#000",
+        font: "16px Courier New",
+        align: "center",
+      }
+    );
+
+    game.drawText(
+      "Gobbos",
+      BOARD_PADDING + H_BOARD_SIZE - 64,
+      BOARD_PADDING + H_BOARD_SIZE + 12,
+      {
+        color: "#000",
+        font: "12px Courier New",
+        align: "center",
+      }
+    );
+
+    this.game.drawImage(
+      ASSETS.SPRITE.GOBBOS.MOVE,
+      BOARD_PADDING + H_BOARD_SIZE - 64 - 36,
+      BOARD_PADDING + H_BOARD_SIZE + 20,
+      32,
+      32
+    );
+
+    this.game.drawText(
+      `×${this.state.gobbos.length}`,
+      BOARD_PADDING + H_BOARD_SIZE - 64,
+      BOARD_PADDING + H_BOARD_SIZE + 28,
+      {
+        color: "#000",
+        font: "24px Courier New",
+        align: "left",
+      }
+    );
+
+    game.drawText(
+      "Spells",
+      BOARD_PADDING + H_BOARD_SIZE + 64,
+      BOARD_PADDING + H_BOARD_SIZE + 12,
+      {
+        color: "#000",
+        font: "12px Courier New",
+        align: "center",
+      }
+    );
+
+    this.game.drawImage(
+      ASSETS.UI.MANA,
+      BOARD_PADDING + H_BOARD_SIZE + 64 - 32,
+      BOARD_PADDING + H_BOARD_SIZE + 28,
+      24,
+      24
+    );
+
+    this.game.drawText(
+      `×${this.state.remainingBombs}`,
+      BOARD_PADDING + H_BOARD_SIZE + 64,
+      BOARD_PADDING + H_BOARD_SIZE + 28,
+      {
+        color: "#000",
+        font: "24px Courier New",
+        align: "left",
+      }
+    );
   }
 
   // Level completion handler
   completeLevel() {
-    console.log(`Level ${this.state.currentLevel} completed!`);
+    this.animations.push(
+      new TransitionAnimation(TRANSITION_DIRECTION.OUT, () => {
+        this.loadNextLevel();
+        this.animations.push(
+          new PopupAnimation(
+            320,
+            128,
+            this.renderPopupContent.bind(this),
+            () => {
+              this.animations.push(
+                new TransitionAnimation(TRANSITION_DIRECTION.IN)
+              );
+            }
+          )
+        );
+      })
+    );
+  }
 
-    // Could advance to next level or return to selection
-    // this.game.gameState.level = 'selection';
+  loadNextLevel() {
+    this.currentLevel++;
+    this.history = new LevelHistory(LEVELS[this.currentLevel]);
+  }
+
+  handleRestartHold() {
+    if (!this.restartHeldSince) {
+      this.restartHeldSince = new Date().getTime();
+    }
   }
 
   // Level restart handler
   restartLevel() {
     this.state.turnCount = 0;
-    console.log(`Level ${this.state.currentLevel} restarted`);
-
-    // Reset level state here
+    this.canHandleInput = false;
+    this.restartHeldSince = null;
+    this.history.reset();
+    this.history;
   }
 }

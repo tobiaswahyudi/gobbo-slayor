@@ -1,7 +1,10 @@
 const ASSETS = {
   SPRITE: {
     CRATE: "assets/sprite/crate.png",
-    GOBBO: "assets/sprite/gobblin.png",
+    GOBBOS: {
+      MOVE: "assets/sprite/gobblin.png",
+      SLEEP: "assets/sprite/slepgobbo.png",
+    },
     HAT: {
         V: "assets/sprite/hat_v.png",
         H: "assets/sprite/hat_h.png",
@@ -17,6 +20,16 @@ const ASSETS = {
         X: "assets/ui/hat_no.png",
     },
     MANA: "assets/ui/mana.png",
+    TITLE: "assets/ui/title.png",
+    CREDITS: "assets/ui/creds.png",
+    RESTART: "assets/ui/restart.png",
+    POPUP: "assets/ui/nineslice-2.png",
+  },
+  TUTORIAL: {
+    MOVE: "assets/ui/inst-move.png",
+    ATTACK: "assets/ui/inst-attack.png",
+    UNDO: "assets/ui/inst-undo.png",
+    TOOLTIP: "assets/ui/inst-tooltip.png",
   },
 };
 

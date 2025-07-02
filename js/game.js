@@ -9,8 +9,8 @@ class Game {
     this.isRunning = false;
 
     // Canvas dimensions
-    this.width = 816;
-    this.height = 576;
+    this.width = 832; // Inner: 768 = 32 * 24
+    this.height = 576; // Inner: 512 = 32 * 16
 
     // Scene management
     this.scene = "level"; // menus|level
@@ -43,7 +43,6 @@ class Game {
     this.ctx.imageSmoothingEnabled = false;
     this.ctx.textRendering = "geometricPrecision";
 
-
     console.log("Game initialized");
   }
 
@@ -63,6 +62,12 @@ class Game {
       this.keys[e.code] = false;
       this.keysPressed[e.code] = false;
       e.preventDefault();
+
+      if (e.code == "KeyR") {
+        // On R key up, send a dummy input to re-render level
+        this.handleKeyPress("KeyUp");
+        this.requestRedraw();
+      }
     });
 
     // Minimal mouse events (mainly for UI)
@@ -158,7 +163,7 @@ class Game {
         break;
     }
 
-    if(anotherRender) {
+    if (anotherRender) {
       setTimeout(() => {
         this.requestRedraw();
       }, MS_PER_FRAME);
@@ -202,7 +207,17 @@ class Game {
     }
 
     if (Object.keys(clip).length > 0) {
-      this.ctx.drawImage(img, clipX, clipY, clipWidth, clipHeight, x, y, width, height);
+      this.ctx.drawImage(
+        img,
+        clipX,
+        clipY,
+        clipWidth,
+        clipHeight,
+        x,
+        y,
+        width,
+        height
+      );
     } else if (width && height) {
       this.ctx.drawImage(img, x, y, width, height);
     } else {
