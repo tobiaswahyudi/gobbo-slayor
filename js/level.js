@@ -267,13 +267,22 @@ class LevelManager {
         SQUARE_SIZE
       );
     }
-    if (this.currentLevel <= 1) {
+    if (this.currentLevel <= 1 || this.currentLevel == 4) {
       this.game.drawImage(
         ASSETS.TUTORIAL.UNDO,
         32 + 3 * SQUARE_SIZE + 0.5 * this.juiceOffset.x,
         32 + 6 * SQUARE_SIZE + 0.5 * this.juiceOffset.y,
         SQUARE_SIZE,
         SQUARE_SIZE
+      );
+    }
+    if (this.currentLevel == 4) {
+      this.game.drawImage(
+        ASSETS.TUTORIAL.RESTART,
+        32 + 6 * SQUARE_SIZE + 0.5 * this.juiceOffset.x + SPRITE_PADDING,
+        32 + 6 * SQUARE_SIZE + 0.5 * this.juiceOffset.y + SPRITE_PADDING,
+        SPRITE_SIZE,
+        SPRITE_SIZE
       );
     }
 
@@ -299,7 +308,7 @@ class LevelManager {
       this.game.ctx.globalAlpha = 1;
     }
 
-    if (this.currentLevel === 0 || this.currentLevel === 2) {
+    if (this.currentLevel === 0) {
       this.game.ctx.globalAlpha = 0.5;
       this.game.drawImage(
         ASSETS.TUTORIAL.TOOLTIP,

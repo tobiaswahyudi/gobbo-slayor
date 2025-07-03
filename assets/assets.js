@@ -30,6 +30,7 @@ const ASSETS = {
     ATTACK: "assets/ui/inst-attack.png",
     UNDO: "assets/ui/inst-undo.png",
     TOOLTIP: "assets/ui/inst-tooltip.png",
+    RESTART: "assets/ui/inst-restart.png",
   },
 };
 
