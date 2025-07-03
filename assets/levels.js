@@ -94,7 +94,7 @@ Gobbos on a Morning Jog
 
 // Level 1, 2 bombs
 const LEVEL_2 = `
-Don't overthink it
+⬇︎ Don't overthink it ⬇︎
 3
 ..|..|..|..|..|..|..|..
 ..|..|..|Cr|..|..|..|..
