@@ -12,6 +12,7 @@ const ASSETS = {
     },
     WIZ: "assets/sprite/wiz.png",
     EXPLOSION: "assets/sprite/explosion.png",
+    DUST: "assets/sprite/dust.png",
   },
   UI: {
     HAT: {
