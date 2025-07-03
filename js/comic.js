@@ -116,7 +116,7 @@ class IntroComic {
             60
           ),
         ],
-        [150, THUNK],
+        [170, THUNK],
       ]),
       new IntroComicPanel(game, [
         [0, renderImage(ASSETS.COMIC.P2.ONE.BG)],
@@ -143,7 +143,7 @@ class IntroComic {
         [80, renderImage(ASSETS.COMIC.P2.MASK)],
         [80, new JuiceAnimation(this.state.fire, 30, 4)],
 
-        [180, THUNK],
+        [130, THUNK],
       ]),
     ];
   }
