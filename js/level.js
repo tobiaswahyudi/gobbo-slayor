@@ -22,6 +22,9 @@ class LevelManager {
     this.restartHeldSince = null;
 
     this.juiceOffset = new Position(0, 0);
+
+    this.levelIsDone = false;
+    this.levelIsTransitioning = false;
   }
 
   get state() {
@@ -377,6 +380,8 @@ class LevelManager {
       }
     }
 
+    this.checkLevelDone();
+
     return NEEDS_RE_RENDER;
   }
 
@@ -597,6 +602,7 @@ class LevelManager {
 
   // Game Logic
   makeMove(direction) {
+    if (this.levelIsDone) return;
     const dirVec = this.getDirVec(direction);
     const ok = this.tryMove(this.state.player, dirVec[0], dirVec[1]);
     if (!ok) return;
@@ -708,7 +714,18 @@ class LevelManager {
   // Check if level is completed, failed, etc.
   checkLevelStatus() {
     if (this.state.gobbos.length === 0) {
-      this.completeLevel();
+      this.levelIsDone = true;
+    }
+  }
+
+  checkLevelDone() {
+    if (
+      this.levelIsDone &&
+      !this.levelIsTransitioning &&
+      this.animations.length === 0
+    ) {
+      this.levelIsTransitioning = true;
+      this.triggerNextLevelTransition();
     }
   }
 
@@ -797,7 +814,7 @@ class LevelManager {
   }
 
   // Level completion handler
-  completeLevel() {
+  triggerNextLevelTransition() {
     this.animations.push(
       new TransitionAnimation(TRANSITION_DIRECTION.OUT, () => {
         this.loadNextLevel();
@@ -820,6 +837,8 @@ class LevelManager {
   loadNextLevel() {
     this.currentLevel++;
     this.history = new LevelHistory(LEVELS[this.currentLevel]);
+    this.levelIsDone = false;
+    this.levelIsTransitioning = false;
   }
 
   handleRestartHold() {
