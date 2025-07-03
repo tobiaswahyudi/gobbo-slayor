@@ -695,6 +695,14 @@ class LevelManager {
         }
         break;
     }
+    this.animations.push(
+      new EtherealAnimation(
+        this.cellCenter(gobbo.x) + SQUARE_SIZE * 0.5,
+        this.cellCenter(gobbo.y) + SQUARE_SIZE * 0.5,
+        ASSETS.UI.HAT[gobbo.hatType],
+        SPRITE_SIZE
+      )
+    );
   }
 
   // Check if level is completed, failed, etc.
