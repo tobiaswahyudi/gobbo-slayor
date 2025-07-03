@@ -72,9 +72,9 @@ class LevelManager {
         this.handleAction();
         return true;
         break;
-      case "Escape":
-        this.game.gameState.level = "selection";
-        return true;
+      // case "Escape":
+      //   this.game.gameState.level = "selection";
+      //   return true;
       case "KeyR":
         this.history.pop();
         this.handleRestartHold();
