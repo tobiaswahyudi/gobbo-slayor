@@ -133,7 +133,7 @@ class IntroComic {
             60
           ),
         ],
-        [(150, THUNK)],
+        [150, THUNK],
       ]),
       new IntroComicPanel(game, []),
     ];
