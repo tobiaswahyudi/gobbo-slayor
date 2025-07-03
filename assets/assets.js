@@ -11,9 +11,9 @@ const ASSETS = {
       SLEEP: "assets/sprite/slepgobbo.png",
     },
     HAT: {
-        V: "assets/sprite/hat_v.png",
-        H: "assets/sprite/hat_h.png",
-        X: "assets/sprite/hat_no.png",
+      V: "assets/sprite/hat_v.png",
+      H: "assets/sprite/hat_h.png",
+      X: "assets/sprite/hat_no.png",
     },
     WIZ: "assets/sprite/wiz.png",
     EXPLOSION: "assets/sprite/explosion.png",
@@ -21,9 +21,9 @@ const ASSETS = {
   },
   UI: {
     HAT: {
-        V: "assets/ui/hat_v.png",
-        H: "assets/ui/hat_h.png",
-        X: "assets/ui/hat_no.png",
+      V: "assets/ui/hat_v.png",
+      H: "assets/ui/hat_h.png",
+      X: "assets/ui/hat_no.png",
     },
     MANA: "assets/ui/mana.png",
     TITLE: "assets/ui/title.png",
@@ -86,12 +86,32 @@ const ASSETS = {
       SIGN: "assets/comic/p1/p1-sign.png",
       SKY: "assets/comic/p1/p1-sky.png",
       TOWER: "assets/comic/p1/p1-tower.png",
-    }
+    },
+    P2: {
+      MASK: "assets/comic/mask-p2.png",
+      ONE: {
+        BG: "assets/comic/p2/p2-1-bg.png",
+        HAND: "assets/comic/p2/p2-1-hand.png",
+        HOLDER: "assets/comic/p2/p2-1-holder.png",
+        SHADOW: "assets/comic/p2/p2-1-shadow.png",
+        STAFF: "assets/comic/p2/p2-1-staff.png",
+        WIZ: "assets/comic/p2/p2-1-wiz.png",
+      },
+      TWO: {
+        BG: "assets/comic/p2/p2-2-bg.png",
+        BALL: "assets/comic/p2/p2-2-ball.png",
+        FIRE: "assets/comic/p2/p2-2-fire.png",
+        SHADOW: "assets/comic/p2/p2-2-shadow.png",
+        WIZSTAFF: "assets/comic/p2/p2-2-wizstaff.png",
+      },
+    },
   },
 };
 
 const _flatten = (obj) => {
-    return Object.values(obj).flatMap(v => typeof v === 'object' ? _flatten(v) : v);
+  return Object.values(obj).flatMap((v) =>
+    typeof v === "object" ? _flatten(v) : v
+  );
 };
 
 const ALL_ASSETS = _flatten(ASSETS);

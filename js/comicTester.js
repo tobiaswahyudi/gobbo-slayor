@@ -47,6 +47,15 @@ const COMIC_TEST = (game) => {
   renderSimpleImage(ASSETS.COMIC.P1.TWO.GOBBO.LEFT, true);
   renderSimpleImage(ASSETS.COMIC.P1.TWO.GOBBO.RIGHT, true);
 
+  renderSimpleImage(ASSETS.COMIC.P2.ONE.BG);
+  renderSimpleImage(ASSETS.COMIC.P2.ONE.SHADOW);
+  renderSimpleImage(ASSETS.COMIC.P2.ONE.HOLDER);
+  renderSimpleImage(ASSETS.COMIC.P2.ONE.STAFF);
+  renderSimpleImage(ASSETS.COMIC.P2.ONE.HAND, true);
+  renderSimpleImage(ASSETS.COMIC.P2.ONE.WIZ);
+  renderSimpleImage(ASSETS.COMIC.P2.MASK);
+  renderSimpleImage(ASSETS.COMIC.OUTLINE);
+
   game.ctx.restore();
 
   return true;

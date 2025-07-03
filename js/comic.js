@@ -35,8 +35,10 @@ class IntroComicPanel {
   }
 }
 
-const juicer = (juiceFactor) => (state) =>
-  state.juice.clone().scale(juiceFactor);
+const juicer =
+  (juiceFactor, juice = "juice") =>
+  (state) =>
+    state[juice].clone().scale(juiceFactor);
 
 const renderImage = (image, positionOffsetter) => (game, state) => {
   const offset = !!positionOffsetter
@@ -56,6 +58,8 @@ class IntroComic {
       windowGobbo: new Position(0, 0),
       leftGobbo: new Position(0, 0),
       rightGobbo: new Position(0, 0),
+      wizHand: new Position(-8, 22),
+      fire: new Position(0, 0),
     };
 
     this.currentPanel = 0;
@@ -67,23 +71,10 @@ class IntroComic {
         [0, renderImage(ASSETS.COMIC.P1.ONE.WINDOW, juicer(0.7)), 90],
         [0, renderImage(ASSETS.COMIC.P1.SIGN, juicer(0.5))],
         [0, renderImage(ASSETS.COMIC.P1.GROUND)],
-        [
-          20,
-          new JuiceAnimation(this.state.juice, 5, 4, (frame) => 1 - frame / 5),
-        ],
-        [
-          50,
-          new JuiceAnimation(this.state.juice, 5, 8, (frame) => 1 - frame / 5),
-        ],
-        [
-          70,
-          new JuiceAnimation(
-            this.state.juice,
-            5,
-            12,
-            (frame) => 1 - frame / 10
-          ),
-        ],
+        [0, renderImage(ASSETS.COMIC.P1.MASK)],
+        [20, new JuiceAnimation(this.state.juice, 5, 4)],
+        [50, new JuiceAnimation(this.state.juice, 5, 8)],
+        [70, new JuiceAnimation(this.state.juice, 5, 12)],
         [90, renderImage(ASSETS.COMIC.P1.TWO.DOOR)],
         [90, renderImage(ASSETS.COMIC.P1.TWO.WINDOW, juicer(1.0))],
         [90, renderImage(ASSETS.COMIC.P1.TWO.WIZ)],
@@ -97,15 +88,7 @@ class IntroComic {
           90,
           renderImage(ASSETS.COMIC.P1.TWO.GOBBO.RIGHT, fetcher("rightGobbo")),
         ],
-        [
-          90,
-          new JuiceAnimation(
-            this.state.juice,
-            30,
-            3,
-            (frame) => 1 - frame / 30
-          ),
-        ],
+        [90, new JuiceAnimation(this.state.juice, 30, 3)],
         [
           90,
           new MotionTweenAnimation(
@@ -135,7 +118,33 @@ class IntroComic {
         ],
         [150, THUNK],
       ]),
-      new IntroComicPanel(game, []),
+      new IntroComicPanel(game, [
+        [0, renderImage(ASSETS.COMIC.P2.ONE.BG)],
+        [0, renderImage(ASSETS.COMIC.P2.ONE.SHADOW)],
+        [0, renderImage(ASSETS.COMIC.P2.ONE.HOLDER)],
+        [0, renderImage(ASSETS.COMIC.P2.ONE.STAFF)],
+        [0, renderImage(ASSETS.COMIC.P2.ONE.HAND, fetcher("wizHand"))],
+        [0, renderImage(ASSETS.COMIC.P2.ONE.WIZ)],
+        [0, renderImage(ASSETS.COMIC.P2.MASK)],
+        [
+          10,
+          new MotionTweenAnimation(
+            this.state.wizHand,
+            new Position(-8, 22),
+            new Position(0, 0),
+            50
+          ),
+        ],
+        [80, renderImage(ASSETS.COMIC.P2.TWO.BG)],
+        [80, renderImage(ASSETS.COMIC.P2.TWO.SHADOW, juicer(0.4, "fire"))],
+        [80, renderImage(ASSETS.COMIC.P2.TWO.WIZSTAFF)],
+        [80, renderImage(ASSETS.COMIC.P2.TWO.FIRE, juicer(0.8, "fire"))],
+        [80, renderImage(ASSETS.COMIC.P2.TWO.BALL, juicer(1, "fire"))],
+        [80, renderImage(ASSETS.COMIC.P2.MASK)],
+        [80, new JuiceAnimation(this.state.fire, 30, 4)],
+
+        [180, THUNK],
+      ]),
     ];
   }
 
