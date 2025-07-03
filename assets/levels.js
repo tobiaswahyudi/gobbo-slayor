@@ -13,6 +13,21 @@ Welcome!
 2,0
 `;
 
+const LEVEL_MINUS_2 = `
+bug test
+2
+..|..|..|..|..|..|..|..
+..|..|..|..|..|..|..|..
+..|..|..|..|..|..|..|..
+..|..|..|Vs|..|..|..|..
+..|..|..|Xs|..|..|..|..
+..|Wz|..|Vs|..|..|..|..
+..|..|..|..|..|..|..|..
+..|..|..|..|..|..|..|..
+2,0
+2,1
+`;
+
 // Level 0, 3 bombs
 const LEVEL_0 = `
 Magic Hats, what do they do?
@@ -207,6 +222,7 @@ const LEVEL_SLEEPING_GOBBOS_4 = `
 
 const LEVELS = [
   LEVEL_MINUS_1,
+  LEVEL_MINUS_2,
   LEVEL_SLEEPING_GOBBOS_1,
   LEVEL_SLEEPING_GOBBOS_2,
   LEVEL_SLEEPING_GOBBOS_3,
