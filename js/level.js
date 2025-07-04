@@ -42,8 +42,6 @@ class LevelManager {
 
     if (inputBlockedByAnimation) return true;
 
-    this.history.copyTop();
-
     switch (keyCode) {
       case "ArrowUp":
       case "KeyW":
@@ -66,6 +64,7 @@ class LevelManager {
         return true;
         break;
       case "Space":
+        this.history.copyTop();
         this.handleAction();
         return true;
         break;
@@ -73,15 +72,15 @@ class LevelManager {
       //   this.game.gameState.level = "selection";
       //   return true;
       case "KeyR":
-        this.history.pop();
+        // this.history.pop();
         this.handleRestartHold();
         return true;
       case "KeyZ":
-        this.history.pop();
+        // this.history.pop();
         this.history.pop();
         return true;
       default:
-        this.history.pop();
+        // this.history.pop();
         return false;
     }
   }
