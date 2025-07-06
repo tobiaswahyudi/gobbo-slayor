@@ -33,6 +33,23 @@ const ASSETS = {
     TOOLTIP: "assets/ui/inst-tooltip.png",
     RESTART: "assets/ui/inst-restart.png",
   },
+  WORLD: {
+    MAP: "assets/worldmap/world.png",
+    CAMP: {
+      GOB: "assets/worldmap/camp-gob.png",
+    },
+    FORT: {
+      GOB: "assets/worldmap/fort-gob.png",
+    },
+    FIRE: {
+      GOB: "assets/worldmap/fire-gob.png",
+      CLEAR: "assets/worldmap/fire-clear.png",
+    },
+    FLAG: {
+      GOB: "assets/worldmap/flag-gob.png",
+      WIZ: "assets/worldmap/flag-wiz.png",
+    },
+  },
 };
 
 const _flatten = (obj) => {

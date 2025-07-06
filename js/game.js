@@ -13,7 +13,7 @@ class Game {
     this.height = 576; // Inner: 512 = 32 * 16
 
     // Scene management
-    this.scene = "level"; // menus|level
+    this.scene = "world"; // world|zone|level
 
     // Input handling
     this.keys = {};
@@ -25,7 +25,7 @@ class Game {
     };
 
     // Initialize modules
-    this.menuManager = new MenuManager(this);
+    this.worldMap = new WorldMap(this);
     this.levelManager = new LevelManager(this);
 
     this.preloadFinished = false;
@@ -122,14 +122,10 @@ class Game {
   // Handle key presses based on current scene
   handleKeyPress(keyCode) {
     switch (this.scene) {
-      case "menus":
-        this.menuManager.handleMainMenuInput(keyCode);
-        break;
+      case "world":
+        if (!this.worldMap.handleInput(keyCode)) return false;
       case "level":
-        if (!this.levelManager.handleGameInput(keyCode)) {
-          return false;
-        }
-        break;
+        if (!this.levelManager.handleGameInput(keyCode)) return false;
     }
 
     this.requestRedraw();
@@ -142,6 +138,7 @@ class Game {
 
   render() {
     if (!this.preloadFinished) return;
+    // console.log(new Date().getTime());
 
     // Clear canvas
     this.ctx.clearRect(0, 0, this.width, this.height);
@@ -155,8 +152,8 @@ class Game {
 
     // Render based on current scene
     switch (this.scene) {
-      case "menus":
-        this.menuManager.render();
+      case "world":
+        anotherRender = this.worldMap.render();
         break;
       case "level":
         anotherRender = this.levelManager.renderGame(this.ctx);

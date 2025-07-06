@@ -781,6 +781,7 @@ class LevelManager {
           new PopupAnimation(
             320,
             128,
+            true,
             this.renderPopupContent.bind(this),
             () => {
               this.animations.push(
