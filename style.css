@@ -1,3 +1,39 @@
+/* Font imports */
+@font-face {
+    font-family: 'Edu-SA';
+    src: url('./assets/font/Edu_SA_Hand/static/EduSAHand-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Edu-SA';
+    src: url('./assets/font/Edu_SA_Hand/static/EduSAHand-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Edu-SA';
+    src: url('./assets/font/Edu_SA_Hand/static/EduSAHand-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Edu-SA';
+    src: url('./assets/font/Edu_SA_Hand/static/EduSAHand-SemiBold.ttf') format('truetype');
+    font-weight: 600;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Tiny5';
+    src: url('./assets/font/Tiny5/Tiny5-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+
 * {
     margin: 0;
     padding: 0;

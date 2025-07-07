@@ -13,7 +13,7 @@ class Game {
     this.height = 576; // Inner: 512 = 32 * 16
 
     // Scene management
-    this.scene = "world"; // world|zone|level
+    this.scene = "level"; // world|zone|level
 
     // Input handling
     this.keys = {};
@@ -28,8 +28,10 @@ class Game {
     this.worldMap = new WorldMap(this);
     this.levelManager = new LevelManager(this);
 
-    this.preloadFinished = false;
+    this.assetsPreloaded = false;
     this.loadedImages = new Map();
+
+    this.fontsLoaded = false;
 
     this.init();
   }
@@ -105,8 +107,13 @@ class Game {
       this.render(); // Initial render
       console.log("Game started");
 
-      this.preloadImages(ALL_ASSETS).then(() => {
-        this.preloadFinished = true;
+      this.preloadImages().then(() => {
+        this.assetsPreloaded = true;
+        this.requestRedraw();
+      });
+
+      this.preloadFonts().then(() => {
+        this.fontsLoaded = true;
         this.requestRedraw();
       });
     }
@@ -137,8 +144,8 @@ class Game {
   }
 
   render() {
-    if (!this.preloadFinished) return;
-    // console.log(new Date().getTime());
+    if (!this.assetsPreloaded) return;
+    if (!this.fontsLoaded) return;
 
     // Clear canvas
     this.ctx.clearRect(0, 0, this.width, this.height);
@@ -184,13 +191,29 @@ class Game {
   }
 
   // Preload multiple images
-  async preloadImages(imagePaths) {
+  async preloadImages() {
     try {
-      const promises = imagePaths.map((path) => this.loadImage(path));
-      await Promise.all(promises);
+      await Promise.all(ALL_ASSETS.map((path) => this.loadImage(path)));
       console.log("All images preloaded");
     } catch (error) {
       console.error("Error preloading images:", error);
+    }
+  }
+
+  async preloadFonts() {
+    try {
+      await Promise.all(
+        FONTS.map(([fontName, weights]) =>
+          Promise.all(
+            weights.map((weight) =>
+              document.fonts.load(`${weight} 12px ${fontName}`)
+            )
+          )
+        )
+      );
+      console.log("All fonts preloaded");
+    } catch (error) {
+      console.error("Error preloading fonts:", error);
     }
   }
 

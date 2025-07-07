@@ -1,3 +1,8 @@
+const FONTS = [
+  ['Edu-SA', ['400', '500', '600', '700']],
+  ['Tiny5', ['400']],
+];
+
 const ASSETS = {
   SPRITE: {
     CRATE: "assets/sprite/crate.png",
