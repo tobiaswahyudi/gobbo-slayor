@@ -123,125 +123,7 @@ class LevelManager {
       }
     );
 
-    this.game.drawRect(
-      576 + this.juiceOffset.x * 0.5,
-      32 + this.juiceOffset.y * 0.5,
-      208,
-      512,
-      {
-        fill: "#E2D8D4",
-        stroke: "#BDAFA1",
-        strokeWidth: 4,
-      }
-    );
-
-    this.game.drawText(
-      `Level ${this.currentLevel}`,
-      680 + this.juiceOffset.x,
-      44 + this.juiceOffset.y,
-      {
-        color: "#000",
-        font: "bold 24px Courier New",
-        align: "center",
-      }
-    );
-
-    this.game.drawRect(
-      600 + this.juiceOffset.x,
-      78 + this.juiceOffset.y,
-      160,
-      0,
-      {
-        fill: "",
-        stroke: "#000",
-        strokeWidth: 2,
-      }
-    );
-
-    this.game.drawImage(
-      ASSETS.SPRITE.GOBBOS.MOVE,
-      608 + this.juiceOffset.x,
-      80 + this.juiceOffset.y,
-      64,
-      64
-    );
-
-    this.game.drawText(
-      `×${this.state.gobbos.length}`,
-      688 + this.juiceOffset.x,
-      106 + this.juiceOffset.y,
-      {
-        color: "#000",
-        font: "bold 40px Courier New",
-        align: "left",
-      }
-    );
-
-    this.game.drawImage(
-      ASSETS.UI.MANA,
-      608 + this.juiceOffset.x,
-      152 + this.juiceOffset.y,
-      64,
-      64
-    );
-
-    this.game.drawText(
-      `×${this.state.remainingBombs}`,
-      688 + this.juiceOffset.x,
-      178 + this.juiceOffset.y,
-      {
-        color: "#000",
-        font: "bold 40px Courier New",
-        align: "left",
-      }
-    );
-
-    this.game.drawText(
-      "Hats",
-      680 + this.juiceOffset.x,
-      280 + this.juiceOffset.y,
-      {
-        color: "#000",
-        font: "bold 24px Courier New",
-        align: "center",
-      }
-    );
-
-    this.game.drawRect(
-      600 + this.juiceOffset.x,
-      314 + this.juiceOffset.y,
-      160,
-      0,
-      {
-        fill: "",
-        stroke: "#000",
-        strokeWidth: 2,
-      }
-    );
-
-    this.game.drawImage(
-      ASSETS.UI.HAT[HatType.HORIZONTAL],
-      608 + this.juiceOffset.x,
-      332 + this.juiceOffset.y,
-      64,
-      64
-    );
-
-    this.game.drawImage(
-      ASSETS.UI.HAT[HatType.REMOVE],
-      688 + this.juiceOffset.x,
-      332 + this.juiceOffset.y,
-      64,
-      64
-    );
-
-    this.game.drawImage(
-      ASSETS.UI.HAT[HatType.VERTICAL],
-      608 + this.juiceOffset.x,
-      412 + this.juiceOffset.y,
-      64,
-      64
-    );
+    this.renderSidebar();
 
     this.game.ctx.globalAlpha = 0.4;
     if (this.currentLevel === 0) {
@@ -369,7 +251,7 @@ class LevelManager {
         32 + SQUARE_SIZE * 4.3,
         32 + SQUARE_SIZE * 4.1,
         {
-          font: "bold 40px Courier New",
+          font: "bold 40px Edu-SA",
           color: "#000",
         }
       );
@@ -688,14 +570,206 @@ class LevelManager {
     }
   }
 
+  renderSidebar() {
+    const SIDEBAR_WIDTH = 224;
+    const SIDEBAR_CENTER = 688;
+
+    let topPosition = 32;
+
+    this.game.drawRect(
+      576 + this.juiceOffset.x * 0.5,
+      32 + this.juiceOffset.y * 0.5,
+      SIDEBAR_WIDTH,
+      512,
+      {
+        fill: "#E2D8D4",
+        stroke: "#BDAFA1",
+        strokeWidth: 4,
+      }
+    );
+
+    topPosition += 24;
+
+    this.game.drawText(
+      `LEVEL ${this.currentLevel}`,
+      SIDEBAR_CENTER + this.juiceOffset.x,
+      topPosition + this.juiceOffset.y,
+      {
+        color: "#000",
+        font: "700 10px Edu-SA",
+        align: "center",
+      }
+    );
+
+    topPosition += 10;
+    topPosition += 16;
+
+    const titleFontSize = this.state.title.length > 10 ? 14 : 18;
+
+    this.game.drawText(
+      this.state.title,
+      SIDEBAR_CENTER + this.juiceOffset.x,
+      topPosition + this.juiceOffset.y,
+      {
+        color: "#000",
+        font: `500 ${titleFontSize}px Edu-SA`,
+        align: "center",
+      }
+    );
+
+    topPosition += titleFontSize;
+    topPosition += 12;
+
+    this.game.drawRect(
+      600 + this.juiceOffset.x,
+      topPosition + this.juiceOffset.y,
+      176,
+      0,
+      {
+        fill: "",
+        stroke: "#000",
+        strokeWidth: 2,
+      }
+    );
+
+    topPosition += 32;
+
+    this.game.drawText(
+      "GOBBOS",
+      612 + this.juiceOffset.x,
+      topPosition - 8 + this.juiceOffset.y,
+      {
+        color: "#000",
+        font: "16px Tiny5",
+        align: "left",
+      }
+    );
+
+    this.game.drawImage(
+      ASSETS.SPRITE.GOBBOS.MOVE,
+      SIDEBAR_CENTER + this.juiceOffset.x,
+      topPosition - 22 + this.juiceOffset.y,
+      36,
+      36
+    );
+
+    this.game.drawText(
+      `×${this.state.gobbos.length}`,
+      736 + this.juiceOffset.x,
+      topPosition - 12 + this.juiceOffset.y,
+      {
+        color: "#000",
+        font: "24px Tiny5",
+        align: "left",
+      }
+    );
+
+    topPosition += 40;
+
+    const spellColor = this.state.remainingBombs == 0 ? "#808080" : "#000000";
+
+    this.game.drawText(
+      "SPELLS",
+      612 + this.juiceOffset.x,
+      topPosition - 8 + this.juiceOffset.y,
+      {
+        color: spellColor,
+        font: "16px Tiny5",
+        align: "left",
+      }
+    );
+
+    if (this.state.remainingBombs == 0) {
+      this.game.ctx.filter = "grayscale(1) contrast(0.5) brightness(1.2)";
+    }
+
+    this.game.drawImage(
+      ASSETS.UI.MANA,
+      692 + this.juiceOffset.x,
+      topPosition - 16 + this.juiceOffset.y,
+      32,
+      32
+    );
+
+    this.game.ctx.filter = "none";
+
+    this.game.drawText(
+      `×${this.state.remainingBombs}`,
+      736 + this.juiceOffset.x,
+      topPosition - 12 + this.juiceOffset.y,
+      {
+        color: spellColor,
+        font: "24px Tiny5",
+        align: "left",
+      }
+    );
+
+    topPosition = 300;
+
+    this.game.drawText(
+      "Hat Gallery",
+      SIDEBAR_CENTER + this.juiceOffset.x,
+      topPosition + this.juiceOffset.y,
+      {
+        color: "#000",
+        font: "500 16px Edu-SA",
+        align: "center",
+      }
+    );
+
+    topPosition += 16;
+    topPosition += 12;
+
+    this.game.drawRect(
+      600 + this.juiceOffset.x,
+      topPosition + this.juiceOffset.y,
+      176,
+      0,
+      {
+        fill: "",
+        stroke: "#000",
+        strokeWidth: 2,
+      }
+    );
+
+    topPosition += 16;
+
+    this.game.drawImage(
+      ASSETS.UI.HAT[HatType.HORIZONTAL],
+      SIDEBAR_CENTER - 64 - 12 + this.juiceOffset.x,
+      topPosition + this.juiceOffset.y,
+      64,
+      64
+    );
+
+    this.game.drawImage(
+      ASSETS.UI.HAT[HatType.REMOVE],
+      SIDEBAR_CENTER + 12 + this.juiceOffset.x,
+      topPosition + this.juiceOffset.y,
+      64,
+      64
+    );
+
+    topPosition += 64;
+    topPosition += 12;
+
+    this.game.drawImage(
+      ASSETS.UI.HAT[HatType.VERTICAL],
+      SIDEBAR_CENTER - 64 - 8 + this.juiceOffset.x,
+      topPosition + this.juiceOffset.y,
+      64,
+      64
+    );
+  }
+
   renderPopupContent(game) {
     game.drawText(
       `Level ${this.currentLevel}`,
       BOARD_PADDING + H_BOARD_SIZE,
-      BOARD_PADDING + H_BOARD_SIZE - 64,
+      BOARD_PADDING + H_BOARD_SIZE - 56,
       {
         color: "#000",
-        font: "bold 24px Courier New",
+        font: "bold 24px Edu-SA",
         align: "center",
       }
     );
@@ -703,10 +777,10 @@ class LevelManager {
     game.drawText(
       this.state.title,
       BOARD_PADDING + H_BOARD_SIZE,
-      BOARD_PADDING + H_BOARD_SIZE - 32,
+      BOARD_PADDING + H_BOARD_SIZE - 24,
       {
         color: "#000",
-        font: "16px Courier New",
+        font: "16px Edu-SA",
         align: "center",
       }
     );
@@ -717,7 +791,7 @@ class LevelManager {
       BOARD_PADDING + H_BOARD_SIZE + 12,
       {
         color: "#000",
-        font: "12px Courier New",
+        font: "12px Edu-SA",
         align: "center",
       }
     );
@@ -736,7 +810,7 @@ class LevelManager {
       BOARD_PADDING + H_BOARD_SIZE + 28,
       {
         color: "#000",
-        font: "24px Courier New",
+        font: "24px Edu-SA",
         align: "left",
       }
     );
@@ -747,7 +821,7 @@ class LevelManager {
       BOARD_PADDING + H_BOARD_SIZE + 12,
       {
         color: "#000",
-        font: "12px Courier New",
+        font: "12px Edu-SA",
         align: "center",
       }
     );
@@ -766,7 +840,7 @@ class LevelManager {
       BOARD_PADDING + H_BOARD_SIZE + 28,
       {
         color: "#000",
-        font: "24px Courier New",
+        font: "24px Edu-SA",
         align: "left",
       }
     );
@@ -812,7 +886,6 @@ class LevelManager {
     this.state.turnCount = 0;
     this.canHandleInput = false;
     this.restartHeldSince = null;
-    this.history.reset();
-    this.history;
+    this.history = new LevelHistory(LEVELS[this.currentLevel]);
   }
 }
