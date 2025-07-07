@@ -17,6 +17,7 @@ class LevelState {
       state.walls = this.walls.map((wall) => wall.clone());
       state.aimArea = this.aimArea.map((aim) => aim.clone());
       state.remainingBombs = this.remainingBombs;
+      state.title = this.title;
       return state;
     }
   
