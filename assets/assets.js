@@ -30,6 +30,12 @@ const ASSETS = {
     CREDITS: "assets/ui/creds.png",
     RESTART: "assets/ui/restart.png",
     POPUP: "assets/ui/nineslice-2.png",
+    STAR: {
+      SILVER: "assets/ui/star-silver.png",
+      GOLD: "assets/ui/star-gold.png",
+      WTF: "assets/ui/star-wtf.png",
+    },
+    SPACEBAR: "assets/ui/spacebar.png",
   },
   TUTORIAL: {
     MOVE: "assets/ui/inst-move.png",
