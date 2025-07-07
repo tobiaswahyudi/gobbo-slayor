@@ -13,7 +13,7 @@ class Game {
     this.height = 576; // Inner: 512 = 32 * 16
 
     // Scene management
-    this.scene = "level"; // world|zone|level
+    this.scene = "world"; // world|zone|level
 
     // Input handling
     this.keys = {};
@@ -282,11 +282,11 @@ class Game {
       }
       return y + lineSpacing;
     } else {
-    this.ctx.fillStyle = color;
-    this.ctx.font = font;
-    this.ctx.textAlign = align;
-    this.ctx.textBaseline = baseline;
-    this.ctx.fillText(text, x, y);
+      this.ctx.fillStyle = color;
+      this.ctx.font = font;
+      this.ctx.textAlign = align;
+      this.ctx.textBaseline = baseline;
+      this.ctx.fillText(text, x, y);
 
       return y + lineSpacing;
     }

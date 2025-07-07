@@ -9,8 +9,8 @@ World Map
 ..|..|..|..|..|..|..|Cr
 ..|..|..|..|Cr|..|Cr|..
 Cr|Cr|Cr|Cr|..|Cr|..|..
-..|..|..|Cr|..|..|..|..
-Cr|..|Wz|..|..|Cr|..|..
+..|..|..|Cr|Wz|..|..|..
+Cr|..|..|..|..|Cr|..|..
 ..|..|..|Cr|Cr|Cr|..|..
 `;
 
@@ -18,18 +18,24 @@ const WORLD_MAP_LOCATIONS = [
   {
     x: 2,
     y: 6,
-    title: "GOBBO SLAYER",
-    subtitle: "hell yea",
-    text: "[W][A][S][D] or Arrow Keys to move"
+    title: "HOME BASE",
+    subtitle: "Wizard Tower",
+    text: "Ransacked by Goblins!\nFollow their tracks to Sleepy Hill!",
+    isZone: false,
   },
   {
     x: 4,
     y: 5,
-    title: "Area 1",
-    subtitle: "Roadside Campfire",
-    text: "Gobbos are napping by the fire with their stolen hats",
+    title: "GOBLIN CAMP 1",
+    subtitle: "Sleepy Hill",
+    text: "Goblins are napping by the fire\nwith their stolen hats.",
     done: false,
     asset: ASSETS.WORLD.FIRE,
+    isZone: true,
+    silverStars: 0,
+    goldStars: 0,
+    levels: 6,
+    cta: "Dang Gobbos! Get em!"
   },
 ];
 
@@ -96,47 +102,6 @@ class WorldMap {
       strokeWidth: 4,
     });
 
-    // Sidebar
-    this.game.drawRect(576, 32, 224, 512, {
-      fill: "#E2D8D4",
-      stroke: "#BDAFA1",
-      strokeWidth: 4,
-    });
-
-    this.game.drawText(`Level ${this.currentLevel}`, 680, 44, {
-      color: "#000",
-      font: "bold 24px Courier New",
-      align: "center",
-    });
-
-    this.game.drawRect(600, 78, 160, 0, {
-      fill: "",
-      stroke: "#000",
-      strokeWidth: 2,
-    });
-
-    this.game.drawImage(ASSETS.SPRITE.GOBBOS.MOVE, 608, 80, 64, 64);
-
-    this.game.drawImage(ASSETS.UI.MANA, 608, 152, 64, 64);
-
-    this.game.drawText("Hats", 680, 280, {
-      color: "#000",
-      font: "bold 24px Courier New",
-      align: "center",
-    });
-
-    this.game.drawRect(600, 314, 160, 0, {
-      fill: "",
-      stroke: "#000",
-      strokeWidth: 2,
-    });
-
-    this.game.drawImage(ASSETS.UI.HAT[HatType.HORIZONTAL], 608, 332, 64, 64);
-
-    this.game.drawImage(ASSETS.UI.HAT[HatType.REMOVE], 688, 332, 64, 64);
-
-    this.game.drawImage(ASSETS.UI.HAT[HatType.VERTICAL], 608, 412, 64, 64);
-
     // this.game.ctx.globalAlpha = 0.75;
     this.game.drawImage(ASSETS.UI.TITLE, 54, 96, 384, 128);
     this.game.ctx.globalAlpha = 0.5;
@@ -147,9 +112,11 @@ class WorldMap {
       (location) =>
         location.x === this.state.player.x && location.y === this.state.player.y
     );
+
     if (this.currentLocation) {
-      
+      this.renderZoneSidebar();
     } else {
+      this.renderEmptySidebar();
     }
 
     WORLD_MAP_LOCATIONS.forEach((location) => {
@@ -241,7 +208,180 @@ class WorldMap {
     this.state.player.y += deltaY;
   }
 
-  drawSidebarContents(current) {
-    
+  renderEmptySidebar() {
+    const SIDEBAR_WIDTH = 224;
+    const SIDEBAR_CENTER = 688;
+
+    let topPosition = 32;
+
+    // Sidebar background
+    this.game.drawRect(576, 32, SIDEBAR_WIDTH, 512, {
+      fill: "#E2D8D4",
+      stroke: "#BDAFA1",
+      strokeWidth: 4,
+    });
+
+    // Shtuff
+    topPosition += 24;
+
+    this.game.drawImage(
+      ASSETS.UI.TITLE,
+      SIDEBAR_CENTER - 192 / 2,
+      topPosition,
+      192,
+      64
+    );
+
+    topPosition += 80;
+
+    this.game.drawImage(
+      ASSETS.UI.CREDITS,
+      SIDEBAR_CENTER - 64,
+      topPosition,
+      128,
+      64
+    );
+
+    topPosition += 80;
+
+    this.game.drawRect(576, topPosition, SIDEBAR_WIDTH, 0, {
+      fill: "",
+      stroke: "#BDAFA1",
+      strokeWidth: 4,
+    });
+
+    topPosition += 40;
+
+    this.game.drawImage(
+      ASSETS.TUTORIAL.MOVE,
+      SIDEBAR_CENTER - 128 / 2,
+      topPosition,
+      128,
+      128
+    );
+  }
+
+  renderZoneSidebar() {
+    const SIDEBAR_WIDTH = 224;
+    const SIDEBAR_CENTER = 688;
+
+    let topPosition = 32;
+
+    this.game.drawRect(576, 32, SIDEBAR_WIDTH, 512, {
+      fill: "#E2D8D4",
+      stroke: "#BDAFA1",
+      strokeWidth: 4,
+    });
+
+    topPosition += 24;
+
+    this.game.drawText(
+      this.currentLocation.title,
+      SIDEBAR_CENTER,
+      topPosition,
+      {
+        color: "#000",
+        font: "700 10px Edu-SA",
+        align: "center",
+      }
+    );
+
+    topPosition += 10;
+    topPosition += 16;
+
+    const titleFontSize = this.state.title.length > 10 ? 14 : 18;
+
+    this.game.drawText(
+      this.currentLocation.subtitle,
+      SIDEBAR_CENTER,
+      topPosition,
+      {
+        color: "#000",
+        font: `500 ${titleFontSize}px Edu-SA`,
+        align: "center",
+      }
+    );
+
+    topPosition += titleFontSize;
+    topPosition += 12;
+
+    this.game.drawRect(600, topPosition, 176, 0, {
+      fill: "",
+      stroke: "#000",
+      strokeWidth: 2,
+    });
+
+    topPosition += 24;
+
+    topPosition = this.game.drawText(this.currentLocation.text.split("\n"), SIDEBAR_CENTER, topPosition, {
+      color: "#000",
+      font: `500 12px Edu-SA`,
+      align: "center",
+      lineSpacing: 16,
+    });
+
+
+    if(!this.currentLocation.isZone) return;
+
+    topPosition += 16;
+
+    this.game.drawImage(
+      ASSETS.UI.STAR.SILVER,
+      SIDEBAR_CENTER - 36,
+      topPosition - 12,
+      24,
+      24
+    );
+
+    this.game.drawText(
+      `× ${this.currentLocation.silverStars}/${this.currentLocation.levels}`,
+      SIDEBAR_CENTER,
+      topPosition - 10,
+      {
+        color: "#000",
+        font: `500 24px Tiny5`,
+        align: "left",
+      }
+    );
+
+    topPosition += 64;
+
+    topPosition = this.game.drawText(this.currentLocation.cta, SIDEBAR_CENTER, topPosition, {
+      color: "#000",
+      font: `500 16px Edu-SA`,
+      align: "center",
+      lineSpacing: 16,
+    });
+
+    topPosition += 24;
+
+
+    // Press Space
+
+    this.game.drawImage(
+      ASSETS.UI.SPACEBAR,
+      SIDEBAR_CENTER + 2,
+      topPosition - 9,
+      54,
+      18
+    );
+
+    this.game.drawText("Press ", SIDEBAR_CENTER - 2, topPosition - 8, {
+      color: "#000",
+      font: `500 16px Tiny5`,
+      align: "right"
+    });
+
+    this.game.drawRect(624, topPosition, 12, 0, {
+      fill: "",
+      stroke: "#000",
+      strokeWidth: 2,
+    });
+
+    this.game.drawRect(752, topPosition, 12, 0, {
+      fill: "",
+      stroke: "#000",
+      strokeWidth: 2,
+    });
   }
 }
