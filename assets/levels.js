@@ -220,6 +220,40 @@ const LEVEL_SLEEPING_GOBBOS_4 = `
 2,1
 `;
 
+const LEVEL_3 = `
+2 birds 1 stone
+4
+Xd|Xd|Xd|Xd|..|..|..|..
+..|..|..|..|..|..|..|..
+..|..|..|..|..|..|..|..
+..|..|..|..|Wz|..|..|..
+..|..|..|..|..|..|..|Xl
+..|..|..|..|..|..|..|Xl
+..|..|..|..|..|..|..|Xl
+..|..|..|..|..|..|..|Xl
+0,0
+-1,-1
+-2,-2
+-3,-3
+`
+
+const LEVEL_3_EVIL = `
+sorry
+2
+..|..|..|..|..|..|..|..
+..|..|Xr|..|Xu|Xd|..|..
+..|..|..|..|..|..|..|..
+..|..|..|..|Xl|..|..|..
+..|..|Xl|..|..|..|Wz|..
+..|..|Xu|Xd|..|..|..|..
+..|..|..|..|Xr|..|..|..
+..|..|..|..|..|..|..|..
+1,1
+1,-1
+-1,1
+-1,-1
+`
+
 const LEVELS = [
   LEVEL_MINUS_1,
   LEVEL_MINUS_2,
@@ -227,6 +261,8 @@ const LEVELS = [
   LEVEL_SLEEPING_GOBBOS_2,
   LEVEL_SLEEPING_GOBBOS_3,
   LEVEL_SLEEPING_GOBBOS_4,
+  LEVEL_3,
+  LEVEL_3_EVIL,
   LEVEL_0,
   LEVEL_ONE_HALF,
   LEVEL_1,
