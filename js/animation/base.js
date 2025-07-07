@@ -44,9 +44,7 @@ class GSAnimation {
 
   handleInput(input) {
     if (this.needsInput && this.frame >= this.frames) {
-      console.log("receiving input", input);
       const res = this.inputHandler(input);
-      console.log("input received for ", this.name, res);
       this.needsInput = res;
     }
   }

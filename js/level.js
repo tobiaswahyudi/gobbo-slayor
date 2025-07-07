@@ -4,12 +4,6 @@ const HatType = {
   REMOVE: "X",
 };
 
-const SQUARE_SIZE = 64;
-const HALF_SQUARE_SIZE = SQUARE_SIZE / 2;
-const GRID_SIZE = 8;
-const SPRITE_SIZE = 56;
-const SPRITE_PADDING = (SQUARE_SIZE - SPRITE_SIZE) / 2;
-
 class LevelManager {
   constructor(game) {
     this.game = game;
@@ -48,8 +42,6 @@ class LevelManager {
 
     if (inputBlockedByAnimation) return true;
 
-    this.history.copyTop();
-
     switch (keyCode) {
       case "ArrowUp":
       case "KeyW":
@@ -72,6 +64,7 @@ class LevelManager {
         return true;
         break;
       case "Space":
+        this.history.copyTop();
         this.handleAction();
         return true;
         break;
@@ -79,15 +72,15 @@ class LevelManager {
       //   this.game.gameState.level = "selection";
       //   return true;
       case "KeyR":
-        this.history.pop();
+        // this.history.pop();
         this.handleRestartHold();
         return true;
       case "KeyZ":
-        this.history.pop();
+        // this.history.pop();
         this.history.pop();
         return true;
       default:
-        this.history.pop();
+        // this.history.pop();
         return false;
     }
   }
@@ -267,13 +260,22 @@ class LevelManager {
         SQUARE_SIZE
       );
     }
-    if (this.currentLevel <= 1) {
+    if (this.currentLevel <= 1 || this.currentLevel == 4) {
       this.game.drawImage(
         ASSETS.TUTORIAL.UNDO,
         32 + 3 * SQUARE_SIZE + 0.5 * this.juiceOffset.x,
         32 + 6 * SQUARE_SIZE + 0.5 * this.juiceOffset.y,
         SQUARE_SIZE,
         SQUARE_SIZE
+      );
+    }
+    if (this.currentLevel == 4) {
+      this.game.drawImage(
+        ASSETS.TUTORIAL.RESTART,
+        32 + 6 * SQUARE_SIZE + 0.5 * this.juiceOffset.x + SPRITE_PADDING,
+        32 + 6 * SQUARE_SIZE + 0.5 * this.juiceOffset.y + SPRITE_PADDING,
+        SPRITE_SIZE,
+        SPRITE_SIZE
       );
     }
 
@@ -299,7 +301,7 @@ class LevelManager {
       this.game.ctx.globalAlpha = 1;
     }
 
-    if (this.currentLevel === 0 || this.currentLevel === 2) {
+    if (this.currentLevel === 0) {
       this.game.ctx.globalAlpha = 0.5;
       this.game.drawImage(
         ASSETS.TUTORIAL.TOOLTIP,
@@ -385,60 +387,27 @@ class LevelManager {
     return NEEDS_RE_RENDER;
   }
 
-  cellCenter(num) {
-    return num * SQUARE_SIZE + HALF_SQUARE_SIZE;
-  }
-
   // Level-specific content rendering (override this for different level types)
   renderLevelContent() {
     this.game.drawImage(
       ASSETS.SPRITE.WIZ,
-      this.cellCenter(this.state.player.x) +
-        SPRITE_PADDING +
-        this.juiceOffset.x,
-      this.cellCenter(this.state.player.y) +
-        SPRITE_PADDING +
-        this.juiceOffset.y,
+      cellCenter(this.state.player.x) + SPRITE_PADDING + this.juiceOffset.x,
+      cellCenter(this.state.player.y) + SPRITE_PADDING + this.juiceOffset.y,
       SPRITE_SIZE,
       SPRITE_SIZE
     );
-    this.state.gobbos.forEach((gobbo) => this.renderGobbo(gobbo));
+    this.state.gobbos.forEach((gobbo) =>
+      gobbo.render(this.game, this.juiceOffset)
+    );
     this.state.walls.forEach((wall) => this.renderWall(wall));
     this.renderAimAreas();
-  }
-
-  renderGobbo(gobbo) {
-    if (gobbo.direction === Direction.SLEEP) {
-      this.game.drawImage(
-        ASSETS.SPRITE.GOBBOS.SLEEP,
-        this.cellCenter(gobbo.x) + SPRITE_PADDING + this.juiceOffset.x,
-        this.cellCenter(gobbo.y) + SPRITE_PADDING + this.juiceOffset.y,
-        SPRITE_SIZE,
-        SPRITE_SIZE
-      );
-    } else {
-      this.game.drawImage(
-        ASSETS.SPRITE.GOBBOS.MOVE,
-        this.cellCenter(gobbo.x) + SPRITE_PADDING + this.juiceOffset.x,
-        this.cellCenter(gobbo.y) + SPRITE_PADDING + this.juiceOffset.y,
-        SPRITE_SIZE,
-        SPRITE_SIZE
-      );
-    }
-    this.game.drawImage(
-      ASSETS.SPRITE.HAT[gobbo.hatType],
-      this.cellCenter(gobbo.x) + SPRITE_PADDING + this.juiceOffset.x,
-      this.cellCenter(gobbo.y) + SPRITE_PADDING + this.juiceOffset.y,
-      SPRITE_SIZE,
-      SPRITE_SIZE
-    );
   }
 
   renderWall(wall) {
     this.game.drawImage(
       ASSETS.SPRITE.CRATE,
-      this.cellCenter(wall.x) + SPRITE_PADDING + this.juiceOffset.x,
-      this.cellCenter(wall.y) + SPRITE_PADDING + this.juiceOffset.y,
+      cellCenter(wall.x) + SPRITE_PADDING + this.juiceOffset.x,
+      cellCenter(wall.y) + SPRITE_PADDING + this.juiceOffset.y,
       SPRITE_SIZE,
       SPRITE_SIZE
     );
@@ -469,42 +438,42 @@ class LevelManager {
     areas.forEach((area) => {
       if (!this.isInAimArea(area.x - 1, area.y, aimAreaLookup)) {
         outline.moveTo(
-          this.cellCenter(area.x) + this.juiceOffset.x,
-          this.cellCenter(area.y) + this.juiceOffset.y
+          cellCenter(area.x) + this.juiceOffset.x,
+          cellCenter(area.y) + this.juiceOffset.y
         );
         outline.lineTo(
-          this.cellCenter(area.x) + this.juiceOffset.x,
-          this.cellCenter(area.y + 1) + this.juiceOffset.y
+          cellCenter(area.x) + this.juiceOffset.x,
+          cellCenter(area.y + 1) + this.juiceOffset.y
         );
       }
       if (!this.isInAimArea(area.x + 1, area.y, aimAreaLookup)) {
         outline.moveTo(
-          this.cellCenter(area.x + 1) + this.juiceOffset.x,
-          this.cellCenter(area.y) + this.juiceOffset.y
+          cellCenter(area.x + 1) + this.juiceOffset.x,
+          cellCenter(area.y) + this.juiceOffset.y
         );
         outline.lineTo(
-          this.cellCenter(area.x + 1) + this.juiceOffset.x,
-          this.cellCenter(area.y + 1) + this.juiceOffset.y
+          cellCenter(area.x + 1) + this.juiceOffset.x,
+          cellCenter(area.y + 1) + this.juiceOffset.y
         );
       }
       if (!this.isInAimArea(area.x, area.y - 1, aimAreaLookup)) {
         outline.moveTo(
-          this.cellCenter(area.x) + this.juiceOffset.x,
-          this.cellCenter(area.y) + this.juiceOffset.y
+          cellCenter(area.x) + this.juiceOffset.x,
+          cellCenter(area.y) + this.juiceOffset.y
         );
         outline.lineTo(
-          this.cellCenter(area.x + 1) + this.juiceOffset.x,
-          this.cellCenter(area.y) + this.juiceOffset.y
+          cellCenter(area.x + 1) + this.juiceOffset.x,
+          cellCenter(area.y) + this.juiceOffset.y
         );
       }
       if (!this.isInAimArea(area.x, area.y + 1, aimAreaLookup)) {
         outline.moveTo(
-          this.cellCenter(area.x) + this.juiceOffset.x,
-          this.cellCenter(area.y + 1) + this.juiceOffset.y
+          cellCenter(area.x) + this.juiceOffset.x,
+          cellCenter(area.y + 1) + this.juiceOffset.y
         );
         outline.lineTo(
-          this.cellCenter(area.x + 1) + this.juiceOffset.x,
-          this.cellCenter(area.y + 1) + this.juiceOffset.y
+          cellCenter(area.x + 1) + this.juiceOffset.x,
+          cellCenter(area.y + 1) + this.juiceOffset.y
         );
       }
     });
@@ -521,12 +490,12 @@ class LevelManager {
     const magicStaffY = (11.5 / 32) * SPRITE_SIZE + SPRITE_PADDING;
 
     outline.moveTo(
-      this.cellCenter(this.state.player.x) + magicStaffX + this.juiceOffset.x,
-      this.cellCenter(this.state.player.y) + magicStaffY + this.juiceOffset.y
+      cellCenter(this.state.player.x) + magicStaffX + this.juiceOffset.x,
+      cellCenter(this.state.player.y) + magicStaffY + this.juiceOffset.y
     );
     outline.lineTo(
-      this.cellCenter(leftmostCell.x) + this.juiceOffset.x,
-      this.cellCenter(leftmostCell.y + 0.5) + this.juiceOffset.y
+      cellCenter(leftmostCell.x) + this.juiceOffset.x,
+      cellCenter(leftmostCell.y + 0.5) + this.juiceOffset.y
     );
 
     this.game.drawPath(outline, {
@@ -537,8 +506,8 @@ class LevelManager {
 
   renderAimArea(area) {
     this.game.drawRect(
-      this.cellCenter(area.x) + this.juiceOffset.x,
-      this.cellCenter(area.y) + this.juiceOffset.y,
+      cellCenter(area.x) + this.juiceOffset.x,
+      cellCenter(area.y) + this.juiceOffset.y,
       SQUARE_SIZE,
       SQUARE_SIZE,
       { fill: this.state.remainingBombs > 0 ? "#ffa05766" : "#ababab66" }
@@ -586,20 +555,6 @@ class LevelManager {
     return true;
   }
 
-  bounceDirection(direction) {
-    switch (direction) {
-      case Direction.UP:
-        return Direction.DOWN;
-      case Direction.DOWN:
-        return Direction.UP;
-      case Direction.LEFT:
-        return Direction.RIGHT;
-      case Direction.RIGHT:
-        return Direction.LEFT;
-    }
-    return direction;
-  }
-
   // Game Logic
   makeMove(direction) {
     if (this.levelIsDone) return;
@@ -609,9 +564,13 @@ class LevelManager {
 
     // move gobbos
     this.state.gobbos.forEach((gobbo) => {
-      if (!this.tryMove(gobbo, ...this.getDirVec(gobbo.direction))) {
-        gobbo.direction = this.bounceDirection(gobbo.direction);
-        this.tryMove(gobbo, ...this.getDirVec(gobbo.direction));
+      for (let tries = 0; tries < 2; tries++) {
+        if (!this.tryMove(gobbo, ...this.getDirVec(gobbo.direction))) {
+          gobbo.direction = oppositeDirection(gobbo.direction);
+        } else {
+          gobbo.lastMovedDirection = gobbo.direction;
+          break;
+        }
       }
     });
 
@@ -651,8 +610,8 @@ class LevelManager {
     areas.forEach((area) => {
       this.animations.push(
         new ExplosionAnimation(
-          this.cellCenter(area.x) + this.juiceOffset.x,
-          this.cellCenter(area.y) + this.juiceOffset.y,
+          cellCenter(area.x) + this.juiceOffset.x,
+          cellCenter(area.y) + this.juiceOffset.y,
           SQUARE_SIZE,
           this.juiceOffset
         )
@@ -703,8 +662,8 @@ class LevelManager {
     }
     this.animations.push(
       new EtherealAnimation(
-        this.cellCenter(gobbo.x) + SQUARE_SIZE * 0.5,
-        this.cellCenter(gobbo.y) + SQUARE_SIZE * 0.5,
+        cellCenter(gobbo.x) + SQUARE_SIZE * 0.5,
+        cellCenter(gobbo.y) + SQUARE_SIZE * 0.5,
         ASSETS.UI.HAT[gobbo.hatType],
         SPRITE_SIZE
       )

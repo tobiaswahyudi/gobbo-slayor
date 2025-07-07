@@ -1,10 +1,24 @@
 const Direction = {
-    UP: "u",
-    DOWN: "d",
-    LEFT: "l",
-    RIGHT: "r",
-    SLEEP: "s",
-  };
+  UP: "u",
+  DOWN: "d",
+  LEFT: "l",
+  RIGHT: "r",
+  SLEEP: "s",
+};
+
+const oppositeDirection = (direction) => {
+  switch (direction) {
+    case Direction.UP:
+      return Direction.DOWN;
+    case Direction.DOWN:
+      return Direction.UP;
+    case Direction.LEFT:
+      return Direction.RIGHT;
+    case Direction.RIGHT:
+      return Direction.LEFT;
+  }
+  return direction;
+};
 
 class Position {
   constructor(x = 0, y = 0) {
