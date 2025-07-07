@@ -248,10 +248,10 @@ class LevelManager {
 
       this.game.drawText(
         count,
-        32 + SQUARE_SIZE * 4.3,
-        32 + SQUARE_SIZE * 4.1,
+        32 + SQUARE_SIZE * 4.25,
+        32 + SQUARE_SIZE * 4.125,
         {
-          font: "bold 40px Edu-SA",
+          font: "40px Tiny5",
           color: "#000",
         }
       );
