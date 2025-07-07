@@ -270,13 +270,26 @@ class Game {
       font = "16px Courier New",
       align = "left",
       baseline = "top",
+      lineSpacing = Number(font.match(/(\d+)px/)[1] || 16),
     } = options;
 
+    if (typeof text === "object") {
+      for (const line of text) {
+        y = this.drawText(line, x, y, {
+          ...options,
+          lineSpacing: lineSpacing,
+        });
+      }
+      return y + lineSpacing;
+    } else {
     this.ctx.fillStyle = color;
     this.ctx.font = font;
     this.ctx.textAlign = align;
     this.ctx.textBaseline = baseline;
     this.ctx.fillText(text, x, y);
+
+      return y + lineSpacing;
+    }
   }
 
   drawRect(x, y, width, height, params = {}) {
