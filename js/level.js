@@ -635,12 +635,12 @@ class LevelManager {
     topPosition += 32;
 
     this.game.drawText(
-      "GOBBOS",
+      "Gobbos",
       612 + this.juiceOffset.x,
       topPosition - 8 + this.juiceOffset.y,
       {
         color: "#000",
-        font: "16px Tiny5",
+        font: "500 16px Edu-SA",
         align: "left",
       }
     );
@@ -669,12 +669,12 @@ class LevelManager {
     const spellColor = this.state.remainingBombs == 0 ? "#808080" : "#000000";
 
     this.game.drawText(
-      "SPELLS",
+      "Spells",
       612 + this.juiceOffset.x,
       topPosition - 8 + this.juiceOffset.y,
       {
         color: spellColor,
-        font: "16px Tiny5",
+        font: "500 16px Edu-SA",
         align: "left",
       }
     );
@@ -764,12 +764,12 @@ class LevelManager {
 
   renderPopupContent(game) {
     game.drawText(
-      `Level ${this.currentLevel}`,
+      `LEVEL ${this.currentLevel}`,
       BOARD_PADDING + H_BOARD_SIZE,
       BOARD_PADDING + H_BOARD_SIZE - 56,
       {
         color: "#000",
-        font: "bold 24px Edu-SA",
+        font: "bold 12px Edu-SA",
         align: "center",
       }
     );
@@ -780,7 +780,7 @@ class LevelManager {
       BOARD_PADDING + H_BOARD_SIZE - 24,
       {
         color: "#000",
-        font: "16px Edu-SA",
+        font: "500 18px Edu-SA",
         align: "center",
       }
     );
@@ -791,7 +791,7 @@ class LevelManager {
       BOARD_PADDING + H_BOARD_SIZE + 12,
       {
         color: "#000",
-        font: "12px Edu-SA",
+        font: "500 12px Edu-SA",
         align: "center",
       }
     );
@@ -810,7 +810,7 @@ class LevelManager {
       BOARD_PADDING + H_BOARD_SIZE + 28,
       {
         color: "#000",
-        font: "24px Edu-SA",
+        font: "24px Tiny5",
         align: "left",
       }
     );
@@ -821,7 +821,7 @@ class LevelManager {
       BOARD_PADDING + H_BOARD_SIZE + 12,
       {
         color: "#000",
-        font: "12px Edu-SA",
+        font: "500 12px Edu-SA",
         align: "center",
       }
     );
@@ -840,7 +840,7 @@ class LevelManager {
       BOARD_PADDING + H_BOARD_SIZE + 28,
       {
         color: "#000",
-        font: "24px Edu-SA",
+        font: "24px Tiny5",
         align: "left",
       }
     );
