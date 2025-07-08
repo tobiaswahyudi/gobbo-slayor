@@ -4,20 +4,28 @@ const ETHEREAL_OPACITY = 0.6;
 const ETHEREAL_OUT_FRAMES = 8;
 const ETHEREAL_IN_FRAMES = 4;
 
-const ETHEREAL_RENDER = (img, x, y, originalSize) => (game, frame) => {
-  const opacityProgress =
-    frame < ETHEREAL_IN_FRAMES
-      ? frame / ETHEREAL_IN_FRAMES
-      : 1 - (frame - ETHEREAL_IN_FRAMES) / ETHEREAL_OUT_FRAMES;
+const ETHEREAL_RENDER = (img, x, y, originalSize, params) => (game, frame) => {
+  const {
+    etherealStart = ETHEREAL_START,
+    etherealEnd = ETHEREAL_END,
+    etherealOpacity = ETHEREAL_OPACITY,
+    etherealInFrames = ETHEREAL_IN_FRAMES,
+    etherealOutFrames = ETHEREAL_OUT_FRAMES,
+  } = params;
 
-  const scaleProgress = frame / (ETHEREAL_IN_FRAMES + ETHEREAL_OUT_FRAMES);
-  const scale = ETHEREAL_START + (ETHEREAL_END - ETHEREAL_START) * scaleProgress;
+  const opacityProgress =
+    frame < etherealInFrames
+      ? frame / etherealInFrames
+      : 1 - (frame - etherealInFrames) / etherealOutFrames;
+
+  const scaleProgress = frame / (etherealInFrames + etherealOutFrames);
+  const scale = etherealStart + (etherealEnd - etherealStart) * scaleProgress;
 
   const size = originalSize * scale;
   const halfSize = size * 0.5;
 
   game.ctx.save();
-  game.ctx.globalAlpha = ETHEREAL_OPACITY * opacityProgress;
+  game.ctx.globalAlpha = etherealOpacity * opacityProgress;
 
   game.drawImage(img, x - halfSize, y - halfSize, size, size);
 
@@ -25,10 +33,16 @@ const ETHEREAL_RENDER = (img, x, y, originalSize) => (game, frame) => {
 };
 
 class EtherealAnimation extends GSAnimation {
-  constructor(x, y, img, originalSize) {
+  constructor(x, y, img, originalSize, params = {}, callback) {
+    const {
+      etherealInFrames = ETHEREAL_IN_FRAMES,
+      etherealOutFrames = ETHEREAL_OUT_FRAMES,
+    } = params;
+
     super({
-      frames: ETHEREAL_IN_FRAMES + ETHEREAL_OUT_FRAMES,
-      render: ETHEREAL_RENDER(img, x, y, originalSize),
+      frames: etherealInFrames + etherealOutFrames,
+      render: ETHEREAL_RENDER(img, x, y, originalSize, params),
+      callback: callback,
     });
   }
 }
