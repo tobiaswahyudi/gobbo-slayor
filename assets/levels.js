@@ -307,7 +307,7 @@ const LEVEL_3_EVIL = LevelState.make({
 });
 
 const ZONE_1_MAP = LevelState.make({
-  title: "Zone 1: Sleepy Hill",
+  title: "Sleepy Hill",
   bombs: 0,
   level: `
 ..|Cr|Cr|Cr|Cr|Cr|Cr|Cr
@@ -322,17 +322,49 @@ Wz|..|..|..|Cr|..|Cr|Cr
   aimArea: [],
 });
 
+const ZONE_1_LEVELS = [
+  LEVEL_MINUS_1,
+  LEVEL_0,
+  LEVEL_SLEEPING_GOBBOS_1,
+  LEVEL_SLEEPING_GOBBOS_2,
+  LEVEL_SLEEPING_GOBBOS_3,
+  LEVEL_SLEEPING_GOBBOS_4,
+];
+
+const ZONE_2_MAP = LevelState.make({
+  title: "Ruined Fort",
+  bombs: 0,
+  level: `
+..|..|..|..|..|..|..|..
+..|Wz|..|..|..|..|..|..
+..|..|..|..|..|..|..|..
+..|..|01|..|02|..|03|..
+..|..|..|..|..|..|..|..
+..|04|..|05|..|06|..|..
+..|..|..|..|..|..|..|..
+..|..|..|07|..|08|..|..
+`,
+});
+
+const ZONE_2_LEVELS = [
+  LEVEL_ONE_HALF,
+  LEVEL_1,
+  LEVEL_1_EVIL,
+  LEVEL_2,
+  LEVEL_3,
+  LEVEL_3_EVIL,
+  LEVEL_BAD,
+  LEVEL_FIN,
+];
+
 const ZONE_LEVELS = {
   camp: {
     map: ZONE_1_MAP,
-    levels: [
-      LEVEL_MINUS_1,
-      LEVEL_0,
-      LEVEL_SLEEPING_GOBBOS_1,
-      LEVEL_SLEEPING_GOBBOS_2,
-      LEVEL_SLEEPING_GOBBOS_3,
-      LEVEL_SLEEPING_GOBBOS_4,
-    ],
+    levels: ZONE_1_LEVELS,
+  },
+  fort: {
+    map: ZONE_2_MAP,
+    levels: ZONE_2_LEVELS,
   },
 };
 

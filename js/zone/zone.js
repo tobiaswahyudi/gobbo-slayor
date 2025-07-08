@@ -308,7 +308,7 @@ class ZoneMap {
     topPosition += 10;
     topPosition += 16;
 
-    const titleFontSize = this.state.title.length > 10 ? 14 : 18;
+    const titleFontSize = this.currentLocation.subtitle > 10 ? 14 : 18;
 
     this.game.drawText(
       this.currentLocation.subtitle,
@@ -468,34 +468,14 @@ class ZoneMap {
       );
     }
 
-    topPosition += 24;
+    topPosition += 64;
 
     // Press Space
 
-    this.game.drawImage(
-      ASSETS.UI.SPACEBAR,
-      SIDEBAR_CENTER + 2,
-      topPosition - 9,
-      54,
-      18
-    );
-
-    this.game.drawText("Press ", SIDEBAR_CENTER - 2, topPosition - 8, {
+    this.game.drawText("Press [ESC]\nto return to the world map".split("\n"), SIDEBAR_CENTER, topPosition - 8, {
       color: "#000",
       font: `500 16px Tiny5`,
-      align: "right",
-    });
-
-    this.game.drawRect(624, topPosition, 12, 0, {
-      fill: "",
-      stroke: "#000",
-      strokeWidth: 2,
-    });
-
-    this.game.drawRect(752, topPosition, 12, 0, {
-      fill: "",
-      stroke: "#000",
-      strokeWidth: 2,
+      align: "center",
     });
   }
 

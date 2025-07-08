@@ -15,7 +15,7 @@ class Game {
     this.height = 576; // Inner: 512 = 32 * 16
 
     // Scene management
-    this.scene = "zone"; // world|zone|level
+    this.scene = "world"; // world|zone|level
 
     // Input handling
     this.keys = {};
@@ -28,8 +28,8 @@ class Game {
 
     // Initialize modules
     this.worldMap = new WorldMap(this);
-    this.currentZone = WORLD_MAP_LOCATIONS[1];
-    this.zoneMap = new ZoneMap(this);
+    this.currentZone = null;
+    this.zoneMap = null;
     this.currentLevel = null;
     this.levelManager = null;
 

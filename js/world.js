@@ -7,9 +7,9 @@ const WORLD_MAP = `
 ..|..|..|..|..|..|..|Cr
 ..|..|..|..|Cr|..|Cr|..
 Cr|Cr|Cr|Cr|..|Cr|..|..
-..|..|..|Cr|Wz|..|..|..
+..|..|..|Cr|..|..|..|..
 Cr|..|..|..|..|Cr|..|..
-..|..|..|Cr|Cr|Cr|..|..
+..|Wz|..|Cr|Cr|Cr|..|..
 `;
 
 const WORLD_MAP_LOCATIONS = [
@@ -499,8 +499,11 @@ class WorldMap {
   }
 
   goToZone() {
+    if(!this.currentLocation || !this.currentLocation.isZone) return;
+
     this.game.scene = "zone";
-    this.game.zoneMap.currentZone = this.currentLocation;
+    this.game.currentZone = this.currentLocation;
+    this.game.zoneMap = new ZoneMap(this.game);
     this.game.zoneMap.currentLevel = null;
   }
 }
