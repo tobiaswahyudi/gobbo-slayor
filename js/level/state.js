@@ -1,17 +1,25 @@
 class LevelState {
-  constructor({ title = "", bombs = 0, level, aimArea = [], specialTiles = {} }) {
+  constructor() {
     this.turnCount = 0;
     this.player = new Position(0, 0);
     this.gobbos = [];
     this.walls = [];
-    this.remainingBombs = bombs;
-    this.title = title;
+    this.remainingBombs = 0;
+    this.title = "";
     this.specialTiles = [];
-    this.levelString = level;
+    this.levelString = "";
+    this.aimArea = [];
+  }
 
-    this.aimArea = aimArea.map(([x, y]) => new Position(x, y));
+  static make({ title = "", bombs = 0, level, aimArea = []}) {
+    const state = new LevelState();
+    state.title = title;
+    state.remainingBombs = bombs;
+    state.levelString = level;
+    state.aimArea = aimArea.map(([x, y]) => new Position(x, y));
 
-    this.parse(specialTiles);
+    state.parse();
+    return state;
   }
 
   clone() {
@@ -23,7 +31,6 @@ class LevelState {
     state.aimArea = this.aimArea.map((aim) => aim.clone());
     state.remainingBombs = this.remainingBombs;
     state.title = this.title;
-    state.specialTiles = this.specialTiles.map((tile) => tile.clone());
     return state;
   }
 

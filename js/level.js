@@ -5,10 +5,10 @@ const HatType = {
 };
 
 class LevelManager {
-  constructor(game, titleString, levelString) {
+  constructor(game, titleString, levelState) {
     this.game = game;
     this.titleString = titleString;
-    this.history = new LevelHistory(levelString);
+    this.history = new LevelHistory(levelState);
 
     this.animations = [];
 
@@ -728,13 +728,6 @@ class LevelManager {
     );
   }
 
-  loadNextLevel() {
-    this.currentLevel++;
-    this.history = new LevelHistory(LEVELS[this.currentLevel]);
-    this.levelIsDone = false;
-    this.levelIsTransitioning = false;
-  }
-
   handleRestartHold() {
     if (!this.restartHeldSince) {
       this.restartHeldSince = new Date().getTime();
@@ -746,6 +739,6 @@ class LevelManager {
     this.state.turnCount = 0;
     this.canHandleInput = false;
     this.restartHeldSince = null;
-    this.history = new LevelHistory(LEVELS[this.currentLevel]);
+    this.history.reset();
   }
 }

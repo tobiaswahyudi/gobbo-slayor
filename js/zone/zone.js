@@ -504,7 +504,7 @@ class ZoneMap {
     this.game.levelManager = new LevelManager(
       this.game,
       `${this.currentLocation.title}  -  LEVEL ${this.currentLevel.number}`,
-      this.currentLevel.level.levelString
+      this.currentLevel.level
     );
   }
 }

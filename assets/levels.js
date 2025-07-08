@@ -1,5 +1,5 @@
 // Level 0, 3 bombs
-const LEVEL_MINUS_1 = new LevelState({
+const LEVEL_MINUS_1 = LevelState.make({
   title: "Welcome!",
   bombs: 2,
   level: `
@@ -15,7 +15,7 @@ const LEVEL_MINUS_1 = new LevelState({
   aimArea: [[2, 0]],
 });
 
-const LEVEL_MINUS_2 = new LevelState({
+const LEVEL_MINUS_2 = LevelState.make({
   title: "bug test",
   bombs: 2,
   level: `
@@ -35,7 +35,7 @@ const LEVEL_MINUS_2 = new LevelState({
 });
 
 // Level 0, 3 bombs
-const LEVEL_0 = new LevelState({
+const LEVEL_0 = LevelState.make({
   title: "Magic Hats, what do they do?",
   bombs: 3,
   level: `
@@ -52,7 +52,7 @@ const LEVEL_0 = new LevelState({
 });
 
 // Level 1.5, 2 bombs
-const LEVEL_ONE_HALF = new LevelState({
+const LEVEL_ONE_HALF = LevelState.make({
   title: "Evasive Action",
   bombs: 2,
   level: `
@@ -69,7 +69,7 @@ const LEVEL_ONE_HALF = new LevelState({
 });
 
 // Level 1, 2 bombs
-const LEVEL_1_EVIL = new LevelState({
+const LEVEL_1_EVIL = LevelState.make({
   title: "Gobbos on a Morning Jog (Evil)",
   bombs: 2,
   level: `
@@ -90,7 +90,7 @@ const LEVEL_1_EVIL = new LevelState({
 });
 
 // Level 1, 2 bombs
-const LEVEL_1 = new LevelState({
+const LEVEL_1 = LevelState.make({
   title: "Gobbos on a Morning Jog",
   bombs: 2,
   level: `
@@ -111,7 +111,7 @@ const LEVEL_1 = new LevelState({
 });
 
 // Level 1, 2 bombs
-const LEVEL_2 = new LevelState({
+const LEVEL_2 = LevelState.make({
   title: "⬇︎ Don't overthink it ⬇︎",
   bombs: 3,
   level: `
@@ -133,7 +133,7 @@ const LEVEL_2 = new LevelState({
   ],
 });
 
-const LEVEL_FIN = new LevelState({
+const LEVEL_FIN = LevelState.make({
   title: "SECRET GOBBO DANCE PARTY",
   bombs: 0,
   level: `
@@ -154,7 +154,7 @@ Xr|..|Xr|..|Xr|..|Xr|..
   ],
 });
 
-const LEVEL_BAD = new LevelState({
+const LEVEL_BAD = LevelState.make({
   title: "This level is bad.",
   bombs: 300,
   level: `
@@ -170,7 +170,7 @@ const LEVEL_BAD = new LevelState({
   aimArea: [[0, 0]],
 });
 
-const LEVEL_SLEEPING_GOBBOS_1 = new LevelState({
+const LEVEL_SLEEPING_GOBBOS_1 = LevelState.make({
   title: "Just some target practice.",
   bombs: 3,
   level: `
@@ -190,7 +190,7 @@ const LEVEL_SLEEPING_GOBBOS_1 = new LevelState({
   ],
 });
 
-const LEVEL_SLEEPING_GOBBOS_2 = new LevelState({
+const LEVEL_SLEEPING_GOBBOS_2 = LevelState.make({
   title: "Wait what.",
   bombs: 3,
   level: `
@@ -210,7 +210,7 @@ const LEVEL_SLEEPING_GOBBOS_2 = new LevelState({
   ],
 });
 
-const LEVEL_SLEEPING_GOBBOS_3 = new LevelState({
+const LEVEL_SLEEPING_GOBBOS_3 = LevelState.make({
   title: "A little puzzling.",
   bombs: 4,
   level: `
@@ -243,7 +243,7 @@ const LEVEL_SLEEPING_GOBBOS_3 = new LevelState({
   ],
 });
 
-const LEVEL_SLEEPING_GOBBOS_4 = new LevelState({
+const LEVEL_SLEEPING_GOBBOS_4 = LevelState.make({
   title: "?.",
   bombs: 4,
   level: `
@@ -264,7 +264,7 @@ const LEVEL_SLEEPING_GOBBOS_4 = new LevelState({
   ],
 });
 
-const LEVEL_3 = new LevelState({
+const LEVEL_3 = LevelState.make({
   title: "2 birds 1 stone",
   bombs: 4,
   level: `
@@ -285,7 +285,7 @@ Xd|Xd|Xd|Xd|..|..|..|..
   ],
 });
 
-const LEVEL_3_EVIL = new LevelState({
+const LEVEL_3_EVIL = LevelState.make({
   title: "sorry",
   bombs: 2,
   level: `
@@ -306,7 +306,7 @@ const LEVEL_3_EVIL = new LevelState({
   ],
 });
 
-const ZONE_1_MAP = new LevelState({
+const ZONE_1_MAP = LevelState.make({
   title: "Zone 1: Sleepy Hill",
   bombs: 0,
   level: `

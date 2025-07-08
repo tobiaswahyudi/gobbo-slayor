@@ -1,8 +1,8 @@
 class LevelHistory {
-  constructor(levelString) {
+  constructor(initialState) {
     this.current = 0;
-    const firstState = new LevelState();
-    firstState.parse(levelString);
+    this.initial = initialState;
+    const firstState = initialState.clone();
     this.history = [firstState];
   }
 
@@ -24,6 +24,6 @@ class LevelHistory {
 
   reset() {
     this.current = 0;
-    this.history = [this.history[0]];
+    this.history = [this.initial.clone()];
   }
 }

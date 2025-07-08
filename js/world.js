@@ -54,7 +54,7 @@ const WORLD_MAP_LOCATIONS = [
 class WorldMap {
   constructor(game) {
     this.game = game;
-    this.state = new LevelState({
+    this.state = LevelState.make({
       level: WORLD_MAP,
     });
     this.currentLocation = null;
