@@ -95,21 +95,13 @@ class LevelManager {
     // Game area background
     this.game.drawRect(0, 0, width, height, { fill: "#C5BAB5" });
 
-    // Draw a 8x8 grid of 64px squares. They alternate between CFC6BD and E2D8D4
-    for (let i = 0; i < GRID_SIZE; i++) {
-      for (let j = 0; j < GRID_SIZE; j++) {
-        const color = (i + j) % 2 === 0 ? "#CFC6BD" : "#E2D8D4";
-        this.game.drawRect(
-          i * SQUARE_SIZE + HALF_SQUARE_SIZE + this.juiceOffset.x * 0.5,
-          j * SQUARE_SIZE + HALF_SQUARE_SIZE + this.juiceOffset.y * 0.5,
-          SQUARE_SIZE,
-          SQUARE_SIZE,
-          {
-            fill: color,
-          }
-        );
-      }
-    }
+    drawCheckeredGrid(
+      this.game,
+      BOARD_PADDING + 0.5 * this.juiceOffset.x,
+      BOARD_PADDING + 0.5 * this.juiceOffset.y,
+      "#CFC6BD",
+      "#E2D8D4"
+    );
 
     this.game.drawRect(
       32 + this.juiceOffset.x * 0.5,
@@ -195,8 +187,11 @@ class LevelManager {
       this.game.ctx.globalAlpha = 1;
     }
 
-    // Render level-specific content
-    this.renderLevelContent();
+    this.state.render(
+      this.game,
+      BOARD_PADDING + this.juiceOffset.x,
+      BOARD_PADDING + this.juiceOffset.y
+    );
 
     this.animations.forEach((anim) => anim.tick(this.game));
     // console.log("anims pre-filter", this.animations);
@@ -267,133 +262,6 @@ class LevelManager {
     this.checkLevelDone();
 
     return NEEDS_RE_RENDER;
-  }
-
-  // Level-specific content rendering (override this for different level types)
-  renderLevelContent() {
-    this.game.drawImage(
-      ASSETS.SPRITE.WIZ,
-      cellCenter(this.state.player.x) + SPRITE_PADDING + this.juiceOffset.x,
-      cellCenter(this.state.player.y) + SPRITE_PADDING + this.juiceOffset.y,
-      SPRITE_SIZE,
-      SPRITE_SIZE
-    );
-    this.state.gobbos.forEach((gobbo) =>
-      gobbo.render(this.game, this.juiceOffset)
-    );
-    this.state.walls.forEach((wall) => this.renderWall(wall));
-    this.renderAimAreas();
-  }
-
-  renderWall(wall) {
-    this.game.drawImage(
-      ASSETS.SPRITE.CRATE,
-      cellCenter(wall.x) + SPRITE_PADDING + this.juiceOffset.x,
-      cellCenter(wall.y) + SPRITE_PADDING + this.juiceOffset.y,
-      SPRITE_SIZE,
-      SPRITE_SIZE
-    );
-  }
-
-  isInAimArea(x, y, lookup) {
-    return !this.isOutOfBounds(x, y) && lookup[x][y];
-  }
-
-  renderAimAreas() {
-    const aimAreaLookup = new Array(GRID_SIZE)
-      .fill(null)
-      .map(() => new Array(GRID_SIZE).fill(false));
-
-    const areas = this.state.aimArea
-      .map((area) => area.add(this.state.player))
-      .filter((area) => !this.isOutOfBounds(area.x, area.y));
-
-    if (areas.length == 0) return;
-
-    areas.forEach((area) => {
-      aimAreaLookup[area.x][area.y] = true;
-      this.renderAimArea(area);
-    });
-
-    const outline = new Path2D();
-
-    areas.forEach((area) => {
-      if (!this.isInAimArea(area.x - 1, area.y, aimAreaLookup)) {
-        outline.moveTo(
-          cellCenter(area.x) + this.juiceOffset.x,
-          cellCenter(area.y) + this.juiceOffset.y
-        );
-        outline.lineTo(
-          cellCenter(area.x) + this.juiceOffset.x,
-          cellCenter(area.y + 1) + this.juiceOffset.y
-        );
-      }
-      if (!this.isInAimArea(area.x + 1, area.y, aimAreaLookup)) {
-        outline.moveTo(
-          cellCenter(area.x + 1) + this.juiceOffset.x,
-          cellCenter(area.y) + this.juiceOffset.y
-        );
-        outline.lineTo(
-          cellCenter(area.x + 1) + this.juiceOffset.x,
-          cellCenter(area.y + 1) + this.juiceOffset.y
-        );
-      }
-      if (!this.isInAimArea(area.x, area.y - 1, aimAreaLookup)) {
-        outline.moveTo(
-          cellCenter(area.x) + this.juiceOffset.x,
-          cellCenter(area.y) + this.juiceOffset.y
-        );
-        outline.lineTo(
-          cellCenter(area.x + 1) + this.juiceOffset.x,
-          cellCenter(area.y) + this.juiceOffset.y
-        );
-      }
-      if (!this.isInAimArea(area.x, area.y + 1, aimAreaLookup)) {
-        outline.moveTo(
-          cellCenter(area.x) + this.juiceOffset.x,
-          cellCenter(area.y + 1) + this.juiceOffset.y
-        );
-        outline.lineTo(
-          cellCenter(area.x + 1) + this.juiceOffset.x,
-          cellCenter(area.y + 1) + this.juiceOffset.y
-        );
-      }
-    });
-
-    const leftmostCellPos = areas.reduce(
-      (min, area) => (area.x < min ? area.x : min),
-      GRID_SIZE
-    );
-    const leftmostCell = areas.find((area) => area.x === leftmostCellPos);
-
-    // draw a line from THE MIDDLE OF THE MAGIC STAFF at (28, 12)
-
-    const magicStaffX = (27.5 / 32) * SPRITE_SIZE + SPRITE_PADDING;
-    const magicStaffY = (11.5 / 32) * SPRITE_SIZE + SPRITE_PADDING;
-
-    outline.moveTo(
-      cellCenter(this.state.player.x) + magicStaffX + this.juiceOffset.x,
-      cellCenter(this.state.player.y) + magicStaffY + this.juiceOffset.y
-    );
-    outline.lineTo(
-      cellCenter(leftmostCell.x) + this.juiceOffset.x,
-      cellCenter(leftmostCell.y + 0.5) + this.juiceOffset.y
-    );
-
-    this.game.drawPath(outline, {
-      stroke: this.state.remainingBombs > 0 ? "#FF6F00" : "#808080A0",
-      strokeWidth: 4,
-    });
-  }
-
-  renderAimArea(area) {
-    this.game.drawRect(
-      cellCenter(area.x) + this.juiceOffset.x,
-      cellCenter(area.y) + this.juiceOffset.y,
-      SQUARE_SIZE,
-      SQUARE_SIZE,
-      { fill: this.state.remainingBombs > 0 ? "#ffa05766" : "#ababab66" }
-    );
   }
 
   getDirVec(direction) {
@@ -492,8 +360,8 @@ class LevelManager {
     areas.forEach((area) => {
       this.animations.push(
         new ExplosionAnimation(
-          cellCenter(area.x) + this.juiceOffset.x,
-          cellCenter(area.y) + this.juiceOffset.y,
+          cellCorner(area.x) + BOARD_PADDING + this.juiceOffset.x,
+          cellCorner(area.y) + BOARD_PADDING + this.juiceOffset.y,
           SQUARE_SIZE,
           this.juiceOffset
         )
@@ -544,8 +412,8 @@ class LevelManager {
     }
     this.animations.push(
       new EtherealAnimation(
-        cellCenter(gobbo.x) + SQUARE_SIZE * 0.5,
-        cellCenter(gobbo.y) + SQUARE_SIZE * 0.5,
+        cellCorner(gobbo.x) + BOARD_PADDING + HALF_SQUARE_SIZE,
+        cellCorner(gobbo.y) + BOARD_PADDING + HALF_SQUARE_SIZE,
         ASSETS.UI.HAT[gobbo.hatType],
         SPRITE_SIZE
       )
@@ -852,8 +720,8 @@ class LevelManager {
       new TransitionAnimation(TRANSITION_DIRECTION.OUT, () => {
         console.log("transitioning to zone", this.game.zoneMap.animations);
         this.game.zoneMap.animations.push(
-                new TransitionAnimation(TRANSITION_DIRECTION.IN)
-              );
+          new TransitionAnimation(TRANSITION_DIRECTION.IN)
+        );
         console.log("transitioning to zone", this.game.zoneMap.animations);
         this.game.scene = "zone";
       })

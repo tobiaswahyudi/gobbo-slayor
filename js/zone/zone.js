@@ -121,8 +121,8 @@ class ZoneMap {
 
     this.game.drawImage(
       ASSETS.SPRITE.WIZ,
-      cellCenter(this.state.player.x) + WORLD_WIZ_PADDING,
-      cellCenter(this.state.player.y) + WORLD_WIZ_PADDING,
+      cellCorner(this.state.player.x) + WORLD_WIZ_PADDING + BOARD_PADDING,
+      cellCorner(this.state.player.y) + WORLD_WIZ_PADDING + BOARD_PADDING,
       WORLD_WIZ_SIZE,
       WORLD_WIZ_SIZE
     );
@@ -141,8 +141,8 @@ class ZoneMap {
   renderWall(wall) {
     this.game.drawImage(
       ASSETS.SPRITE.CRATE,
-      cellCenter(wall.x) + SPRITE_PADDING + this.juiceOffset.x,
-      cellCenter(wall.y) + SPRITE_PADDING + this.juiceOffset.y,
+      cellCorner(wall.x) + BOARD_PADDING + SPRITE_PADDING + this.juiceOffset.x,
+      cellCorner(wall.y) + BOARD_PADDING + SPRITE_PADDING + this.juiceOffset.y,
       SPRITE_SIZE,
       SPRITE_SIZE
     );
@@ -214,6 +214,8 @@ class ZoneMap {
     const SIDEBAR_WIDTH = 224;
     const SIDEBAR_CENTER = 688;
 
+    const SIDEBAR_INNER_WIDTH = 176;
+
     let topPosition = 32;
 
     const level = this.currentLevel.level;
@@ -261,171 +263,34 @@ class ZoneMap {
 
     topPosition += 24;
 
-    topPosition = this.game.drawText(
-      this.currentLocation.text.split("\n"),
-      SIDEBAR_CENTER,
-      topPosition,
+    this.game.ctx.save();
+    const scale = SIDEBAR_INNER_WIDTH / BOARD_SIZE;
+    this.game.ctx.scale(scale, scale);
+
+    drawCheckeredGrid(
+      this.game,
+      600 / scale,
+      topPosition / scale,
+      "#CFC6BD",
+      "#E2D8D4"
+    );
+    this.currentLevel.level.render(this.game, 600 / scale, topPosition / scale);
+
+    this.game.drawRect(
+      600 / scale,
+      topPosition / scale,
+      BOARD_SIZE,
+      BOARD_SIZE,
       {
-        color: "#000",
-        font: `500 12px Edu-SA`,
-        align: "center",
-        lineSpacing: 20,
+        fill: "",
+        stroke: "#000",
+        strokeWidth: 4,
       }
     );
 
-    if (!this.currentLocation.isZone) return;
+    // this.currentLevel.level.render(this.game, 10, 10);
 
-    topPosition += 24;
-
-    this.game.drawImage(
-      ASSETS.UI.STAR.SILVER,
-      SIDEBAR_CENTER - 36,
-      topPosition - 12,
-      24,
-      24
-    );
-
-    const isZoneDone =
-      this.currentLocation.silverStars == this.currentLocation.levels;
-
-    this.game.drawText(
-      `× ${this.currentLocation.silverStars}/${this.currentLocation.levels}`,
-      SIDEBAR_CENTER,
-      topPosition - 10,
-      {
-        color: isZoneDone ? "#551280" : "#000",
-        font: `500 24px Tiny5`,
-        align: "left",
-      }
-    );
-
-    if (isZoneDone) {
-      // woohoo!
-      const pushAnimation = (top, current) => {
-        if (this.currentLocation != current) return;
-        if (this.animations.length > 0) return;
-        this.animations.push(
-          new EtherealAnimation(
-            SIDEBAR_CENTER - 24,
-            top,
-            ASSETS.UI.STAR.SILVER,
-            24,
-            {
-              etherealInFrames: 1,
-              etherealOutFrames: 30,
-              etherealEnd: 1.8,
-              etherealStart: 1,
-            },
-            () => {
-              setTimeout(() => {
-                pushAnimation(top, current);
-              }, 100);
-            }
-          )
-        );
-      };
-
-      if (this.animations.length == 0) {
-        pushAnimation(topPosition, this.currentLocation);
-      }
-
-      topPosition += 24;
-
-      topPosition = this.game.drawText(
-        `Great job!!!`,
-        SIDEBAR_CENTER,
-        topPosition,
-        {
-          color: "#551280",
-          font: `500 14px Edu-SA`,
-          align: "center",
-        }
-      );
-    } else {
-      topPosition += 12;
-    }
-
-    topPosition += 24;
-
-    this.game.drawImage(
-      ASSETS.UI.STAR.GOLD,
-      SIDEBAR_CENTER - 36,
-      topPosition - 12,
-      24,
-      24
-    );
-
-    const isGoldDone =
-      this.currentLocation.goldStars == this.currentLocation.levels;
-
-    this.game.drawText(
-      `× ${this.currentLocation.goldStars}/${this.currentLocation.levels}`,
-      SIDEBAR_CENTER,
-      topPosition - 10,
-      {
-        color: isGoldDone ? "#551280" : "#000",
-        font: `500 24px Tiny5`,
-        align: "left",
-      }
-    );
-
-    topPosition += 24;
-
-    if (isZoneDone) {
-      topPosition = this.game.drawText(
-        "Try for all gold stars!",
-        SIDEBAR_CENTER,
-        topPosition,
-        {
-          color: "#000",
-          font: `500 12px Edu-SA`,
-          align: "center",
-          lineSpacing: 16,
-        }
-      );
-    } else {
-      topPosition = this.game.drawText(
-        this.currentLocation.cta.split("\n"),
-        SIDEBAR_CENTER,
-        topPosition,
-        {
-          color: "#000",
-          font: `500 12px Edu-SA`,
-          align: "center",
-          lineSpacing: 16,
-        }
-      );
-    }
-
-    topPosition += 24;
-
-    // Press Space
-
-    this.game.drawImage(
-      ASSETS.UI.SPACEBAR,
-      SIDEBAR_CENTER + 2,
-      topPosition - 9,
-      54,
-      18
-    );
-
-    this.game.drawText("Press ", SIDEBAR_CENTER - 2, topPosition - 8, {
-      color: "#000",
-      font: `500 16px Tiny5`,
-      align: "right",
-    });
-
-    this.game.drawRect(624, topPosition, 12, 0, {
-      fill: "",
-      stroke: "#000",
-      strokeWidth: 2,
-    });
-
-    this.game.drawRect(752, topPosition, 12, 0, {
-      fill: "",
-      stroke: "#000",
-      strokeWidth: 2,
-    });
+    this.game.ctx.restore();
   }
 
   renderZoneSidebar() {

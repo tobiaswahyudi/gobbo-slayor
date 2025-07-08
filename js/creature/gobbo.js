@@ -20,16 +20,16 @@ class Gobbo extends Position {
     if (this.direction === Direction.SLEEP) {
       game.drawImage(
         ASSETS.SPRITE.GOBBOS.SLEEP,
-        cellCenter(this.x) + SPRITE_PADDING + juiceOffset.x,
-        cellCenter(this.y) + SPRITE_PADDING + juiceOffset.y,
+        cellCorner(this.x) + SPRITE_PADDING + juiceOffset.x,
+        cellCorner(this.y) + SPRITE_PADDING + juiceOffset.y,
         SPRITE_SIZE,
         SPRITE_SIZE
       );
     } else {
       game.drawImage(
         ASSETS.SPRITE.GOBBOS.MOVE,
-        cellCenter(this.x) + SPRITE_PADDING + juiceOffset.x,
-        cellCenter(this.y) + SPRITE_PADDING + juiceOffset.y,
+        cellCorner(this.x) + SPRITE_PADDING + juiceOffset.x,
+        cellCorner(this.y) + SPRITE_PADDING + juiceOffset.y,
         SPRITE_SIZE,
         SPRITE_SIZE
       );
@@ -42,8 +42,8 @@ class Gobbo extends Position {
         break;
       case Direction.UP:
         game.ctx.translate(
-          cellCenter(this.x) + juiceOffset.x + HALF_SQUARE_SIZE,
-          cellCenter(this.y) + juiceOffset.y + 1.35 * SQUARE_SIZE
+          cellCorner(this.x) + juiceOffset.x + HALF_SQUARE_SIZE,
+          cellCorner(this.y) + juiceOffset.y + 1.35 * SQUARE_SIZE
         );
         game.ctx.rotate(-Math.PI / 2);
         game.drawImage(
@@ -56,8 +56,8 @@ class Gobbo extends Position {
         break;
       case Direction.DOWN:
         game.ctx.translate(
-          cellCenter(this.x) + juiceOffset.x + HALF_SQUARE_SIZE,
-          cellCenter(this.y) + juiceOffset.y - 0.3 * SQUARE_SIZE
+          cellCorner(this.x) + juiceOffset.x + HALF_SQUARE_SIZE,
+          cellCorner(this.y) + juiceOffset.y - 0.3 * SQUARE_SIZE
         );
         game.ctx.rotate(Math.PI / 2);
         game.drawImage(
@@ -70,8 +70,8 @@ class Gobbo extends Position {
         break;
       case Direction.LEFT:
         game.ctx.translate(
-          cellCenter(this.x) + juiceOffset.x + 1.2 * SQUARE_SIZE,
-          cellCenter(this.y) + juiceOffset.y + 0.8 * SQUARE_SIZE
+          cellCorner(this.x) + juiceOffset.x + 1.2 * SQUARE_SIZE,
+          cellCorner(this.y) + juiceOffset.y + 0.8 * SQUARE_SIZE
         );
         game.ctx.rotate(Math.PI);
         game.drawImage(
@@ -84,8 +84,8 @@ class Gobbo extends Position {
         break;
       case Direction.RIGHT:
         game.ctx.translate(
-          cellCenter(this.x) + juiceOffset.x - 0.2 * SQUARE_SIZE,
-          cellCenter(this.y) + juiceOffset.y + 0.8 * SQUARE_SIZE
+          cellCorner(this.x) + juiceOffset.x - 0.2 * SQUARE_SIZE,
+          cellCorner(this.y) + juiceOffset.y + 0.8 * SQUARE_SIZE
         );
         game.drawImage(
           ASSETS.SPRITE.DUST,
@@ -101,8 +101,8 @@ class Gobbo extends Position {
 
     game.drawImage(
       ASSETS.SPRITE.HAT[this.hatType],
-      cellCenter(this.x) + SPRITE_PADDING + juiceOffset.x,
-      cellCenter(this.y) + SPRITE_PADDING + juiceOffset.y,
+      cellCorner(this.x) + SPRITE_PADDING + juiceOffset.x,
+      cellCorner(this.y) + SPRITE_PADDING + juiceOffset.y,
       SPRITE_SIZE,
       SPRITE_SIZE
     );

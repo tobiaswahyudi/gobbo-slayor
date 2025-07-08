@@ -27,8 +27,8 @@ class LevelTile extends Position {
 
     game.drawText(
       this.number,
-      BOARD_PADDING + cellCenter(this.x),
-      BOARD_PADDING + cellCenter(this.y) - 16,
+      BOARD_PADDING + cellCorner(this.x) + HALF_SQUARE_SIZE,
+      BOARD_PADDING + cellCorner(this.y) + HALF_SQUARE_SIZE - 16,
       {
         color: "#000",
         font: `500 32px Tiny5`,

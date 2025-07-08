@@ -31,7 +31,7 @@ class Game {
     this.currentZone = WORLD_MAP_LOCATIONS[1];
     this.zoneMap = new ZoneMap(this);
     this.currentLevel = null;
-    this.levelManager = null;
+    this.levelManager = new LevelManager(this, "Level 1", LEVELS[0]);
 
     this.assetsPreloaded = false;
     this.loadedImages = new Map();

@@ -143,8 +143,8 @@ class WorldMap {
       const asset = location.asset[status];
       this.game.drawImage(
         asset,
-        cellCenter(location.x),
-        cellCenter(location.y),
+        cellCorner(location.x) + BOARD_PADDING,
+        cellCorner(location.y) + BOARD_PADDING,
         SQUARE_SIZE,
         SQUARE_SIZE
       );
@@ -152,8 +152,8 @@ class WorldMap {
 
     this.game.drawImage(
       ASSETS.SPRITE.WIZ,
-      cellCenter(this.state.player.x) + WORLD_WIZ_PADDING,
-      cellCenter(this.state.player.y) + WORLD_WIZ_PADDING,
+      cellCorner(this.state.player.x) + WORLD_WIZ_PADDING + BOARD_PADDING,
+      cellCorner(this.state.player.y) + WORLD_WIZ_PADDING + BOARD_PADDING,
       WORLD_WIZ_SIZE,
       WORLD_WIZ_SIZE
     );
