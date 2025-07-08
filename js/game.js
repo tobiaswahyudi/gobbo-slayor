@@ -280,7 +280,7 @@ class Game {
           lineSpacing: lineSpacing,
         });
       }
-      return y + lineSpacing;
+      return y;
     } else {
       this.ctx.fillStyle = color;
       this.ctx.font = font;
