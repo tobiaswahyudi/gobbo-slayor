@@ -20,7 +20,7 @@ const WORLD_MAP_LOCATIONS = [
     y: 6,
     title: "HOME BASE",
     subtitle: "Wizard Tower",
-    text: "Ransacked by Goblins!\nFollow their tracks to Sleepy Hill!",
+    text: "Ransacked by Goblins >:(\nTheir tracks lead east...",
     isZone: false,
   },
   {
@@ -32,10 +32,24 @@ const WORLD_MAP_LOCATIONS = [
     done: false,
     asset: ASSETS.WORLD.FIRE,
     isZone: true,
+    silverStars: 6,
+    goldStars: 0,
+    levels: 6,
+    cta: "Dang Gobbos! Get em!",
+  },
+  {
+    x: 7,
+    y: 5,
+    title: "GOBLIN CAMP 2",
+    subtitle: "Ruined Fort",
+    text: "Goblins are running around the old\n ruined fort. (They're actually doing\na good job of rebuilding it.)",
+    done: false,
+    asset: ASSETS.WORLD.FORT,
+    isZone: true,
     silverStars: 0,
     goldStars: 0,
     levels: 6,
-    cta: "Dang Gobbos! Get em!"
+    cta: "Don't care! Blow up the fort!\nGet your hats back!!",
   },
 ];
 
@@ -47,6 +61,9 @@ class WorldMap {
     this.currentLocation = null;
 
     this.animations = [];
+
+    this.silverAnimation = false;
+    this.goldAnimation = false;
   }
 
   handleInput(keyCode) {
@@ -209,6 +226,8 @@ class WorldMap {
   }
 
   renderEmptySidebar() {
+    this.animations = [];
+
     const SIDEBAR_WIDTH = 224;
     const SIDEBAR_CENTER = 688;
 
@@ -313,17 +332,21 @@ class WorldMap {
 
     topPosition += 24;
 
-    topPosition = this.game.drawText(this.currentLocation.text.split("\n"), SIDEBAR_CENTER, topPosition, {
-      color: "#000",
-      font: `500 12px Edu-SA`,
-      align: "center",
-      lineSpacing: 16,
-    });
+    topPosition = this.game.drawText(
+      this.currentLocation.text.split("\n"),
+      SIDEBAR_CENTER,
+      topPosition,
+      {
+        color: "#000",
+        font: `500 12px Edu-SA`,
+        align: "center",
+        lineSpacing: 20,
+      }
+    );
 
+    if (!this.currentLocation.isZone) return;
 
-    if(!this.currentLocation.isZone) return;
-
-    topPosition += 16;
+    topPosition += 24;
 
     this.game.drawImage(
       ASSETS.UI.STAR.SILVER,
@@ -333,28 +356,118 @@ class WorldMap {
       24
     );
 
+    const isZoneDone =
+      this.currentLocation.silverStars == this.currentLocation.levels;
+
     this.game.drawText(
       `× ${this.currentLocation.silverStars}/${this.currentLocation.levels}`,
       SIDEBAR_CENTER,
       topPosition - 10,
       {
-        color: "#000",
+        color: isZoneDone ? "#551280" : "#000",
         font: `500 24px Tiny5`,
         align: "left",
       }
     );
 
-    topPosition += 64;
+    if (isZoneDone) {
+      // woohoo!
+      const pushAnimation = (top, current) => {
+        if(this.currentLocation != current) return;
+        this.animations.push(
+          new EtherealAnimation(
+            SIDEBAR_CENTER - 24,
+            top,
+            ASSETS.UI.STAR.SILVER,
+            24,
+            {
+              etherealInFrames: 1,
+              etherealOutFrames: 30,
+              etherealEnd: 1.8,
+              etherealStart: 1,
+            },
+            () => {
+              setTimeout(() => {
+                pushAnimation(top, current);
+              }, 100);
+            }
+          )
+        );
+      };
 
-    topPosition = this.game.drawText(this.currentLocation.cta, SIDEBAR_CENTER, topPosition, {
-      color: "#000",
-      font: `500 16px Edu-SA`,
-      align: "center",
-      lineSpacing: 16,
-    });
+      if (this.animations.length == 0) {
+        pushAnimation(topPosition, this.currentLocation);
+      }
+
+      topPosition += 24;
+
+      topPosition = this.game.drawText(
+        `Great job!!!`,
+        SIDEBAR_CENTER,
+        topPosition,
+        {
+          color: "#551280",
+          font: `500 14px Edu-SA`,
+          align: "center",
+        }
+      );
+    } else {
+      topPosition += 12;  
+    }
 
     topPosition += 24;
 
+    this.game.drawImage(
+      ASSETS.UI.STAR.GOLD,
+      SIDEBAR_CENTER - 36,
+      topPosition - 12,
+      24,
+      24
+    );
+
+    const isGoldDone =
+      this.currentLocation.goldStars == this.currentLocation.levels;
+
+    this.game.drawText(
+      `× ${this.currentLocation.goldStars}/${this.currentLocation.levels}`,
+      SIDEBAR_CENTER,
+      topPosition - 10,
+      {
+        color: isGoldDone ? "#551280" : "#000",
+        font: `500 24px Tiny5`,
+        align: "left",
+      }
+    );
+
+    topPosition += 24;
+
+    if (isZoneDone) {
+      topPosition = this.game.drawText(
+        "Try for all gold stars!\nYou can do it!".split("\n"),
+        SIDEBAR_CENTER,
+        topPosition,
+        {
+          color: "#000",
+          font: `500 12px Edu-SA`,
+          align: "center",
+          lineSpacing: 16,
+        }
+      );
+    } else {
+      topPosition = this.game.drawText(
+        this.currentLocation.cta.split("\n"),
+        SIDEBAR_CENTER,
+        topPosition,
+        {
+          color: "#000",
+          font: `500 12px Edu-SA`,
+          align: "center",
+          lineSpacing: 16,
+        }
+      );
+    }
+
+    topPosition += 24;
 
     // Press Space
 
@@ -369,7 +482,7 @@ class WorldMap {
     this.game.drawText("Press ", SIDEBAR_CENTER - 2, topPosition - 8, {
       color: "#000",
       font: `500 16px Tiny5`,
-      align: "right"
+      align: "right",
     });
 
     this.game.drawRect(624, topPosition, 12, 0, {
