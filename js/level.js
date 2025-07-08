@@ -5,10 +5,10 @@ const HatType = {
 };
 
 class LevelManager {
-  constructor(game) {
+  constructor(game, titleString, levelString) {
     this.game = game;
-    this.currentLevel = 0;
-    this.history = new LevelHistory(LEVELS[this.currentLevel]);
+    this.titleString = titleString;
+    this.history = new LevelHistory(levelString);
 
     this.animations = [];
 
@@ -591,7 +591,7 @@ class LevelManager {
     topPosition += 24;
 
     this.game.drawText(
-      `LEVEL ${this.currentLevel}`,
+      this.titleString,
       SIDEBAR_CENTER + this.juiceOffset.x,
       topPosition + this.juiceOffset.y,
       {
@@ -850,20 +850,12 @@ class LevelManager {
   triggerNextLevelTransition() {
     this.animations.push(
       new TransitionAnimation(TRANSITION_DIRECTION.OUT, () => {
-        this.loadNextLevel();
-        this.animations.push(
-          new PopupAnimation(
-            320,
-            128,
-            true,
-            this.renderPopupContent.bind(this),
-            () => {
-              this.animations.push(
+        console.log("transitioning to zone", this.game.zoneMap.animations);
+        this.game.zoneMap.animations.push(
                 new TransitionAnimation(TRANSITION_DIRECTION.IN)
               );
-            }
-          )
-        );
+        console.log("transitioning to zone", this.game.zoneMap.animations);
+        this.game.scene = "zone";
       })
     );
   }

@@ -30,7 +30,7 @@ class ZoneMap {
     this.state.parse(ZONE_1_MAP, specialTiles);
     this.currentLevel = null;
 
-    this.animations = [];
+    this.animations = [new TransitionAnimation(TRANSITION_DIRECTION.IN)];
 
     this.juiceOffset = new Position(0, 0);
 
@@ -130,6 +130,7 @@ class ZoneMap {
     this.state.walls.forEach((wall) => this.renderWall(wall));
 
     const hadAnimations = this.animations.length > 0;
+
     this.animations.forEach((anim) => anim.tick(this.game));
     this.animations = this.animations.filter((anim) => !anim.finished);
 
@@ -210,8 +211,6 @@ class ZoneMap {
   }
 
   renderLevelSidebar() {
-    this.animations = [];
-
     const SIDEBAR_WIDTH = 224;
     const SIDEBAR_CENTER = 688;
 
@@ -245,16 +244,11 @@ class ZoneMap {
 
     const titleFontSize = this.state.title.length > 10 ? 14 : 18;
 
-    this.game.drawText(
-      level.title,
-      SIDEBAR_CENTER,
-      topPosition,
-      {
-        color: "#000",
-        font: `500 ${titleFontSize}px Edu-SA`,
-        align: "center",
-      }
-    );
+    this.game.drawText(level.title, SIDEBAR_CENTER, topPosition, {
+      color: "#000",
+      font: `500 ${titleFontSize}px Edu-SA`,
+      align: "center",
+    });
 
     topPosition += titleFontSize;
     topPosition += 12;
@@ -651,5 +645,14 @@ class ZoneMap {
       stroke: "#000",
       strokeWidth: 2,
     });
+  }
+
+  goToLevel() {
+    this.game.scene = "level";
+    this.game.levelManager = new LevelManager(
+      this.game,
+      `${this.currentLocation.title}  -  LEVEL ${this.currentLevel.number}`,
+      this.currentLevel.level.levelString
+    );
   }
 }

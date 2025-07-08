@@ -8,6 +8,7 @@ class LevelState {
       this.remainingBombs = 2;
       this.title = "";
       this.specialTiles = [];
+    this.levelString = "";
     }
   
     clone() {
@@ -24,6 +25,8 @@ class LevelState {
     }
   
     parse(levelString, specialTiles = {}) {
+    this.levelString = levelString;
+
       const lines = levelString.split("\n");
   
       this.title = lines[1];
@@ -35,7 +38,7 @@ class LevelState {
   
         for (let x = 0; x < 8; x++) {
           const cell = cells[x];
-          if(cell in specialTiles) {
+        if (cell in specialTiles) {
             const [ctor, ...args] = specialTiles[cell];
             this.specialTiles.push(new ctor(x, y, ...args));
             continue;
