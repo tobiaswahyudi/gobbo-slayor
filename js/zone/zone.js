@@ -1,25 +1,12 @@
 const ZONE_WIZ_SIZE = 48;
 const ZONE_WIZ_PADDING = (SQUARE_SIZE - ZONE_WIZ_SIZE) * 0.5;
 
-const ZONE_1_MAP = `
-Zone 1: Sleepy Hill
-0
-..|Cr|Cr|Cr|Cr|Cr|Cr|Cr
-..|Cr|..|04|Cr|..|05|Cr
-..|Cr|03|..|..|..|..|Cr
-Wz|..|..|..|Cr|..|06|Cr
-..|Cr|..|..|Cr|..|Cr|Cr
-..|Cr|..|01|Cr|..|..|..
-..|Cr|02|..|Cr|..|..|..
-..|Cr|Cr|Cr|Cr|..|..|..
-`;
-
 class ZoneMap {
   constructor(game) {
     this.game = game;
     this.state = new LevelState();
 
-    const numLevels = ZONE_LEVELS[this.currentLocation.id].length;
+    const numLevels = ZONE_LEVELS[this.currentLocation.id].levels.length;
     const specialTiles = Object.fromEntries(
       new Array(numLevels).fill(0).map((_, i) => {
         const numString = String(i + 1).padStart(2, "0");
@@ -27,7 +14,7 @@ class ZoneMap {
       })
     );
 
-    this.state.parse(ZONE_1_MAP, specialTiles);
+    this.state.parse(ZONE_LEVELS[this.currentLocation.id].map, specialTiles);
     this.currentLevel = null;
 
     this.animations = [new TransitionAnimation(TRANSITION_DIRECTION.IN)];

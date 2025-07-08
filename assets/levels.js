@@ -235,7 +235,7 @@ Xd|Xd|Xd|Xd|..|..|..|..
 -1,-1
 -2,-2
 -3,-3
-`
+`;
 
 const LEVEL_3_EVIL = `
 sorry
@@ -252,18 +252,34 @@ sorry
 1,-1
 -1,1
 -1,-1
-`
+`;
+
+const ZONE_1_MAP = `
+Zone 1: Sleepy Hill
+0
+..|Cr|Cr|Cr|Cr|Cr|Cr|Cr
+..|Cr|..|04|..|..|05|Cr
+..|Cr|..|Cr|Cr|..|..|Cr
+..|Cr|..|03|Cr|..|06|Cr
+Wz|..|..|..|Cr|..|Cr|Cr
+..|Cr|..|02|Cr|..|..|..
+..|Cr|01|..|Cr|..|..|..
+..|Cr|Cr|Cr|Cr|..|..|..
+`;
 
 const ZONE_LEVELS = {
-  camp: [
-    LEVEL_MINUS_1,
-    LEVEL_0,
-    LEVEL_SLEEPING_GOBBOS_1,
-    LEVEL_SLEEPING_GOBBOS_2,
-    LEVEL_SLEEPING_GOBBOS_3,
-    LEVEL_SLEEPING_GOBBOS_4,
-  ]
-}
+  camp: {
+    map: ZONE_1_MAP,
+    levels: [
+      LEVEL_MINUS_1,
+      LEVEL_0,
+      LEVEL_SLEEPING_GOBBOS_1,
+      LEVEL_SLEEPING_GOBBOS_2,
+      LEVEL_SLEEPING_GOBBOS_3,
+      LEVEL_SLEEPING_GOBBOS_4,
+    ],
+  },
+};
 
 const LEVELS = [
   // LEVEL_MINUS_1,
