@@ -68,6 +68,10 @@ class ZoneMap {
         this.goToLevel();
         return true;
         break;
+      case "Escape":
+        this.game.scene = "world";
+        return true;
+        break;
       default:
         return false;
     }

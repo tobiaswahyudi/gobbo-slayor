@@ -498,4 +498,10 @@ class WorldMap {
       strokeWidth: 2,
     });
   }
+
+  goToZone() {
+    this.game.scene = "zone";
+    this.game.zoneMap.currentZone = this.currentLocation;
+    this.game.zoneMap.currentLevel = null;
+  }
 }
