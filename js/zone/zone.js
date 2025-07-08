@@ -4,7 +4,7 @@ const ZONE_WIZ_PADDING = (SQUARE_SIZE - ZONE_WIZ_SIZE) * 0.5;
 class ZoneMap {
   constructor(game) {
     this.game = game;
-    this.state = new LevelState();
+    this.state = ZONE_LEVELS[this.currentLocation.id].map;
 
     const numLevels = ZONE_LEVELS[this.currentLocation.id].levels.length;
     const specialTiles = Object.fromEntries(
@@ -14,7 +14,7 @@ class ZoneMap {
       })
     );
 
-    this.state.parse(ZONE_LEVELS[this.currentLocation.id].map, specialTiles);
+    this.state.parse(specialTiles);
     this.currentLevel = null;
 
     this.animations = [new TransitionAnimation(TRANSITION_DIRECTION.IN)];

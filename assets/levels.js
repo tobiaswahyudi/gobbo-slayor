@@ -1,7 +1,8 @@
 // Level 0, 3 bombs
-const LEVEL_MINUS_1 = `
-Welcome!
-2
+const LEVEL_MINUS_1 = new LevelState({
+  title: "Welcome!",
+  bombs: 2,
+  level: `
 ..|..|..|..|..|..|..|..
 ..|..|..|..|..|..|..|..
 ..|..|..|..|..|..|..|..
@@ -10,12 +11,14 @@ Welcome!
 ..|Wz|..|..|Cr|Hs|Cr|Cr
 ..|..|..|..|..|Cr|Xs|Xd
 ..|..|..|..|..|Cr|..|Cr
-2,0
-`;
+`,
+  aimArea: [[2, 0]],
+});
 
-const LEVEL_MINUS_2 = `
-bug test
-2
+const LEVEL_MINUS_2 = new LevelState({
+  title: "bug test",
+  bombs: 2,
+  level: `
 ..|..|..|..|..|..|..|..
 ..|..|..|..|..|..|..|..
 ..|..|..|..|..|..|..|..
@@ -24,14 +27,18 @@ bug test
 ..|Wz|..|Vs|..|..|..|..
 ..|..|..|..|..|..|..|..
 ..|..|..|..|..|..|..|..
-2,0
-2,1
-`;
+`,
+  aimArea: [
+    [2, 0],
+    [2, 1],
+  ],
+});
 
 // Level 0, 3 bombs
-const LEVEL_0 = `
-Magic Hats, what do they do?
-3
+const LEVEL_0 = new LevelState({
+  title: "Magic Hats, what do they do?",
+  bombs: 3,
+  level: `
 ..|..|..|..|..|..|..|..
 ..|..|..|..|Cr|Cr|Cr|..
 ..|..|..|..|Cr|Hs|Xs|..
@@ -40,13 +47,15 @@ Magic Hats, what do they do?
 ..|..|..|..|Cr|Xs|Cr|..
 ..|..|..|..|..|..|..|..
 ..|..|..|..|..|..|..|..
-4,0
-`;
+`,
+  aimArea: [[4, 0]],
+});
 
 // Level 1.5, 2 bombs
-const LEVEL_ONE_HALF = `
-Evasive Action
-2
+const LEVEL_ONE_HALF = new LevelState({
+  title: "Evasive Action",
+  bombs: 2,
+  level: `
 ..|..|..|..|..|..|..|..
 ..|..|..|..|..|Cr|..|..
 ..|..|..|..|Cr|..|Cr|..
@@ -55,13 +64,15 @@ Evasive Action
 ..|..|..|..|Cr|..|Cr|..
 ..|..|..|..|..|Cr|..|..
 ..|..|..|..|..|..|..|..
-2,0
-`;
+`,
+  aimArea: [[2, 0]],
+});
 
 // Level 1, 2 bombs
-const LEVEL_1_EVIL = `
-Gobbos on a Morning Jog (Evil)
-2
+const LEVEL_1_EVIL = new LevelState({
+  title: "Gobbos on a Morning Jog (Evil)",
+  bombs: 2,
+  level: `
 ..|..|..|..|..|..|..|..
 ..|..|..|Cr|Vd|..|..|..
 ..|..|..|..|..|..|..|..
@@ -70,15 +81,19 @@ Gobbos on a Morning Jog (Evil)
 ..|..|Cr|Cr|..|..|..|..
 ..|..|Cr|Hr|..|..|..|..
 ..|..|Cr|..|..|..|..|..
-2,0
-2,-1
-3,0
-`;
+`,
+  aimArea: [
+    [2, 0],
+    [2, -1],
+    [3, 0],
+  ],
+});
 
 // Level 1, 2 bombs
-const LEVEL_1 = `
-Gobbos on a Morning Jog
-2
+const LEVEL_1 = new LevelState({
+  title: "Gobbos on a Morning Jog",
+  bombs: 2,
+  level: `
 ..|..|..|..|..|..|..|..
 ..|..|..|Cr|Xd|..|..|..
 ..|..|..|..|..|..|..|..
@@ -87,15 +102,19 @@ Gobbos on a Morning Jog
 ..|..|Cr|Cr|..|..|..|..
 ..|..|Cr|Vr|..|..|..|..
 ..|..|Cr|..|..|..|..|..
-2,0
-2,-1
-3,0
-`;
+`,
+  aimArea: [
+    [2, 0],
+    [2, -1],
+    [3, 0],
+  ],
+});
 
 // Level 1, 2 bombs
-const LEVEL_2 = `
-⬇︎ Don't overthink it ⬇︎
-3
+const LEVEL_2 = new LevelState({
+  title: "⬇︎ Don't overthink it ⬇︎",
+  bombs: 3,
+  level: `
 ..|..|..|..|..|..|..|..
 ..|..|..|Cr|..|..|..|..
 ..|..|..|..|Xd|..|..|..
@@ -104,16 +123,20 @@ const LEVEL_2 = `
 ..|..|Cr|Cr|..|..|..|..
 ..|..|Cr|..|Xr|..|..|..
 ..|..|Cr|..|..|..|..|..
-3,-1
-2,0
-3,0
-4,0
-3,1
-`;
+`,
+  aimArea: [
+    [3, -1],
+    [2, 0],
+    [3, 0],
+    [4, 0],
+    [3, 1],
+  ],
+});
 
-const LEVEL_FIN = `
-SECRET GOBBO DANCE PARTY
-0
+const LEVEL_FIN = new LevelState({
+  title: "SECRET GOBBO DANCE PARTY",
+  bombs: 0,
+  level: `
 Xr|..|Xr|..|Xr|..|Xr|..
 ..|Vr|..|Vr|..|Vr|..|Vr
 Hr|..|Hr|..|Hr|..|Hr|..
@@ -122,15 +145,19 @@ Hr|..|Hr|..|Hr|..|Hr|..
 ..|Vr|..|Vr|..|Vr|..|Vr
 Xr|..|Xr|..|Xr|..|Xr|..
 ..|Hr|..|Hr|..|Hr|..|Hr
-1,1
-1,-1
--1,1
--1,-1
-`;
+`,
+  aimArea: [
+    [1, 1],
+    [1, -1],
+    [-1, 1],
+    [-1, -1],
+  ],
+});
 
-const LEVEL_BAD = `
-This level is bad.
-300 20
+const LEVEL_BAD = new LevelState({
+  title: "This level is bad.",
+  bombs: 300,
+  level: `
 ..|..|..|..|..|..|..|..
 ..|..|..|..|..|..|..|..
 ..|..|..|..|..|..|..|..
@@ -139,12 +166,14 @@ This level is bad.
 ..|..|..|..|..|..|..|..
 ..|..|..|..|..|..|..|..
 ..|..|..|..|..|..|..|..
-0,0
-`;
+`,
+  aimArea: [[0, 0]],
+});
 
-const LEVEL_SLEEPING_GOBBOS_1 = `
-Just some target practice.
-3
+const LEVEL_SLEEPING_GOBBOS_1 = new LevelState({
+  title: "Just some target practice.",
+  bombs: 3,
+  level: `
 ..|..|..|..|..|..|..|..
 ..|..|Xs|Xs|Xs|..|..|..
 ..|..|..|..|..|..|..|..
@@ -153,14 +182,18 @@ Just some target practice.
 ..|..|..|..|..|..|..|..
 ..|..|..|..|..|..|..|..
 ..|..|..|..|..|..|..|..
-1,0
-2,-1
-3,-2
-`;
+`,
+  aimArea: [
+    [1, 0],
+    [2, -1],
+    [3, -2],
+  ],
+});
 
-const LEVEL_SLEEPING_GOBBOS_2 = `
-Wait what.
-3
+const LEVEL_SLEEPING_GOBBOS_2 = new LevelState({
+  title: "Wait what.",
+  bombs: 3,
+  level: `
 ..|..|..|..|..|..|..|..
 ..|..|Xs|Xs|Xs|..|..|..
 ..|..|..|..|..|..|..|..
@@ -169,14 +202,18 @@ Wait what.
 ..|..|..|..|..|..|..|..
 ..|..|..|..|..|..|..|..
 ..|..|..|..|..|..|..|..
-1,0
-2,-1
--5,-6
-`;
+`,
+  aimArea: [
+    [1, 0],
+    [2, -1],
+    [-5, -6],
+  ],
+});
 
-const LEVEL_SLEEPING_GOBBOS_3 = `
-A little puzzling.
-4
+const LEVEL_SLEEPING_GOBBOS_3 = new LevelState({
+  title: "A little puzzling.",
+  bombs: 4,
+  level: `
 ..|..|..|..|..|..|..|..
 ..|..|..|..|..|..|..|..
 ..|..|Xs|Xs|Xs|Xs|..|..
@@ -185,27 +222,31 @@ A little puzzling.
 ..|..|Xs|Xs|Xs|Xs|..|..
 ..|..|..|..|..|..|..|..
 ..|..|..|..|..|..|..|..
-0,0
-1,0
-0,1
-0,-1
-2,5
-3,5
-4,5
-3,4
--5,-3
--4,-3
--3,-3
--4,-2
-4,-4
-4,-3
-4,-2
-3,-3
-`;
+`,
+  aimArea: [
+    [0, 0],
+    [1, 0],
+    [0, 1],
+    [0, -1],
+    [2, 5],
+    [3, 5],
+    [4, 5],
+    [3, 4],
+    [-5, -3],
+    [-4, -3],
+    [-3, -3],
+    [-4, -2],
+    [4, -4],
+    [4, -3],
+    [4, -2],
+    [3, -3],
+  ],
+});
 
-const LEVEL_SLEEPING_GOBBOS_4 = `
-?.
-4
+const LEVEL_SLEEPING_GOBBOS_4 = new LevelState({
+  title: "?.",
+  bombs: 4,
+  level: `
 ..|..|..|..|..|..|..|..
 ..|Hs|..|..|Xs|..|Hs|..
 ..|Xs|..|..|Vs|..|Xs|..
@@ -214,15 +255,19 @@ const LEVEL_SLEEPING_GOBBOS_4 = `
 ..|Xs|..|Vs|..|Xs|..|..
 ..|Hs|..|Vs|..|Xs|Vs|..
 ..|..|..|..|..|..|..|..
-1,0
-2,0
-1,1
-2,1
-`;
+`,
+  aimArea: [
+    [1, 0],
+    [2, 0],
+    [1, 1],
+    [2, 1],
+  ],
+});
 
-const LEVEL_3 = `
-2 birds 1 stone
-4
+const LEVEL_3 = new LevelState({
+  title: "2 birds 1 stone",
+  bombs: 4,
+  level: `
 Xd|Xd|Xd|Xd|..|..|..|..
 ..|..|..|..|..|..|..|..
 ..|..|..|..|..|..|..|..
@@ -231,15 +276,19 @@ Xd|Xd|Xd|Xd|..|..|..|..
 ..|..|..|..|..|..|..|Xl
 ..|..|..|..|..|..|..|Xl
 ..|..|..|..|..|..|..|Xl
-0,0
--1,-1
--2,-2
--3,-3
-`;
+`,
+  aimArea: [
+    [0, 0],
+    [-1, -1],
+    [-2, -2],
+    [-3, -3],
+  ],
+});
 
-const LEVEL_3_EVIL = `
-sorry
-2
+const LEVEL_3_EVIL = new LevelState({
+  title: "sorry",
+  bombs: 2,
+  level: `
 ..|..|..|..|..|..|..|..
 ..|..|Xr|..|Xu|Xd|..|..
 ..|..|..|..|..|..|..|..
@@ -248,15 +297,19 @@ sorry
 ..|..|Xu|Xd|..|..|..|..
 ..|..|..|..|Xr|..|..|..
 ..|..|..|..|..|..|..|..
-1,1
-1,-1
--1,1
--1,-1
-`;
+`,
+  aimArea: [
+    [1, 1],
+    [1, -1],
+    [-1, 1],
+    [-1, -1],
+  ],
+});
 
-const ZONE_1_MAP = `
-Zone 1: Sleepy Hill
-0
+const ZONE_1_MAP = new LevelState({
+  title: "Zone 1: Sleepy Hill",
+  bombs: 0,
+  level: `
 ..|Cr|Cr|Cr|Cr|Cr|Cr|Cr
 ..|Cr|..|04|..|..|05|Cr
 ..|Cr|..|Cr|Cr|..|..|Cr
@@ -265,7 +318,9 @@ Wz|..|..|..|Cr|..|Cr|Cr
 ..|Cr|..|02|Cr|..|..|..
 ..|Cr|01|..|Cr|..|..|..
 ..|Cr|Cr|Cr|Cr|..|..|..
-`;
+`,
+  aimArea: [],
+});
 
 const ZONE_LEVELS = {
   camp: {

@@ -8,8 +8,7 @@ class LevelTile extends Position {
     this.zoneId = zoneId;
     this.levelId = levelId;
 
-    this.level = new LevelState();
-    this.level.parse(ZONE_LEVELS[zoneId].levels[levelId]);
+    this.level = ZONE_LEVELS[zoneId].levels[levelId];
   }
 
   render(game) {

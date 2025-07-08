@@ -1,14 +1,17 @@
 class LevelState {
-  constructor() {
+  constructor({ title = "", bombs = 0, level, aimArea = [], specialTiles = {} }) {
     this.turnCount = 0;
     this.player = new Position(0, 0);
     this.gobbos = [];
     this.walls = [];
-    this.aimArea = [];
-    this.remainingBombs = 2;
-    this.title = "";
+    this.remainingBombs = bombs;
+    this.title = title;
     this.specialTiles = [];
-    this.levelString = "";
+    this.levelString = level;
+
+    this.aimArea = aimArea.map(([x, y]) => new Position(x, y));
+
+    this.parse(specialTiles);
   }
 
   clone() {
@@ -24,18 +27,14 @@ class LevelState {
     return state;
   }
 
-  parse(levelString, specialTiles = {}) {
-    this.levelString = levelString;
+  parse(specialTiles = {}) {
+    const lines = this.levelString.split("\n");
 
-    const lines = levelString.split("\n");
-
-    this.title = lines[1];
-    this.remainingBombs = parseInt(lines[2]);
+    const OFFSET_LINES = 1
 
     for (let y = 0; y < 8; y++) {
-      const line = lines[y + 3];
-      const cells = line.split("|");
-
+      const line = lines[y + OFFSET_LINES];
+      const cells = line.trim().split("|");
       for (let x = 0; x < 8; x++) {
         const cell = cells[x];
         if (cell in specialTiles) {
@@ -59,11 +58,6 @@ class LevelState {
             break;
         }
       }
-    }
-    for (let line = 11; line < lines.length; line++) {
-      const coords = lines[line].split(",");
-      if (coords.length < 2) continue;
-      this.aimArea.push(new Position(parseInt(coords[0]), parseInt(coords[1])));
     }
   }
 
@@ -121,10 +115,7 @@ class LevelState {
 
     areas.forEach((area) => {
       if (!this.isInAimArea(area.x - 1, area.y, aimAreaLookup)) {
-        outline.moveTo(
-          cellCorner(area.x) + pos.x,
-          cellCorner(area.y) + pos.y
-        );
+        outline.moveTo(cellCorner(area.x) + pos.x, cellCorner(area.y) + pos.y);
         outline.lineTo(
           cellCorner(area.x) + pos.x,
           cellCorner(area.y + 1) + pos.y
@@ -141,10 +132,7 @@ class LevelState {
         );
       }
       if (!this.isInAimArea(area.x, area.y - 1, aimAreaLookup)) {
-        outline.moveTo(
-          cellCorner(area.x) + pos.x,
-          cellCorner(area.y) + pos.y
-        );
+        outline.moveTo(cellCorner(area.x) + pos.x, cellCorner(area.y) + pos.y);
         outline.lineTo(
           cellCorner(area.x + 1) + pos.x,
           cellCorner(area.y) + pos.y

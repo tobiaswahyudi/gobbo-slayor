@@ -2,8 +2,6 @@ const WORLD_WIZ_SIZE = 48;
 const WORLD_WIZ_PADDING = (SQUARE_SIZE - WORLD_WIZ_SIZE) * 0.5;
 
 const WORLD_MAP = `
-World Map
-0
 ..|..|..|..|..|..|..|..
 ..|..|..|..|..|..|..|..
 ..|..|..|..|..|..|..|Cr
@@ -24,7 +22,7 @@ const WORLD_MAP_LOCATIONS = [
     isZone: false,
   },
   {
-    id: 'camp',
+    id: "camp",
     x: 4,
     y: 5,
     title: "GOBLIN CAMP 1",
@@ -38,7 +36,7 @@ const WORLD_MAP_LOCATIONS = [
     cta: "Dang Gobbos! Get em!",
   },
   {
-    id: 'fort',
+    id: "fort",
     x: 7,
     y: 5,
     title: "GOBLIN CAMP 2",
@@ -56,8 +54,9 @@ const WORLD_MAP_LOCATIONS = [
 class WorldMap {
   constructor(game) {
     this.game = game;
-    this.state = new LevelState();
-    this.state.parse(WORLD_MAP);
+    this.state = new LevelState({
+      level: WORLD_MAP,
+    });
     this.currentLocation = null;
 
     this.animations = [];
@@ -374,7 +373,7 @@ class WorldMap {
     if (isZoneDone) {
       // woohoo!
       const pushAnimation = (top, current) => {
-        if(this.currentLocation != current) return;
+        if (this.currentLocation != current) return;
         this.animations.push(
           new EtherealAnimation(
             SIDEBAR_CENTER - 24,
@@ -413,7 +412,7 @@ class WorldMap {
         }
       );
     } else {
-      topPosition += 12;  
+      topPosition += 12;
     }
 
     topPosition += 24;
