@@ -1,5 +1,7 @@
 const MS_PER_FRAME = 30;
 
+let requestedRedraw = null;
+
 class Game {
   constructor() {
     this.canvas = document.getElementById("gameCanvas");
@@ -13,7 +15,7 @@ class Game {
     this.height = 576; // Inner: 512 = 32 * 16
 
     // Scene management
-    this.scene = "world"; // world|zone|level
+    this.scene = "zone"; // world|zone|level
 
     // Input handling
     this.keys = {};
@@ -26,6 +28,9 @@ class Game {
 
     // Initialize modules
     this.worldMap = new WorldMap(this);
+    this.currentZone = WORLD_MAP_LOCATIONS[1];
+    this.zoneMap = new ZoneMap(this);
+    this.currentLevel = null;
     this.levelManager = new LevelManager(this);
 
     this.assetsPreloaded = false;
@@ -122,7 +127,10 @@ class Game {
   // Trigger a redraw when needed (turn-based, event-driven)
   requestRedraw() {
     if (this.isRunning) {
-      this.render();
+      if (requestedRedraw) clearTimeout(requestedRedraw);
+      requestedRedraw = setTimeout(() => {
+        this.render();
+      }, MS_PER_FRAME);
     }
   }
 
@@ -131,6 +139,10 @@ class Game {
     switch (this.scene) {
       case "world":
         if (!this.worldMap.handleInput(keyCode)) return false;
+        break;
+      case "zone":
+        if (!this.zoneMap.handleInput(keyCode)) return false;
+        break;
       case "level":
         if (!this.levelManager.handleGameInput(keyCode)) return false;
     }
@@ -162,15 +174,16 @@ class Game {
       case "world":
         anotherRender = this.worldMap.render();
         break;
+      case "zone":
+        anotherRender = this.zoneMap.render();
+        break;
       case "level":
         anotherRender = this.levelManager.renderGame(this.ctx);
         break;
     }
 
     if (anotherRender) {
-      setTimeout(() => {
-        this.requestRedraw();
-      }, MS_PER_FRAME);
+      this.requestRedraw();
     }
   }
 

@@ -7,6 +7,7 @@ class LevelState {
       this.aimArea = [];
       this.remainingBombs = 2;
       this.title = "";
+      this.specialTiles = [];
     }
   
     clone() {
@@ -18,10 +19,11 @@ class LevelState {
       state.aimArea = this.aimArea.map((aim) => aim.clone());
       state.remainingBombs = this.remainingBombs;
       state.title = this.title;
+      state.specialTiles = this.specialTiles.map((tile) => tile.clone());
       return state;
     }
   
-    parse(levelString) {
+    parse(levelString, specialTiles = {}) {
       const lines = levelString.split("\n");
   
       this.title = lines[1];
@@ -33,6 +35,11 @@ class LevelState {
   
         for (let x = 0; x < 8; x++) {
           const cell = cells[x];
+          if(cell in specialTiles) {
+            const [ctor, ...args] = specialTiles[cell];
+            this.specialTiles.push(new ctor(x, y, ...args));
+            continue;
+          }
           switch (cell[0]) {
             case "C":
               this.walls.push(new Position(x, y));
