@@ -24,12 +24,12 @@ const WORLD_MAP_LOCATIONS = [
     isZone: false,
   },
   {
+    id: 'camp',
     x: 4,
     y: 5,
     title: "GOBLIN CAMP 1",
     subtitle: "Sleepy Hill",
     text: "Goblins are napping by the fire\nwith their stolen hats.",
-    done: false,
     asset: ASSETS.WORLD.FIRE,
     isZone: true,
     silverStars: 6,
@@ -38,12 +38,12 @@ const WORLD_MAP_LOCATIONS = [
     cta: "Dang Gobbos! Get em!",
   },
   {
+    id: 'fort',
     x: 7,
     y: 5,
     title: "GOBLIN CAMP 2",
     subtitle: "Ruined Fort",
     text: "Goblins are running around the old\n ruined fort. (They're actually doing\na good job of rebuilding it.)",
-    done: false,
     asset: ASSETS.WORLD.FORT,
     isZone: true,
     silverStars: 0,
@@ -120,10 +120,10 @@ class WorldMap {
     });
 
     // this.game.ctx.globalAlpha = 0.75;
-    this.game.drawImage(ASSETS.UI.TITLE, 54, 96, 384, 128);
-    this.game.ctx.globalAlpha = 0.5;
-    this.game.drawImage(ASSETS.UI.CREDITS, 320, 224, 128, 64);
-    this.game.ctx.globalAlpha = 1;
+    // this.game.drawImage(ASSETS.UI.TITLE, 54, 96, 384, 128);
+    // this.game.ctx.globalAlpha = 0.5;
+    // this.game.drawImage(ASSETS.UI.CREDITS, 320, 224, 128, 64);
+    // this.game.ctx.globalAlpha = 1;
 
     this.currentLocation = WORLD_MAP_LOCATIONS.find(
       (location) =>
@@ -138,7 +138,8 @@ class WorldMap {
 
     WORLD_MAP_LOCATIONS.forEach((location) => {
       if (!location.asset) return;
-      const status = location.done ? "CLEAR" : "GOB";
+      const isZoneDone = location.silverStars == location.levels;
+      const status = isZoneDone ? "CLEAR" : "GOB";
       const asset = location.asset[status];
       this.game.drawImage(
         asset,
