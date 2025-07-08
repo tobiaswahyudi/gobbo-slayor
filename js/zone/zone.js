@@ -472,14 +472,20 @@ class ZoneMap {
 
     // Press Space
 
-    this.game.drawText("Press [ESC]\nto return to the world map".split("\n"), SIDEBAR_CENTER, topPosition - 8, {
-      color: "#000",
-      font: `500 16px Tiny5`,
-      align: "center",
-    });
+    this.game.drawText(
+      "Press [ESC]\nto return to the world map".split("\n"),
+      SIDEBAR_CENTER,
+      topPosition - 8,
+      {
+        color: "#000",
+        font: `500 16px Tiny5`,
+        align: "center",
+      }
+    );
   }
 
   goToLevel() {
+    if (!this.currentLevel) return;
     this.game.scene = "level";
     this.game.levelManager = new LevelManager(
       this.game,
