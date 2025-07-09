@@ -514,7 +514,7 @@ class WorldMap {
   }
 
   resetProgress() {
-    if(this.currentLocation.id == "wiz") {
+    if(this.currentLocation && this.currentLocation.id == "wiz") {
       this.game.progress = new GameProgress();
       this.game.progress.saveProgress();
     }
