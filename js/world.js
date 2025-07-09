@@ -19,7 +19,7 @@ const WORLD_MAP_LOCATIONS = [
     y: 6,
     title: "HOME BASE",
     subtitle: "Wizard Tower",
-    text: "Ransacked by Goblins >:(\nTheir tracks lead east...",
+    text: "The goblins stole your magic hats!!  >:(\nTheir tracks lead east...",
     isZone: false,
   },
   {
