@@ -313,6 +313,59 @@ class ZoneMap {
     // this.currentLevel.level.render(this.game, 10, 10);
 
     this.game.ctx.restore();
+
+    topPosition += SIDEBAR_INNER_WIDTH;
+    topPosition += 36;
+
+    const levelProgress = this.game.progress.getProgress(
+      this.currentLocation.id,
+      this.currentLevelTile.level.id
+    );
+
+    if (levelProgress.completed) {
+      this.game.drawImage(
+        ASSETS.UI.STAR.SILVER,
+        SIDEBAR_CENTER - 60,
+        topPosition - 12,
+        24,
+        24
+      );
+  
+      this.game.drawText(
+        `Completed!`,
+        SIDEBAR_CENTER - 24,
+        topPosition - 4,
+        {
+          color: "#000",
+          font: `500 16px Edu-SA`,
+          align: "left",
+        }
+      );
+
+      topPosition += 24;
+
+      this.game.drawText(
+        `Best solved in ${levelProgress.bestMoves} moves`,
+        SIDEBAR_CENTER,
+        topPosition,
+        {
+          color: "#000",
+          font: `500 12px Edu-SA`,
+          align: "center",
+        }
+      );
+    } else {
+      this.game.drawText(
+        `Not yet solved`,
+        SIDEBAR_CENTER,
+        topPosition,
+        {
+          color: "#000",
+          font: `500 16px Edu-SA`,
+          align: "center",
+        }
+      );
+    }
   }
 
   renderZoneSidebar() {
