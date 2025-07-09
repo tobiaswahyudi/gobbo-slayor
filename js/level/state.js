@@ -10,16 +10,17 @@ class LevelState {
     this.levelString = "";
     this.aimArea = [];
     this.id = "";
+    this.bestMoves = 0;
   }
 
-  static make({ id = '',title = "", bombs = 0, level, aimArea = []}) {
+  static make({ id = '',title = "", bombs = 0, level, aimArea = [], bestMoves = 0}) {
     const state = new LevelState();
     state.id = id;
     state.title = title;
     state.remainingBombs = bombs;
     state.levelString = level;
     state.aimArea = aimArea.map(([x, y]) => new Position(x, y));
-
+    state.bestMoves = bestMoves;
     state.parse();
     return state;
   }

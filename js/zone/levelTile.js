@@ -15,8 +15,9 @@ class LevelTile extends Position {
 
     const progress = game.progress.getProgress(this.zoneId, this.level.id);
     const completed = progress.completed;
+    const goldStar = progress.bestMoves <= this.level.bestMoves;
 
-    const color = completed ? "#ddd" : "#999";
+    const color = goldStar ? "#ffd700" : completed ? "#ddd" : "#999";
 
     game.drawRect(
       BOARD_PADDING + this.x * SQUARE_SIZE + LEVEL_TILE_PADDING,

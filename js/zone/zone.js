@@ -330,7 +330,7 @@ class ZoneMap {
         24,
         24
       );
-  
+      
       this.game.drawText(
         `Completed!`,
         SIDEBAR_CENTER - 24,
@@ -341,6 +341,31 @@ class ZoneMap {
           align: "left",
         }
       );
+
+      const hasGold = levelProgress.bestMoves <= this.currentLevelTile.level.bestMoves;
+
+      if (hasGold) {
+        topPosition += 36;
+
+        this.game.drawImage(
+          ASSETS.UI.STAR.GOLD,
+          SIDEBAR_CENTER - 60,
+          topPosition - 12,
+          24,
+          24
+        );
+        
+        this.game.drawText(
+          `Gold star!!!   :0`,
+          SIDEBAR_CENTER - 24,
+          topPosition - 4,
+          {
+            color: "#000",
+            font: `500 16px Edu-SA`,
+            align: "left",
+          }
+        );
+      }
 
       topPosition += 24;
 
@@ -354,6 +379,45 @@ class ZoneMap {
           align: "center",
         }
       );
+
+      topPosition += 48;
+
+      if (!hasGold) {
+
+        this.game.drawImage(
+          ASSETS.UI.STAR.GOLD,
+          SIDEBAR_CENTER - 30,
+          topPosition - 10,
+          24,
+          24
+        );
+
+        this.game.drawText(
+          'For a          Gold star:',
+          SIDEBAR_CENTER,
+          topPosition,
+          {
+            color: "#000",
+            font: `500 16px Edu-SA`,
+            align: "center",
+            lineSpacing: 24,
+          }
+        );
+
+        topPosition += 24;
+
+        this.game.drawText(
+          `Solve in ${this.currentLevelTile.level.bestMoves} moves`,
+          SIDEBAR_CENTER,
+          topPosition,
+          {
+            color: "#000",
+            font: `500 12px Edu-SA`,
+            align: "center",
+          }
+        );
+      }
+
     } else {
       this.game.drawText(
         `Not yet solved`,
@@ -517,11 +581,13 @@ class ZoneMap {
       24
     );
 
+    const goldStars = this.game.progress.getLevelGold(this.currentLocation.id);
+
     const isGoldDone =
-      this.currentLocation.goldStars == this.currentLocation.levels;
+      goldStars == this.currentLocation.levels;
 
     this.game.drawText(
-      `× ${this.currentLocation.goldStars}/${this.currentLocation.levels}`,
+      `× ${goldStars}/${this.currentLocation.levels}`,
       SIDEBAR_CENTER,
       topPosition - 10,
       {

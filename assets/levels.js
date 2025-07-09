@@ -14,6 +14,7 @@ const LEVEL_MINUS_1 = LevelState.make({
 ..|..|..|..|..|Cr|..|Cr
 `,
   aimArea: [[2, 0]],
+  bestMoves: 6,
 });
 
 const LEVEL_MINUS_2 = LevelState.make({
@@ -52,6 +53,7 @@ const LEVEL_0 = LevelState.make({
 ..|..|..|..|..|..|..|..
 `,
   aimArea: [[4, 0]],
+  bestMoves: 5,
 });
 
 // Level 1.5, 2 bombs
@@ -198,6 +200,7 @@ const LEVEL_SLEEPING_GOBBOS_1 = LevelState.make({
     [2, -1],
     [3, -2],
   ],
+  bestMoves: 6,
 });
 
 const LEVEL_SLEEPING_GOBBOS_2 = LevelState.make({
@@ -219,6 +222,7 @@ const LEVEL_SLEEPING_GOBBOS_2 = LevelState.make({
     [2, -1],
     [-5, -6],
   ],
+  bestMoves: 18,
 });
 
 const LEVEL_SLEEPING_GOBBOS_3 = LevelState.make({
@@ -253,6 +257,7 @@ const LEVEL_SLEEPING_GOBBOS_3 = LevelState.make({
     [4, -2],
     [3, -3],
   ],
+  bestMoves: 22,
 });
 
 const LEVEL_SLEEPING_GOBBOS_4 = LevelState.make({
@@ -275,6 +280,7 @@ const LEVEL_SLEEPING_GOBBOS_4 = LevelState.make({
     [1, 1],
     [2, 1],
   ],
+  bestMoves: 26,
 });
 
 const LEVEL_3 = LevelState.make({

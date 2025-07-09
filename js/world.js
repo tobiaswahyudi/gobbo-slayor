@@ -31,7 +31,6 @@ const WORLD_MAP_LOCATIONS = [
     text: "Goblins are napping by the fire\nwith their stolen hats.",
     asset: ASSETS.WORLD.FIRE,
     isZone: true,
-    goldStars: 0,
     levels: 6,
     cta: "Dang Gobbos! Get em!",
   },
@@ -44,7 +43,6 @@ const WORLD_MAP_LOCATIONS = [
     text: "Goblins are running around the old\n ruined fort. (They're actually doing\na good job of rebuilding it.)",
     asset: ASSETS.WORLD.FORT,
     isZone: true,
-    goldStars: 0,
     levels: 6,
     cta: "Don't care! Blow up the fort!\nGet your hats back!!",
   },
@@ -431,11 +429,13 @@ class WorldMap {
       24
     );
 
+    const goldStars = this.game.progress.getLevelGold(this.currentLocation.id);
+
     const isGoldDone =
-      this.currentLocation.goldStars == this.currentLocation.levels;
+      goldStars == this.currentLocation.levels;
 
     this.game.drawText(
-      `× ${this.currentLocation.goldStars}/${this.currentLocation.levels}`,
+      `× ${goldStars}/${this.currentLocation.levels}`,
       SIDEBAR_CENTER,
       topPosition - 10,
       {

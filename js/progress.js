@@ -48,4 +48,13 @@ class GameProgress {
     );
     return completedLevels.length;
   }
+
+  getLevelGold(zoneId) {
+    const levels = ZONE_LEVELS[zoneId].levels;
+    const completedLevels = levels.filter((level) => {
+      const progress = this.getProgress(zoneId, level.id);
+      return progress.completed && progress.bestMoves <= level.bestMoves;
+    });
+    return completedLevels.length;
+  }
 }
