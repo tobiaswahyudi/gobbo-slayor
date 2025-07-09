@@ -46,30 +46,30 @@ class LevelManager {
       case "ArrowUp":
       case "KeyW":
         this.history.copyTop();
-        if(!this.makeMove(Direction.UP)) this.history.pop();
+        if (!this.makeMove(Direction.UP)) this.history.pop();
         return true;
         break;
       case "ArrowDown":
       case "KeyS":
         this.history.copyTop();
-        if(!this.makeMove(Direction.DOWN)) this.history.pop();
+        if (!this.makeMove(Direction.DOWN)) this.history.pop();
         return true;
         break;
       case "ArrowLeft":
       case "KeyA":
         this.history.copyTop();
-        if(!this.makeMove(Direction.LEFT)) this.history.pop();
+        if (!this.makeMove(Direction.LEFT)) this.history.pop();
         return true;
         break;
       case "ArrowRight":
       case "KeyD":
         this.history.copyTop();
-        if(!this.makeMove(Direction.RIGHT)) this.history.pop();
+        if (!this.makeMove(Direction.RIGHT)) this.history.pop();
         return true;
         break;
       case "Space":
         this.history.copyTop();
-        if(!this.handleAction()) this.history.pop();
+        if (!this.handleAction()) this.history.pop();
         return true;
         break;
       // case "Escape":
@@ -120,76 +120,7 @@ class LevelManager {
     );
 
     this.renderSidebar();
-
-    this.game.ctx.globalAlpha = 0.4;
-    if (this.currentLevel === 0) {
-      this.game.drawImage(
-        ASSETS.TUTORIAL.ATTACK,
-        32 + 2 * SQUARE_SIZE + 0.5 * this.juiceOffset.x,
-        32 + 6 * SQUARE_SIZE + 0.5 * this.juiceOffset.y,
-        SQUARE_SIZE,
-        SQUARE_SIZE
-      );
-      this.game.drawImage(
-        ASSETS.TUTORIAL.MOVE,
-        32 + 1 * SQUARE_SIZE + 0.5 * this.juiceOffset.x,
-        32 + 6 * SQUARE_SIZE + 0.5 * this.juiceOffset.y,
-        SQUARE_SIZE,
-        SQUARE_SIZE
-      );
-    }
-    if (this.currentLevel <= 1 || this.currentLevel == 4) {
-      this.game.drawImage(
-        ASSETS.TUTORIAL.UNDO,
-        32 + 3 * SQUARE_SIZE + 0.5 * this.juiceOffset.x,
-        32 + 6 * SQUARE_SIZE + 0.5 * this.juiceOffset.y,
-        SQUARE_SIZE,
-        SQUARE_SIZE
-      );
-    }
-    if (this.currentLevel == 4) {
-      this.game.drawImage(
-        ASSETS.TUTORIAL.RESTART,
-        32 + 6 * SQUARE_SIZE + 0.5 * this.juiceOffset.x + SPRITE_PADDING,
-        32 + 6 * SQUARE_SIZE + 0.5 * this.juiceOffset.y + SPRITE_PADDING,
-        SPRITE_SIZE,
-        SPRITE_SIZE
-      );
-    }
-
-    this.game.ctx.globalAlpha = 1;
-
-    if (this.currentLevel === 0) {
-      this.game.ctx.globalAlpha = 0.75;
-      this.game.drawImage(
-        ASSETS.UI.TITLE,
-        54 + 0.5 * this.juiceOffset.x,
-        96 + 0.5 * this.juiceOffset.y,
-        384,
-        128
-      );
-      this.game.ctx.globalAlpha = 0.5;
-      this.game.drawImage(
-        ASSETS.UI.CREDITS,
-        320 + 0.5 * this.juiceOffset.x,
-        224 + 0.5 * this.juiceOffset.y,
-        128,
-        64
-      );
-      this.game.ctx.globalAlpha = 1;
-    }
-
-    if (this.currentLevel === 0) {
-      this.game.ctx.globalAlpha = 0.5;
-      this.game.drawImage(
-        ASSETS.TUTORIAL.TOOLTIP,
-        480 + 0.5 * this.juiceOffset.x,
-        96 + 0.5 * this.juiceOffset.y,
-        64,
-        128
-      );
-      this.game.ctx.globalAlpha = 1;
-    }
+    this.renderTutorial();
 
     this.state.render(
       this.game,
@@ -266,6 +197,49 @@ class LevelManager {
     this.checkLevelDone();
 
     return NEEDS_RE_RENDER;
+  }
+
+  renderTutorial() {
+    if (this.currentLevel !== 0) return;
+
+    this.game.ctx.globalAlpha = 0.4;
+    this.game.drawImage(
+      ASSETS.TUTORIAL.ATTACK,
+      32 + 2 * SQUARE_SIZE + 0.5 * this.juiceOffset.x,
+      32 + 6 * SQUARE_SIZE + 0.5 * this.juiceOffset.y,
+      SQUARE_SIZE,
+      SQUARE_SIZE
+    );
+    this.game.drawImage(
+      ASSETS.TUTORIAL.MOVE,
+      32 + 1 * SQUARE_SIZE + 0.5 * this.juiceOffset.x,
+      32 + 6 * SQUARE_SIZE + 0.5 * this.juiceOffset.y,
+      SQUARE_SIZE,
+      SQUARE_SIZE
+    );
+    this.game.drawImage(
+      ASSETS.TUTORIAL.UNDO,
+      32 + 3 * SQUARE_SIZE + 0.5 * this.juiceOffset.x,
+      32 + 6 * SQUARE_SIZE + 0.5 * this.juiceOffset.y,
+      SQUARE_SIZE,
+      SQUARE_SIZE
+    );
+    this.game.drawImage(
+      ASSETS.TUTORIAL.RESTART,
+      32 + 4 * SQUARE_SIZE + 0.5 * this.juiceOffset.x + SPRITE_PADDING,
+      32 + 6 * SQUARE_SIZE + 0.5 * this.juiceOffset.y + SPRITE_PADDING,
+      SPRITE_SIZE,
+      SPRITE_SIZE
+    );
+
+    this.game.drawImage(
+      ASSETS.TUTORIAL.TOOLTIP,
+      480 + 0.5 * this.juiceOffset.x,
+      96 + 0.5 * this.juiceOffset.y,
+      64,
+      128
+    );
+    this.game.ctx.globalAlpha = 1;
   }
 
   getDirVec(direction) {

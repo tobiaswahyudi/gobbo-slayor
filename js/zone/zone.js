@@ -584,5 +584,9 @@ class ZoneMap {
       `${this.currentLocation.title}  -  LEVEL ${this.currentLevelTile.number}`,
       this.currentLevelTile.level
     );
+
+    if (Number(this.currentLevelTile.number) <= 1) {
+      this.game.levelManager.currentLevel = 0;
+    }
   }
 }
