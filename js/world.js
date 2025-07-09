@@ -30,7 +30,6 @@ const WORLD_MAP_LOCATIONS = [
     text: "Goblins are napping by the fire\nwith their stolen hats.",
     asset: ASSETS.WORLD.FIRE,
     isZone: true,
-    silverStars: 6,
     goldStars: 0,
     levels: 6,
     cta: "Dang Gobbos! Get em!",
@@ -44,7 +43,6 @@ const WORLD_MAP_LOCATIONS = [
     text: "Goblins are running around the old\n ruined fort. (They're actually doing\na good job of rebuilding it.)",
     asset: ASSETS.WORLD.FORT,
     isZone: true,
-    silverStars: 0,
     goldStars: 0,
     levels: 6,
     cta: "Don't care! Blow up the fort!\nGet your hats back!!",
@@ -137,7 +135,8 @@ class WorldMap {
 
     WORLD_MAP_LOCATIONS.forEach((location) => {
       if (!location.asset) return;
-      const isZoneDone = location.silverStars == location.levels;
+      const silverStars = this.game.progress.getLevelSilver(location.id);
+      const isZoneDone = silverStars == location.levels;
       const status = isZoneDone ? "CLEAR" : "GOB";
       const asset = location.asset[status];
       this.game.drawImage(
@@ -356,11 +355,13 @@ class WorldMap {
       24
     );
 
+    const silverStars = this.game.progress.getLevelSilver(this.currentLocation.id);
+
     const isZoneDone =
-      this.currentLocation.silverStars == this.currentLocation.levels;
+      silverStars == this.currentLocation.levels;
 
     this.game.drawText(
-      `× ${this.currentLocation.silverStars}/${this.currentLocation.levels}`,
+      `× ${silverStars}/${this.currentLocation.levels}`,
       SIDEBAR_CENTER,
       topPosition - 10,
       {

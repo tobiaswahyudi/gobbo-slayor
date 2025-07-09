@@ -41,4 +41,12 @@ class GameProgress {
     );
     this.saveProgress();
   }
+
+  getLevelSilver(zoneId) {
+    const levels = ZONE_LEVELS[zoneId].levels;
+    const completedLevels = levels.filter(
+      (level) => this.getProgress(zoneId, level.id).completed
+    );
+    return completedLevels.length;
+  }
 }

@@ -12,15 +12,19 @@ class LevelTile extends Position {
   }
 
   render(game) {
+
+    const progress = game.progress.getProgress(this.zoneId, this.level.id);
+    const completed = progress.completed;
+
+    const color = completed ? "#ddd" : "#999";
+
     game.drawRect(
       BOARD_PADDING + this.x * SQUARE_SIZE + LEVEL_TILE_PADDING,
       BOARD_PADDING + this.y * SQUARE_SIZE + LEVEL_TILE_PADDING,
       LEVEL_TILE_SIZE,
       LEVEL_TILE_SIZE,
       {
-        color: "#000",
-        border: "#000",
-        borderWidth: 1,
+        fill: color,
       }
     );
 
