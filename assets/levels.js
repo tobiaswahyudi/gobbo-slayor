@@ -72,6 +72,7 @@ const LEVEL_ONE_HALF = LevelState.make({
 ..|..|..|..|..|..|..|..
 `,
   aimArea: [[2, 0]],
+  bestMoves: 4,
 });
 
 // Level 1, 2 bombs
@@ -94,6 +95,7 @@ const LEVEL_1_EVIL = LevelState.make({
     [2, -1],
     [3, 0],
   ],
+  bestMoves: 18,
 });
 
 // Level 1, 2 bombs
@@ -116,6 +118,7 @@ const LEVEL_1 = LevelState.make({
     [2, -1],
     [3, 0],
   ],
+  bestMoves: 17,
 });
 
 // Level 1, 2 bombs
@@ -140,6 +143,7 @@ const LEVEL_2 = LevelState.make({
     [4, 0],
     [3, 1],
   ],
+  bestMoves: 13,
 });
 
 const LEVEL_FIN = LevelState.make({
@@ -162,6 +166,7 @@ Xr|..|Xr|..|Xr|..|Xr|..
     [-1, 1],
     [-1, -1],
   ],
+  bestMoves: 1,
 });
 
 const LEVEL_BAD = LevelState.make({
@@ -179,6 +184,7 @@ const LEVEL_BAD = LevelState.make({
 ..|..|..|..|..|..|..|..
 `,
   aimArea: [[0, 0]],
+  bestMoves: 4,
 });
 
 const LEVEL_SLEEPING_GOBBOS_1 = LevelState.make({
@@ -303,6 +309,7 @@ Xd|Xd|Xd|Xd|..|..|..|..
     [-2, -2],
     [-3, -3],
   ],
+  bestMoves: 36,
 });
 
 const LEVEL_3_EVIL = LevelState.make({
@@ -325,6 +332,7 @@ const LEVEL_3_EVIL = LevelState.make({
     [-1, 1],
     [-1, -1],
   ],
+  bestMoves: 17,
 });
 
 const ZONE_1_MAP = LevelState.make({
