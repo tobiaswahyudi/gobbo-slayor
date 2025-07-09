@@ -13,6 +13,7 @@ class LevelHistory {
   copyTop() {
     this.history.push(this.getCurrent().clone());
     this.current++;
+    this.history[this.current].turnCount++;
   }
 
   pop() {

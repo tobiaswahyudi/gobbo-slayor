@@ -45,21 +45,25 @@ class LevelManager {
     switch (keyCode) {
       case "ArrowUp":
       case "KeyW":
+        this.history.copyTop();
         this.makeMove(Direction.UP);
         return true;
         break;
       case "ArrowDown":
       case "KeyS":
+        this.history.copyTop();
         this.makeMove(Direction.DOWN);
         return true;
         break;
       case "ArrowLeft":
       case "KeyA":
+        this.history.copyTop();
         this.makeMove(Direction.LEFT);
         return true;
         break;
       case "ArrowRight":
       case "KeyD":
+        this.history.copyTop();
         this.makeMove(Direction.RIGHT);
         return true;
         break;
@@ -569,6 +573,19 @@ class LevelManager {
         color: spellColor,
         font: "24px Tiny5",
         align: "left",
+      }
+    );
+
+    topPosition += 32;
+
+    this.game.drawText(
+      `Moves: ${this.state.turnCount}`,
+      SIDEBAR_CENTER + this.juiceOffset.x,
+      topPosition + this.juiceOffset.y,
+      {
+        color: "#000",
+        font: "500 16px Edu-SA",
+        align: "center",
       }
     );
 
