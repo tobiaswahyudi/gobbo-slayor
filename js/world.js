@@ -14,6 +14,7 @@ Cr|..|..|..|..|Cr|..|..
 
 const WORLD_MAP_LOCATIONS = [
   {
+    id: "wiz",
     x: 2,
     y: 6,
     title: "HOME BASE",
@@ -87,6 +88,10 @@ class WorldMap {
         break;
       case "Space":
         this.goToZone();
+        return true;
+        break;
+      case "KeyR":
+        this.resetProgress();
         return true;
         break;
       default:
@@ -506,5 +511,12 @@ class WorldMap {
     this.game.currentZone = this.currentLocation;
     this.game.zoneMap = new ZoneMap(this.game);
     this.game.zoneMap.currentLevel = null;
+  }
+
+  resetProgress() {
+    if(this.currentLocation.id == "wiz") {
+      this.game.progress = new GameProgress();
+      this.game.progress.saveProgress();
+    }
   }
 }

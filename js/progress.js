@@ -14,8 +14,6 @@ class GameProgress {
         };
       }
     }
-
-    this.loadProgress();
   }
 
   saveProgress() {

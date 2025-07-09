@@ -8,6 +8,7 @@ class Game {
     this.ctx = this.canvas.getContext("2d");
 
     this.progress = new GameProgress();
+    this.progress.loadProgress();
 
     // Game state
     this.isRunning = false;
