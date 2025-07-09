@@ -46,30 +46,30 @@ class LevelManager {
       case "ArrowUp":
       case "KeyW":
         this.history.copyTop();
-        this.makeMove(Direction.UP);
+        if(!this.makeMove(Direction.UP)) this.history.pop();
         return true;
         break;
       case "ArrowDown":
       case "KeyS":
         this.history.copyTop();
-        this.makeMove(Direction.DOWN);
+        if(!this.makeMove(Direction.DOWN)) this.history.pop();
         return true;
         break;
       case "ArrowLeft":
       case "KeyA":
         this.history.copyTop();
-        this.makeMove(Direction.LEFT);
+        if(!this.makeMove(Direction.LEFT)) this.history.pop();
         return true;
         break;
       case "ArrowRight":
       case "KeyD":
         this.history.copyTop();
-        this.makeMove(Direction.RIGHT);
+        if(!this.makeMove(Direction.RIGHT)) this.history.pop();
         return true;
         break;
       case "Space":
         this.history.copyTop();
-        this.handleAction();
+        if(!this.handleAction()) this.history.pop();
         return true;
         break;
       // case "Escape":
@@ -314,7 +314,7 @@ class LevelManager {
     if (this.levelIsDone) return;
     const dirVec = this.getDirVec(direction);
     const ok = this.tryMove(this.state.player, dirVec[0], dirVec[1]);
-    if (!ok) return;
+    if (!ok) return false;
 
     // move gobbos
     this.state.gobbos.forEach((gobbo) => {
@@ -329,6 +329,8 @@ class LevelManager {
     });
 
     this.checkLevelStatus();
+
+    return true;
   }
 
   // Handle player movement
@@ -352,7 +354,7 @@ class LevelManager {
 
   handleAction() {
     if (this.state.remainingBombs == 0) {
-      return;
+      return false;
     }
 
     this.state.remainingBombs--;
@@ -387,6 +389,8 @@ class LevelManager {
     gobbosToKill.forEach(([gobbo, aim]) => this.killGobbo(gobbo, aim));
 
     this.makeMove();
+
+    return true;
   }
 
   killGobbo(gobbo, aim) {
