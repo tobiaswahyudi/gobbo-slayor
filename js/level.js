@@ -438,7 +438,7 @@ class LevelManager {
       this.animations.length === 0
     ) {
       this.levelIsTransitioning = true;
-      this.triggerNextLevelTransition();
+      this.returnToZone();
     }
   }
 
@@ -732,7 +732,12 @@ class LevelManager {
   }
 
   // Level completion handler
-  triggerNextLevelTransition() {
+  returnToZone() {
+    this.game.progress.setProgress(
+      this.game.currentZone.id,
+      this.game.currentLevel.levelId,
+      this.state.turnCount
+    );
     this.animations.push(
       new TransitionAnimation(TRANSITION_DIRECTION.OUT, () => {
         console.log("transitioning to zone", this.game.zoneMap.animations);

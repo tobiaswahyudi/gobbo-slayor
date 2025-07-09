@@ -487,6 +487,7 @@ class ZoneMap {
   goToLevel() {
     if (!this.currentLevel) return;
     this.game.scene = "level";
+    this.game.currentLevel = this.currentLevel;
     this.game.levelManager = new LevelManager(
       this.game,
       `${this.currentLocation.title}  -  LEVEL ${this.currentLevel.number}`,

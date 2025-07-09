@@ -1,4 +1,5 @@
-const PROGRESS_KEY = "what are you snooping around for? you some kind of pervert?";
+const PROGRESS_KEY =
+  "what are you snooping around for? you some kind of pervert?";
 
 class GameProgress {
   constructor() {
@@ -7,9 +8,14 @@ class GameProgress {
     for (const zoneId in ZONE_LEVELS) {
       this.progress[zoneId] = {};
       for (const levelId in ZONE_LEVELS[zoneId].levels) {
-        this.progress[zoneId][levelId] = 0;
+        this.progress[zoneId][levelId] = {
+          completed: false,
+          bestMoves: Infinity,
+        };
       }
     }
+
+    this.loadProgress();
   }
 
   saveProgress() {
@@ -24,5 +30,15 @@ class GameProgress {
   }
 
   getProgress(zoneId, levelId) {
-    return this.progress[zoneId]?.[levelId] || 0;
+    return this.progress[zoneId][levelId];
   }
+
+  setProgress(zoneId, levelId, moves) {
+    this.progress[zoneId][levelId].completed = true;
+    this.progress[zoneId][levelId].bestMoves = Math.min(
+      this.progress[zoneId][levelId].bestMoves,
+      moves
+    );
+    this.saveProgress();
+  }
+}
