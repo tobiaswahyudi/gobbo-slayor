@@ -735,7 +735,7 @@ class LevelManager {
   returnToZone() {
     this.game.progress.setProgress(
       this.game.currentZone.id,
-      this.game.currentLevel.levelId,
+      this.game.currentLevel.id,
       this.state.turnCount
     );
     this.animations.push(

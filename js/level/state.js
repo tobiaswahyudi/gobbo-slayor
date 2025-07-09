@@ -9,10 +9,12 @@ class LevelState {
     this.specialTiles = [];
     this.levelString = "";
     this.aimArea = [];
+    this.id = "";
   }
 
-  static make({ title = "", bombs = 0, level, aimArea = []}) {
+  static make({ id = '',title = "", bombs = 0, level, aimArea = []}) {
     const state = new LevelState();
+    state.id = id;
     state.title = title;
     state.remainingBombs = bombs;
     state.levelString = level;

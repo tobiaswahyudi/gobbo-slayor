@@ -1,5 +1,6 @@
 // Level 0, 3 bombs
 const LEVEL_MINUS_1 = LevelState.make({
+  id: "intro",
   title: "Welcome!",
   bombs: 2,
   level: `
@@ -16,6 +17,7 @@ const LEVEL_MINUS_1 = LevelState.make({
 });
 
 const LEVEL_MINUS_2 = LevelState.make({
+  id: "bug-test",
   title: "bug test",
   bombs: 2,
   level: `
@@ -36,6 +38,7 @@ const LEVEL_MINUS_2 = LevelState.make({
 
 // Level 0, 3 bombs
 const LEVEL_0 = LevelState.make({
+  id: "magic-hats",
   title: "Magic Hats, what do they do?",
   bombs: 3,
   level: `
@@ -53,6 +56,7 @@ const LEVEL_0 = LevelState.make({
 
 // Level 1.5, 2 bombs
 const LEVEL_ONE_HALF = LevelState.make({
+  id: "parity",
   title: "Evasive Action",
   bombs: 2,
   level: `
@@ -70,6 +74,7 @@ const LEVEL_ONE_HALF = LevelState.make({
 
 // Level 1, 2 bombs
 const LEVEL_1_EVIL = LevelState.make({
+  id: "jog-2",
   title: "Gobbos on a Morning Jog (Evil)",
   bombs: 2,
   level: `
@@ -91,6 +96,7 @@ const LEVEL_1_EVIL = LevelState.make({
 
 // Level 1, 2 bombs
 const LEVEL_1 = LevelState.make({
+  id: "jog-1",
   title: "Gobbos on a Morning Jog",
   bombs: 2,
   level: `
@@ -112,6 +118,7 @@ const LEVEL_1 = LevelState.make({
 
 // Level 1, 2 bombs
 const LEVEL_2 = LevelState.make({
+  id: "parity-plus",
   title: "⬇︎ Don't overthink it ⬇︎",
   bombs: 3,
   level: `
@@ -134,6 +141,7 @@ const LEVEL_2 = LevelState.make({
 });
 
 const LEVEL_FIN = LevelState.make({
+  id: "fin",
   title: "SECRET GOBBO DANCE PARTY",
   bombs: 0,
   level: `
@@ -155,6 +163,7 @@ Xr|..|Xr|..|Xr|..|Xr|..
 });
 
 const LEVEL_BAD = LevelState.make({
+  id: "bad",
   title: "This level is bad.",
   bombs: 300,
   level: `
@@ -171,6 +180,7 @@ const LEVEL_BAD = LevelState.make({
 });
 
 const LEVEL_SLEEPING_GOBBOS_1 = LevelState.make({
+  id: "sleepy-1",
   title: "Just some target practice.",
   bombs: 3,
   level: `
@@ -191,6 +201,7 @@ const LEVEL_SLEEPING_GOBBOS_1 = LevelState.make({
 });
 
 const LEVEL_SLEEPING_GOBBOS_2 = LevelState.make({
+  id: "sleepy-2",
   title: "Wait what.",
   bombs: 3,
   level: `
@@ -211,6 +222,7 @@ const LEVEL_SLEEPING_GOBBOS_2 = LevelState.make({
 });
 
 const LEVEL_SLEEPING_GOBBOS_3 = LevelState.make({
+  id: "sleepy-3",
   title: "A little puzzling.",
   bombs: 4,
   level: `
@@ -244,6 +256,7 @@ const LEVEL_SLEEPING_GOBBOS_3 = LevelState.make({
 });
 
 const LEVEL_SLEEPING_GOBBOS_4 = LevelState.make({
+  id: "sleepy-4",
   title: "?.",
   bombs: 4,
   level: `
@@ -265,6 +278,7 @@ const LEVEL_SLEEPING_GOBBOS_4 = LevelState.make({
 });
 
 const LEVEL_3 = LevelState.make({
+  id: "overlap-1",
   title: "2 birds 1 stone",
   bombs: 4,
   level: `
@@ -286,6 +300,7 @@ Xd|Xd|Xd|Xd|..|..|..|..
 });
 
 const LEVEL_3_EVIL = LevelState.make({
+  id: "overlap-2",
   title: "sorry",
   bombs: 2,
   level: `

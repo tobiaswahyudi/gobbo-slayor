@@ -7,8 +7,8 @@ class GameProgress {
 
     for (const zoneId in ZONE_LEVELS) {
       this.progress[zoneId] = {};
-      for (const levelId in ZONE_LEVELS[zoneId].levels) {
-        this.progress[zoneId][levelId] = {
+      for (const level of ZONE_LEVELS[zoneId].levels) {
+        this.progress[zoneId][level.id] = {
           completed: false,
           bestMoves: Infinity,
         };

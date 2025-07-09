@@ -15,7 +15,7 @@ class ZoneMap {
     );
 
     this.state.parse(specialTiles);
-    this.currentLevel = null;
+    this.currentLevelTile = null;
 
     this.animations = [new TransitionAnimation(TRANSITION_DIRECTION.IN)];
 
@@ -96,11 +96,11 @@ class ZoneMap {
 
     this.state.specialTiles.forEach((tile) => tile.render(this.game));
 
-    this.currentLevel = this.state.specialTiles.find(
+    this.currentLevelTile = this.state.specialTiles.find(
       (tile) => tile.x == this.state.player.x && tile.y == this.state.player.y
     );
 
-    if (this.currentLevel) {
+    if (this.currentLevelTile) {
       this.renderLevelSidebar();
     } else {
       this.renderZoneSidebar();
@@ -205,7 +205,7 @@ class ZoneMap {
 
     let topPosition = 32;
 
-    const level = this.currentLevel.level;
+    const level = this.currentLevelTile.level;
 
     // Sidebar background
     this.game.drawRect(576, 32, SIDEBAR_WIDTH, 512, {
@@ -218,7 +218,7 @@ class ZoneMap {
     topPosition += 24;
 
     this.game.drawText(
-      `${this.currentLocation.title}  -  LEVEL ${this.currentLevel.number}`,
+      `${this.currentLocation.title}  -  LEVEL ${this.currentLevelTile.number}`,
       SIDEBAR_CENTER,
       topPosition,
       {
@@ -261,7 +261,7 @@ class ZoneMap {
       "#CFC6BD",
       "#E2D8D4"
     );
-    this.currentLevel.level.render(this.game, 600 / scale, topPosition / scale);
+    this.currentLevelTile.level.render(this.game, 600 / scale, topPosition / scale);
 
     this.game.drawRect(
       600 / scale,
@@ -356,11 +356,13 @@ class ZoneMap {
       24
     );
 
+    const silverStars = this.game.progress.getLevelSilver(this.currentLocation.id);
+
     const isZoneDone =
-      this.currentLocation.silverStars == this.currentLocation.levels;
+      silverStars == this.currentLocation.levels;
 
     this.game.drawText(
-      `× ${this.currentLocation.silverStars}/${this.currentLocation.levels}`,
+      `× ${silverStars}/${this.currentLocation.levels}`,
       SIDEBAR_CENTER,
       topPosition - 10,
       {
@@ -485,13 +487,13 @@ class ZoneMap {
   }
 
   goToLevel() {
-    if (!this.currentLevel) return;
+    if (!this.currentLevelTile) return;
     this.game.scene = "level";
-    this.game.currentLevel = this.currentLevel;
+    this.game.currentLevel = this.currentLevelTile.level;
     this.game.levelManager = new LevelManager(
       this.game,
-      `${this.currentLocation.title}  -  LEVEL ${this.currentLevel.number}`,
-      this.currentLevel.level
+      `${this.currentLocation.title}  -  LEVEL ${this.currentLevelTile.number}`,
+      this.currentLevelTile.level
     );
   }
 }
