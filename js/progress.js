@@ -10,7 +10,7 @@ class GameProgress {
       for (const level of ZONE_LEVELS[zoneId].levels) {
         this.progress[zoneId][level.id] = {
           completed: false,
-          bestMoves: Infinity,
+          bestMoves: 99999,
         };
       }
     }
@@ -32,6 +32,7 @@ class GameProgress {
   }
 
   setProgress(zoneId, levelId, moves) {
+    console.log("setting progress", zoneId, levelId, moves);
     this.progress[zoneId][levelId].completed = true;
     this.progress[zoneId][levelId].bestMoves = Math.min(
       this.progress[zoneId][levelId].bestMoves,
