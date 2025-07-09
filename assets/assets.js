@@ -60,6 +60,7 @@ const ASSETS = {
       GOB: "assets/worldmap/flag-gob.png",
       WIZ: "assets/worldmap/flag-wiz.png",
     },
+    LOCK: "assets/worldmap/lock.png",
   },
 };
 

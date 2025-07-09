@@ -326,10 +326,10 @@ const ZONE_1_MAP = LevelState.make({
   bombs: 0,
   level: `
 ..|Cr|Cr|Cr|Cr|Cr|Cr|Cr
-..|Cr|..|04|..|..|05|Cr
-..|Cr|..|Cr|Cr|..|..|Cr
+..|Cr|..|04|L4|..|05|Cr
+..|Cr|L3|Cr|Cr|..|..|Cr
 ..|Cr|..|03|Cr|..|06|Cr
-Wz|..|..|..|Cr|..|Cr|Cr
+Wz|..|..|..|Cr|L6|Cr|Cr
 ..|Cr|..|02|Cr|..|..|..
 ..|Cr|01|..|Cr|..|..|..
 ..|Cr|Cr|Cr|Cr|..|..|..

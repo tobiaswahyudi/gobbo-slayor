@@ -7,12 +7,28 @@ class ZoneMap {
     this.state = ZONE_LEVELS[this.currentLocation.id].map;
 
     const numLevels = ZONE_LEVELS[this.currentLocation.id].levels.length;
-    const specialTiles = Object.fromEntries(
-      new Array(numLevels).fill(0).map((_, i) => {
-        const numString = String(i + 1).padStart(2, "0");
-        return [numString, [LevelTile, numString, this.currentLocation.id, i]];
-      })
-    );
+    const specialTiles = {};
+
+    for (let i = 0; i < numLevels; i++) {
+      const numString = String(i + 1).padStart(2, "0");
+      specialTiles[numString] = [
+        LevelTile,
+        numString,
+        this.currentLocation.id,
+        i,
+      ];
+    }
+
+    for (let i = 1; i <= numLevels; i++) {
+      // Up to 16 levels in a zone
+      const numString = i.toString(16);
+      specialTiles["L" + numString] = [
+        LockTile,
+        i,
+        this.currentLocation.id,
+        this.game.progress,
+      ];
+    }
 
     this.state.parse(specialTiles);
     this.currentLevelTile = null;
@@ -100,6 +116,10 @@ class ZoneMap {
       (tile) => tile.x == this.state.player.x && tile.y == this.state.player.y
     );
 
+    if (!(this.currentLevelTile instanceof LevelTile)) {
+      this.currentLevelTile = null;
+    }
+
     if (this.currentLevelTile) {
       this.renderLevelSidebar();
     } else {
@@ -164,6 +184,17 @@ class ZoneMap {
       return false;
     }
     if (this.state.walls.some((wall) => wall.x === newX && wall.y === newY)) {
+      return false;
+    }
+    if (
+      this.state.specialTiles.some(
+        (tile) =>
+          tile.x === newX &&
+          tile.y === newY &&
+          tile instanceof LockTile &&
+          tile.closed
+      )
+    ) {
       return false;
     }
     return true;
@@ -261,7 +292,11 @@ class ZoneMap {
       "#CFC6BD",
       "#E2D8D4"
     );
-    this.currentLevelTile.level.render(this.game, 600 / scale, topPosition / scale);
+    this.currentLevelTile.level.render(
+      this.game,
+      600 / scale,
+      topPosition / scale
+    );
 
     this.game.drawRect(
       600 / scale,
@@ -356,10 +391,11 @@ class ZoneMap {
       24
     );
 
-    const silverStars = this.game.progress.getLevelSilver(this.currentLocation.id);
+    const silverStars = this.game.progress.getLevelSilver(
+      this.currentLocation.id
+    );
 
-    const isZoneDone =
-      silverStars == this.currentLocation.levels;
+    const isZoneDone = silverStars == this.currentLocation.levels;
 
     this.game.drawText(
       `× ${silverStars}/${this.currentLocation.levels}`,
