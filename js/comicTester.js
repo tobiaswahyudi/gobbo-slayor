@@ -14,7 +14,6 @@ const SETUP_CANVAS_TEST_LISTENERS = (canvas) => {
   });
 
   canvas.addEventListener("mousemove", (ev) => {
-    ev
     if (MOUSE_DOWN) {
       MOUSE_POSITION.x = ev.offsetX - 16;
       MOUSE_POSITION.y = ev.offsetY - 16;

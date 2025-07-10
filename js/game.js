@@ -183,14 +183,14 @@ class Game {
       case "zone":
         anotherRender = this.zoneMap.render();
       case "comic":
-        const comicStillGoing = COMIC_DEBUG
+        anotherRender = COMIC_DEBUG
           ? COMIC_TEST(this)
           : this.comic.render();
 
-        if (!comicStillGoing) {
-          this.scene = "level";
+        if (!anotherRender) {
+          this.scene = "world";
+          anotherRender = true;
         }
-        anotherRender = true;
         break;
       case "level":
         anotherRender = this.levelManager.renderGame(this.ctx);
