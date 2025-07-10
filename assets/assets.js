@@ -105,6 +105,25 @@ const ASSETS = {
         WIZSTAFF: "assets/comic/p2/p2-2-wizstaff.png",
       },
     },
+    P3: {
+      ONE: {
+        WIZ: "assets/comic/p3/p3-1-wiz.png"
+      },
+      TWO: {
+        WIZ: "assets/comic/p3/p3-2-wiz.png",
+        BOOM: "assets/comic/p3/p3-2-boom.png",
+        GOB_EXPLODE: "assets/comic/p3/p3-2-gob-expl.png",
+        GROUND_LIGHT: "assets/comic/p3/p3-2-ground-light.png",
+        SAY_BOOM: "assets/comic/p3/p3-2-say-boom.png",
+      },
+      GOB_RUN: {
+        ONE: "assets/comic/p3/p3-1-gob-run-1.png",
+        TWO: "assets/comic/p3/p3-1-gob-run-2.png",
+      },
+      SKY: "assets/comic/p3/p3-sky.png",
+      FOREGROUND: "assets/comic/p3/p3-foreground.png",
+      BACKGROUND: "assets/comic/p3/p3-background.png",
+    },
   },
 };
 
