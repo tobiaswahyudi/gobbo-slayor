@@ -277,8 +277,10 @@ class IntroComic {
         [200, THUNK],
       ]),
       new IntroComicPanel(game, [
-        [0, new ColorFadeAnimation(30, 5, 0, "#000")],
-        [34, THUNK],
+        [0, new ColorFadeAnimation(40, 100, 0)],
+        [0, new ImageFadeAnimation(12, 100, 0, ASSETS.UI.TITLE, new Position(112, 60), 192, 64)],
+        [30, new ImageFadeAnimation(12, 100, 0, ASSETS.UI.CREDITS, new Position(200, 130), 96, 48)],
+        [60, THUNK],
       ]),
     ];
   }
@@ -306,7 +308,7 @@ class IntroComic {
       this.currentPanel++;
     }
 
-    renderImage(ASSETS.COMIC.OUTLINE)(this.game);
+    // renderImage(ASSETS.COMIC.OUTLINE)(this.game);
 
     this.game.ctx.restore();
     if (this.currentPanel == this.panels.length) return false;
