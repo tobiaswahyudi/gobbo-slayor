@@ -22,10 +22,20 @@ const oppositeDirection = (direction) => {
   return direction;
 };
 
+const isOutOfBounds = (x, y) => {
+  return x < 0 || x > 7 || y < 0 || y > 7;
+};
+
+const strPosition = (x, y) => `${x},${y}`;
+
 class Position {
   constructor(x = 0, y = 0) {
     this.x = x;
     this.y = y;
+  }
+
+  toString() {
+    return strPosition(this.x, this.y);
   }
 
   clone() {

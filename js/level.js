@@ -322,8 +322,8 @@ class LevelManager {
     this.state.player.y += deltaY;
   }
 
-  checkAimArea(x, y) {
-    return this.state.aimArea.find((a) => a.x === x && a.y === y);
+  checkAimArea(pos) {
+    return this.state.aimArea.lookup.has(pos);
   }
 
   handleAction() {
@@ -333,7 +333,7 @@ class LevelManager {
 
     this.state.remainingBombs--;
 
-    const areas = this.state.aimArea
+    const areas = this.state.aimArea.cells
       .map((area) => area.add(this.state.player))
       .filter((area) => !this.isOutOfBounds(area.x, area.y));
 
@@ -354,13 +354,8 @@ class LevelManager {
     const gobbosToKill = [];
 
     this.state.gobbos.forEach((gobbo) => {
-      const aim = this.checkAimArea(
-        gobbo.x - this.state.player.x,
-        gobbo.y - this.state.player.y
-      );
-      if (aim) {
-        gobbosToKill.push([gobbo, aim]);
-      }
+      const pos = gobbo.add(this.state.player.negate());
+      if (this.checkAimArea(pos)) gobbosToKill.push([gobbo, pos]);
     });
 
     gobbosToKill.forEach(([gobbo, aim]) => this.killGobbo(gobbo, aim));
@@ -374,25 +369,15 @@ class LevelManager {
     this.state.gobbos = this.state.gobbos.filter((g) => g !== gobbo);
     switch (gobbo.hatType) {
       case HatType.REMOVE:
-        this.state.aimArea = this.state.aimArea.filter(
-          (a) => a.x !== aim.x || a.y !== aim.y
-        );
+        this.state.aimArea.remove(aim);
         break;
       case HatType.HORIZONTAL:
-        if (!this.checkAimArea(aim.x - 1, aim.y)) {
-          this.state.aimArea.push(new Position(aim.x - 1, aim.y));
-        }
-        if (!this.checkAimArea(aim.x + 1, aim.y)) {
-          this.state.aimArea.push(new Position(aim.x + 1, aim.y));
-        }
+        this.state.aimArea.add(new Position(aim.x - 1, aim.y));
+        this.state.aimArea.add(new Position(aim.x + 1, aim.y));
         break;
       case HatType.VERTICAL:
-        if (!this.checkAimArea(aim.x, aim.y - 1)) {
-          this.state.aimArea.push(new Position(aim.x, aim.y - 1));
-        }
-        if (!this.checkAimArea(aim.x, aim.y + 1)) {
-          this.state.aimArea.push(new Position(aim.x, aim.y + 1));
-        }
+        this.state.aimArea.add(new Position(aim.x, aim.y - 1));
+        this.state.aimArea.add(new Position(aim.x, aim.y + 1));
         break;
     }
     this.animations.push(
@@ -714,11 +699,11 @@ class LevelManager {
 
   // Level completion handler
   returnToZone() {
-    this.game.progress.setProgress(
-      this.game.currentZone.id,
-      this.game.currentLevel.id,
-      this.state.turnCount
-    );
+      this.game.progress.setProgress(
+        this.game.currentZone.id,
+        this.game.currentLevel.id,
+        this.state.turnCount
+      );
     this.animations.push(
       new TransitionAnimation(TRANSITION_DIRECTION.OUT, () => {
         console.log("transitioning to zone", this.game.zoneMap.animations);
