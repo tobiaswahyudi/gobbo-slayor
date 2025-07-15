@@ -123,7 +123,7 @@ const ASSETS = {
       SKY: "assets/comic/p3/p3-sky.png",
       FOREGROUND: "assets/comic/p3/p3-foreground.png",
       BACKGROUND: "assets/comic/p3/p3-background.png",
-    },
+    }
   },
 };
 

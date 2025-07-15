@@ -15,8 +15,8 @@ const SETUP_CANVAS_TEST_LISTENERS = (canvas) => {
 
   canvas.addEventListener("mousemove", (ev) => {
     if (MOUSE_DOWN) {
-      MOUSE_POSITION.x = ev.offsetX - 16;
-      MOUSE_POSITION.y = ev.offsetY - 16;
+      MOUSE_POSITION.x = ev.offsetX - 100;
+      MOUSE_POSITION.y = ev.offsetY - 100;
 
       console.log(MOUSE_POSITION);
     }
@@ -42,17 +42,29 @@ const COMIC_TEST = (game) => {
   renderSimpleImage(ASSETS.COMIC.P1.TWO.WINDOW);
   renderSimpleImage(ASSETS.COMIC.P1.TWO.WIZ);
   renderSimpleImage(ASSETS.COMIC.P1.TWO.DOOR_FRAGMENTS);
-  renderSimpleImage(ASSETS.COMIC.P1.TWO.GOBBO.WINDOW, true);
-  renderSimpleImage(ASSETS.COMIC.P1.TWO.GOBBO.LEFT, true);
-  renderSimpleImage(ASSETS.COMIC.P1.TWO.GOBBO.RIGHT, true);
+  renderSimpleImage(ASSETS.COMIC.P1.TWO.GOBBO.WINDOW);
+  renderSimpleImage(ASSETS.COMIC.P1.TWO.GOBBO.LEFT);
+  renderSimpleImage(ASSETS.COMIC.P1.TWO.GOBBO.RIGHT);
 
   renderSimpleImage(ASSETS.COMIC.P2.ONE.BG);
   renderSimpleImage(ASSETS.COMIC.P2.ONE.SHADOW);
   renderSimpleImage(ASSETS.COMIC.P2.ONE.HOLDER);
   renderSimpleImage(ASSETS.COMIC.P2.ONE.STAFF);
-  renderSimpleImage(ASSETS.COMIC.P2.ONE.HAND, true);
+  renderSimpleImage(ASSETS.COMIC.P2.ONE.HAND);
   renderSimpleImage(ASSETS.COMIC.P2.ONE.WIZ);
   renderSimpleImage(ASSETS.COMIC.P2.MASK);
+  renderSimpleImage(ASSETS.COMIC.OUTLINE);
+
+  renderSimpleImage(ASSETS.COMIC.P3.SKY);
+  renderSimpleImage(ASSETS.COMIC.P3.BACKGROUND);
+  renderSimpleImage(ASSETS.COMIC.P3.TWO.BOOM);
+  renderSimpleImage(ASSETS.COMIC.P3.TWO.GOB_EXPLODE);
+  renderSimpleImage(ASSETS.COMIC.P3.GOB_RUN.ONE, true);
+  renderSimpleImage(ASSETS.COMIC.P3.GOB_RUN.TWO);
+  renderSimpleImage(ASSETS.COMIC.P3.FOREGROUND);
+  // renderSimpleImage(ASSETS.COMIC.FG_D);
+  renderSimpleImage(ASSETS.COMIC.P3.TWO.WIZ);
+  renderSimpleImage(ASSETS.COMIC.P3.ONE.WIZ);
   renderSimpleImage(ASSETS.COMIC.OUTLINE);
 
   game.ctx.restore();
