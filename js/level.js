@@ -347,7 +347,7 @@ class LevelManager {
         )
       );
       this.animations.push(
-        new JuiceAnimation(this.juiceOffset, EXPLOSION_FRAMES, 2)
+        new JuiceAnimation(this.juiceOffset, EXPLOSION_FRAMES, 20)
       );
     });
 
