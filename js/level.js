@@ -83,6 +83,10 @@ class LevelManager {
         // this.history.pop();
         this.history.pop();
         return true;
+      case "Escape":
+        this.returnToZone(false);
+        return true;
+        break;
       default:
         // this.history.pop();
         return false;
@@ -404,7 +408,7 @@ class LevelManager {
       this.animations.length === 0
     ) {
       this.levelIsTransitioning = true;
-      this.returnToZone();
+      this.returnToZone(true);
     }
   }
 
@@ -698,12 +702,14 @@ class LevelManager {
   }
 
   // Level completion handler
-  returnToZone() {
+  returnToZone(finished = false) {
+    if (finished) {
       this.game.progress.setProgress(
         this.game.currentZone.id,
         this.game.currentLevel.id,
         this.state.turnCount
       );
+    }
     this.animations.push(
       new TransitionAnimation(TRANSITION_DIRECTION.OUT, () => {
         console.log("transitioning to zone", this.game.zoneMap.animations);
