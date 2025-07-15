@@ -153,7 +153,7 @@ class Game {
         if (!this.levelManager.handleGameInput(keyCode)) return false;
         break;
       case "comic":
-        this.scene = "world";
+        if (!this.comic.handleInput(keyCode)) return false;
         break;
     }
 
@@ -186,6 +186,7 @@ class Game {
         break;
       case "zone":
         anotherRender = this.zoneMap.render();
+        break;
       case "comic":
         anotherRender = COMIC_DEBUG
           ? COMIC_TEST(this)

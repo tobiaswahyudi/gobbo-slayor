@@ -79,17 +79,20 @@ const chain =
     return fns.reduce((acc, fn) => fn(state).add(acc), new Position(0, 0));
   };
 
-const imageFade = (image, fadeInFrames, fadeOutFrames) => (game, state, frame) => {
-  const progress = frame / (fadeInFrames + fadeOutFrames);
-  game.ctx.save();
-  game.ctx.globalAlpha = progress;
-  game.drawImage(image, 0, 0);
-  game.ctx.restore();
-};
+const imageFade =
+  (image, fadeInFrames, fadeOutFrames) => (game, state, frame) => {
+    const progress = frame / (fadeInFrames + fadeOutFrames);
+    game.ctx.save();
+    game.ctx.globalAlpha = progress;
+    game.drawImage(image, 0, 0);
+    game.ctx.restore();
+  };
 
 class IntroComic {
   constructor(game) {
     this.game = game;
+
+    this.isTryingToSkip = false;
 
     this.state = {
       juice: new Position(0, 0),
@@ -278,8 +281,30 @@ class IntroComic {
       ]),
       new IntroComicPanel(game, [
         [0, new ColorFadeAnimation(40, 100, 0)],
-        [0, new ImageFadeAnimation(12, 100, 0, ASSETS.UI.TITLE, new Position(112, 60), 192, 64)],
-        [30, new ImageFadeAnimation(12, 100, 0, ASSETS.UI.CREDITS, new Position(200, 130), 96, 48)],
+        [
+          0,
+          new ImageFadeAnimation(
+            12,
+            100,
+            0,
+            ASSETS.UI.TITLE,
+            new Position(112, 60),
+            192,
+            64
+          ),
+        ],
+        [
+          30,
+          new ImageFadeAnimation(
+            12,
+            100,
+            0,
+            ASSETS.UI.CREDITS,
+            new Position(200, 130),
+            96,
+            48
+          ),
+        ],
         [60, THUNK],
       ]),
     ];
@@ -311,7 +336,26 @@ class IntroComic {
     // renderImage(ASSETS.COMIC.OUTLINE)(this.game);
 
     this.game.ctx.restore();
+
+    if (this.isTryingToSkip) {
+      this.game.drawText("press space to skip ➡︎", this.game.width - 32, this.game.height - 32, {
+        color: "#fff",
+        align: "right",
+        font: "16px Edu-SA",
+      });
+    }
+
     if (this.currentPanel == this.panels.length) return false;
     return true;
+  }
+
+  handleInput(keyCode) {
+    if (keyCode == 'Space' && this.isTryingToSkip) {
+      // skip
+      this.game.scene = "world";
+      return true;
+    } else {
+      this.isTryingToSkip = true;
+    }
   }
 }

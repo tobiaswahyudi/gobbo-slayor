@@ -19,8 +19,9 @@ const WORLD_MAP_LOCATIONS = [
     y: 6,
     title: "HOME BASE",
     subtitle: "Wizard Tower",
-    text: "The goblins stole your magic hats!!  >:(\nTheir tracks lead east...",
+    text: "The goblins stole your magic hats!!  >:(\nTheir tracks lead east...\n\n\n\nPress [space] to watch the intro again",
     isZone: false,
+    isWizardTower: true,
   },
   {
     id: "camp",
@@ -505,6 +506,13 @@ class WorldMap {
   }
 
   goToZone() {
+    if(this.currentLocation && this.currentLocation.isWizardTower) {
+      this.game.scene = "comic";
+      this.game.comic = new IntroComic(this.game);
+      return;
+    }
+    console.log("going to zone", this.currentLocation);
+
     if(!this.currentLocation || !this.currentLocation.isZone) return;
 
     this.game.scene = "zone";
