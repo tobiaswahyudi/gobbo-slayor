@@ -151,6 +151,10 @@ class Game {
         break;
       case "level":
         if (!this.levelManager.handleGameInput(keyCode)) return false;
+        break;
+      case "comic":
+        this.scene = "world";
+        break;
     }
 
     this.requestRedraw();
