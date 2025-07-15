@@ -42,12 +42,16 @@ const juicer =
   (state) =>
     state[juice].clone().scale(juiceFactor);
 
-const renderImage = (image, positionOffsetter) => (game, state) => {
+const renderImage = (image, positionOffsetter, scaleOffsetter) => (game, state) => {
   const offset = !!positionOffsetter
     ? positionOffsetter(state).clone()
     : { x: 0, y: 0 };
 
-  game.drawImage(image, 16 + offset.x, 16 + offset.y);
+  const scale = !!scaleOffsetter
+    ? scaleOffsetter(state).clone()
+    : {x: undefined, y: undefined};
+
+  game.drawImage(image, 16 + offset.x, 16 + offset.y, scale.x, scale.y);
 };
 
 const renderAlternatingImages =
@@ -107,9 +111,19 @@ class IntroComic {
       background: new Position(-12, 54),
       gobboRun: new Position(18, 12),
       groundShake: new Position(0, 0),
+
+      titlePosition: new Position(96, 44),
+      titleScale: new Position(192, 64),
+      creditsPosition: new Position(184, 114),
+      creditsScale: new Position(96, 48),
     };
 
+
+
     this.currentPanel = 0;
+
+
+
     this.panels = [
       new IntroComicPanel(game, [
         [0, renderImage(ASSETS.COMIC.P1.SKY)],
@@ -277,7 +291,7 @@ class IntroComic {
           ),
         ],
         [120, new JuiceAnimation(this.state.groundShake, 30, 8)],
-        [200, THUNK],
+        [170, THUNK],
       ]),
       new IntroComicPanel(game, [
         [0, new ColorFadeAnimation(40, 100, 0)],
@@ -285,7 +299,7 @@ class IntroComic {
           0,
           new ImageFadeAnimation(
             12,
-            100,
+            0,
             0,
             ASSETS.UI.TITLE,
             new Position(112, 60),
@@ -293,11 +307,12 @@ class IntroComic {
             64
           ),
         ],
+        [12, renderImage(ASSETS.UI.TITLE, fetcher("titlePosition"), fetcher("titleScale"))],
         [
           30,
           new ImageFadeAnimation(
             12,
-            100,
+            0,
             0,
             ASSETS.UI.CREDITS,
             new Position(200, 130),
@@ -305,7 +320,12 @@ class IntroComic {
             48
           ),
         ],
-        [60, THUNK],
+        [42, renderImage(ASSETS.UI.CREDITS, fetcher("creditsPosition"), fetcher("creditsScale"))],
+        [50, new MotionTweenAnimation(this.state.titlePosition, new Position(96, 44), new Position((592 / 2) - 16, (56 / 2) - 16), 30)],
+        [50, new MotionTweenAnimation(this.state.titleScale, new Position(192, 64), new Position(96, 32), 30)],
+        [50, new MotionTweenAnimation(this.state.creditsPosition, new Position(184, 114), new Position((624 / 2) - 16, (136 / 2) - 16), 30)],
+        [50, new MotionTweenAnimation(this.state.creditsScale, new Position(96, 48), new Position(64, 32), 30)],
+        [82, THUNK],
       ]),
     ];
   }
