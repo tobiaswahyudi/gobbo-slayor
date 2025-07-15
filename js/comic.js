@@ -79,6 +79,14 @@ const chain =
     return fns.reduce((acc, fn) => fn(state).add(acc), new Position(0, 0));
   };
 
+const imageFade = (image, fadeInFrames, fadeOutFrames) => (game, state, frame) => {
+  const progress = frame / (fadeInFrames + fadeOutFrames);
+  game.ctx.save();
+  game.ctx.globalAlpha = progress;
+  game.drawImage(image, 0, 0);
+  game.ctx.restore();
+};
+
 class IntroComic {
   constructor(game) {
     this.game = game;
@@ -266,7 +274,11 @@ class IntroComic {
           ),
         ],
         [120, new JuiceAnimation(this.state.groundShake, 30, 8)],
-        [180, THUNK],
+        [200, THUNK],
+      ]),
+      new IntroComicPanel(game, [
+        [0, new ColorFadeAnimation(30, 5, 0, "#000")],
+        [34, THUNK],
       ]),
     ];
   }
