@@ -5,7 +5,7 @@ const TRANSITION_DIRECTION = {
   OUT: "out",
 };
 
-const TRANSITION_RENDER = (direction) => (game, frame) => {
+const TRANSITION_RENDER = (direction, color) => (game, frame) => {
   const progress =
     direction === TRANSITION_DIRECTION.OUT
       ? 1 - frame / TRANSITION_FRAMES
@@ -29,16 +29,16 @@ const TRANSITION_RENDER = (direction) => (game, frame) => {
   game.ctx.clip(vignette, "evenodd");
   game.ctx.globalAlpha = 1 - 0.6 * progress;
   game.drawRect(32, 32, BOARD_SIZE, BOARD_SIZE, {
-    fill: "#BDAFA1",
+    fill: color,
   });
   game.ctx.restore();
 };
 
 class TransitionAnimation extends GSAnimation {
-  constructor(direction = TRANSITION_DIRECTION.IN, callback) {
+  constructor(direction = TRANSITION_DIRECTION.IN, callback, color = "#BDAFA1") {
     super({
       frames: TRANSITION_FRAMES,
-      render: TRANSITION_RENDER(direction),
+      render: TRANSITION_RENDER(direction, color),
       callback: callback,
       blocksInput: true,
     });

@@ -10,7 +10,7 @@ class LevelManager {
     this.titleString = titleString;
     this.history = new LevelHistory(levelState);
 
-    this.animations = [];
+    this.animations = [new TransitionAnimation(TRANSITION_DIRECTION.IN)];
 
     this.canHandleInput = true;
     this.restartHeldSince = null;
@@ -712,11 +712,9 @@ class LevelManager {
     }
     this.animations.push(
       new TransitionAnimation(TRANSITION_DIRECTION.OUT, () => {
-        console.log("transitioning to zone", this.game.zoneMap.animations);
         this.game.zoneMap.animations.push(
           new TransitionAnimation(TRANSITION_DIRECTION.IN)
         );
-        console.log("transitioning to zone", this.game.zoneMap.animations);
         this.game.scene = "zone";
       })
     );

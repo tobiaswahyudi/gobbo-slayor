@@ -46,6 +46,9 @@ class ZoneMap {
   }
 
   handleInput(keyCode) {
+    const inputBlockedByAnimation = this.animations.some((a) => a.blocksInput);
+    if (inputBlockedByAnimation) return true;
+
     switch (keyCode) {
       case "ArrowUp":
       case "KeyW":
@@ -72,7 +75,14 @@ class ZoneMap {
         return true;
         break;
       case "Escape":
-        this.game.scene = "world";
+        this.animations.push(
+          new TransitionAnimation(TRANSITION_DIRECTION.OUT, () => {
+            this.game.worldMap.animations.push(
+              new TransitionAnimation(TRANSITION_DIRECTION.IN)
+            );
+            this.game.scene = "world";
+          })
+        );
         return true;
         break;
       default:
@@ -330,19 +340,15 @@ class ZoneMap {
         24,
         24
       );
-      
-      this.game.drawText(
-        `Completed!`,
-        SIDEBAR_CENTER - 24,
-        topPosition - 4,
-        {
-          color: "#000",
-          font: `500 16px Edu-SA`,
-          align: "left",
-        }
-      );
 
-      const hasGold = levelProgress.bestMoves <= this.currentLevelTile.level.bestMoves;
+      this.game.drawText(`Completed!`, SIDEBAR_CENTER - 24, topPosition - 4, {
+        color: "#000",
+        font: `500 16px Edu-SA`,
+        align: "left",
+      });
+
+      const hasGold =
+        levelProgress.bestMoves <= this.currentLevelTile.level.bestMoves;
 
       if (hasGold) {
         topPosition += 36;
@@ -354,7 +360,7 @@ class ZoneMap {
           24,
           24
         );
-        
+
         this.game.drawText(
           `Gold star!!!   :0`,
           SIDEBAR_CENTER - 24,
@@ -383,7 +389,6 @@ class ZoneMap {
       topPosition += 48;
 
       if (!hasGold) {
-
         this.game.drawImage(
           ASSETS.UI.STAR.GOLD,
           SIDEBAR_CENTER - 30,
@@ -393,7 +398,7 @@ class ZoneMap {
         );
 
         this.game.drawText(
-          'For a          Gold star:',
+          "For a          Gold star:",
           SIDEBAR_CENTER,
           topPosition,
           {
@@ -417,18 +422,12 @@ class ZoneMap {
           }
         );
       }
-
     } else {
-      this.game.drawText(
-        `Not yet solved`,
-        SIDEBAR_CENTER,
-        topPosition,
-        {
-          color: "#000",
-          font: `500 16px Edu-SA`,
-          align: "center",
-        }
-      );
+      this.game.drawText(`Not yet solved`, SIDEBAR_CENTER, topPosition, {
+        color: "#000",
+        font: `500 16px Edu-SA`,
+        align: "center",
+      });
     }
   }
 
@@ -583,8 +582,7 @@ class ZoneMap {
 
     const goldStars = this.game.progress.getLevelGold(this.currentLocation.id);
 
-    const isGoldDone =
-      goldStars == this.currentLocation.levels;
+    const isGoldDone = goldStars == this.currentLocation.levels;
 
     this.game.drawText(
       `× ${goldStars}/${this.currentLocation.levels}`,
@@ -643,7 +641,6 @@ class ZoneMap {
 
   goToLevel() {
     if (!this.currentLevelTile) return;
-    this.game.scene = "level";
     this.game.currentLevel = this.currentLevelTile.level;
     this.game.levelManager = new LevelManager(
       this.game,
@@ -654,5 +651,11 @@ class ZoneMap {
     if (Number(this.currentLevelTile.number) <= 1) {
       this.game.levelManager.currentLevel = 0;
     }
+
+    this.animations.push(
+      new TransitionAnimation(TRANSITION_DIRECTION.OUT, () => {
+        this.game.scene = "level";
+      })
+    );
   }
 }

@@ -64,6 +64,9 @@ class WorldMap {
   }
 
   handleInput(keyCode) {
+    const inputBlockedByAnimation = this.animations.some((a) => a.blocksInput);
+    if (inputBlockedByAnimation) return true;
+
     switch (keyCode) {
       case "ArrowUp":
       case "KeyW":
@@ -161,6 +164,7 @@ class WorldMap {
     );
 
     this.animations.forEach((anim) => anim.tick(this.game));
+    this.animations = this.animations.filter((anim) => !anim.finished);
 
     // return true;
     return this.animations.length > 0;
@@ -359,10 +363,11 @@ class WorldMap {
       24
     );
 
-    const silverStars = this.game.progress.getLevelSilver(this.currentLocation.id);
+    const silverStars = this.game.progress.getLevelSilver(
+      this.currentLocation.id
+    );
 
-    const isZoneDone =
-      silverStars == this.currentLocation.levels;
+    const isZoneDone = silverStars == this.currentLocation.levels;
 
     this.game.drawText(
       `× ${silverStars}/${this.currentLocation.levels}`,
@@ -432,8 +437,7 @@ class WorldMap {
 
     const goldStars = this.game.progress.getLevelGold(this.currentLocation.id);
 
-    const isGoldDone =
-      goldStars == this.currentLocation.levels;
+    const isGoldDone = goldStars == this.currentLocation.levels;
 
     this.game.drawText(
       `× ${goldStars}/${this.currentLocation.levels}`,
@@ -506,23 +510,30 @@ class WorldMap {
   }
 
   goToZone() {
-    if(this.currentLocation && this.currentLocation.isWizardTower) {
+    if (this.currentLocation && this.currentLocation.isWizardTower) {
       this.game.scene = "comic";
       this.game.comic = new IntroComic(this.game);
       return;
     }
-    console.log("going to zone", this.currentLocation);
 
-    if(!this.currentLocation || !this.currentLocation.isZone) return;
+    if (!this.currentLocation || !this.currentLocation.isZone) return;
 
-    this.game.scene = "zone";
+    this.animations.push(
+      new TransitionAnimation(TRANSITION_DIRECTION.OUT, () => {
+        this.game.zoneMap.animations.push(
+          new TransitionAnimation(TRANSITION_DIRECTION.IN)
+        );
+        this.game.scene = "zone";
+      })
+    );
+
     this.game.currentZone = this.currentLocation;
     this.game.zoneMap = new ZoneMap(this.game);
     this.game.zoneMap.currentLevel = null;
   }
 
   resetProgress() {
-    if(this.currentLocation && this.currentLocation.id == "wiz") {
+    if (this.currentLocation && this.currentLocation.id == "wiz") {
       this.game.progress = new GameProgress();
       this.game.progress.saveProgress();
     }
