@@ -1,8 +1,8 @@
 class Gobbo extends Position {
-  constructor(x, y, direction, hatType, lastMovedDirection) {
+  constructor(x, y, direction, hat, lastMovedDirection) {
     super(x, y);
     this.direction = direction;
-    this.hatType = hatType;
+    this.hat = hat;
     this.lastMovedDirection = lastMovedDirection;
   }
 
@@ -11,7 +11,7 @@ class Gobbo extends Position {
       this.x,
       this.y,
       this.direction,
-      this.hatType,
+      this.hat,
       this.lastMovedDirection
     );
   }
@@ -100,7 +100,7 @@ class Gobbo extends Position {
     game.ctx.restore();
 
     game.drawImage(
-      ASSETS.SPRITE.HAT[this.hatType],
+      this.hat.sprite,
       cellCorner(this.x) + SPRITE_PADDING + juiceOffset.x,
       cellCorner(this.y) + SPRITE_PADDING + juiceOffset.y,
       SPRITE_SIZE,

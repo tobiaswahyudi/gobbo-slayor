@@ -1,9 +1,3 @@
-const HatType = {
-  VERTICAL: "V",
-  HORIZONTAL: "H",
-  REMOVE: "X",
-};
-
 class LevelManager {
   constructor(game, titleString, levelState) {
     this.game = game;
@@ -371,19 +365,7 @@ class LevelManager {
 
   killGobbo(gobbo, aim) {
     this.state.gobbos = this.state.gobbos.filter((g) => g !== gobbo);
-    switch (gobbo.hatType) {
-      case HatType.REMOVE:
-        this.state.aimArea.remove(aim);
-        break;
-      case HatType.HORIZONTAL:
-        this.state.aimArea.add(new Position(aim.x - 1, aim.y));
-        this.state.aimArea.add(new Position(aim.x + 1, aim.y));
-        break;
-      case HatType.VERTICAL:
-        this.state.aimArea.add(new Position(aim.x, aim.y - 1));
-        this.state.aimArea.add(new Position(aim.x, aim.y + 1));
-        break;
-    }
+    gobbo.hat.gobboKilled(this.state.aimArea, gobbo.add(this.state.player.negate()));
     this.animations.push(
       new EtherealAnimation(
         cellCorner(gobbo.x) + BOARD_PADDING + HALF_SQUARE_SIZE,

@@ -61,7 +61,8 @@ class LevelState {
           case "X":
             const direction = cell[1];
             const hatType = cell[0];
-            this.gobbos.push(new Gobbo(x, y, direction, hatType));
+            const hat = HATS[hatType];
+            this.gobbos.push(new Gobbo(x, y, direction, hat));
             break;
           case "W":
             this.player = new Position(x, y);
