@@ -343,9 +343,9 @@ const ZONE_1_MAP = LevelState.make({
 ..|Cr|..|04|L4|..|05|Cr
 ..|Cr|L3|Cr|Cr|..|..|Cr
 ..|Cr|..|03|Cr|..|06|Cr
-Wz|..|..|..|Cr|L6|Cr|Cr
-..|Cr|..|02|Cr|..|..|..
-..|Cr|01|..|Cr|..|..|..
+..|Cr|..|..|Cr|L6|Cr|Cr
+..|Cr|Cr|02|Cr|..|..|..
+..|Wz|01|L1|Cr|..|..|..
 ..|Cr|Cr|Cr|Cr|..|..|..
 `,
   aimArea: [],
