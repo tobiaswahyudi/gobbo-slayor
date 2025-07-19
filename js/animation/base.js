@@ -1,3 +1,15 @@
+const DEFAULT_ANIMATION_OPTIONS = {
+  callback: () => {},
+  needsInput: false,
+  blocksInput: false,
+  handleInput: () => true,
+};
+
+const getAnimationOptions = (opts = {}) => ({
+  ...DEFAULT_ANIMATION_OPTIONS,
+  ...opts
+});
+
 const AnimationType = {
   NONE: false,
   EXPLODING: "EXPLODING",
