@@ -164,10 +164,13 @@ class WorldMap {
     );
 
     this.animations.forEach((anim) => anim.tick(this.game));
+
+    const hadAnimations = this.animations.length > 0;
+
     this.animations = this.animations.filter((anim) => !anim.finished);
 
     // return true;
-    return this.animations.length > 0;
+    return hadAnimations;
   }
 
   getDirVec(direction) {
