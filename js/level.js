@@ -302,7 +302,7 @@ class LevelManager {
     if (!ok) return false;
 
     this.wizardMoveOffset = this.getMovementOffsetStart(direction);
-    
+
     // move gobbos
     this.state.gobbos.forEach((gobbo) => {
       for (let tries = 0; tries < 2; tries++) {
@@ -314,7 +314,7 @@ class LevelManager {
         }
       }
     });
-    
+
     this.pushMovementAnimations(direction);
 
     this.checkLevelStatus();
@@ -426,7 +426,7 @@ class LevelManager {
       new EtherealAnimation(
         cellCorner(gobbo.x) + BOARD_PADDING + HALF_SQUARE_SIZE,
         cellCorner(gobbo.y) + BOARD_PADDING + HALF_SQUARE_SIZE,
-        ASSETS.UI.HAT[gobbo.hatType],
+        gobbo.hat.display,
         SPRITE_SIZE
       )
     );
