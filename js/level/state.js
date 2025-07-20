@@ -18,7 +18,14 @@ class LevelState {
     this.bestMoves = 0;
   }
 
-  static make({ id = '',title = "", bombs = 0, level, aimArea = [], bestMoves = 0}) {
+  static make({
+    id = "",
+    title = "",
+    bombs = 0,
+    level,
+    aimArea = [],
+    bestMoves = 0,
+  }) {
     const state = new LevelState();
     state.id = id;
     state.title = title;
@@ -45,7 +52,7 @@ class LevelState {
   parse(specialTiles = {}) {
     const lines = this.levelString.split("\n");
 
-    const OFFSET_LINES = 1
+    const OFFSET_LINES = 1;
 
     for (let y = 0; y < 8; y++) {
       const line = lines[y + OFFSET_LINES];
@@ -80,7 +87,7 @@ class LevelState {
   render(game, x, y, offsets = LEVEL_NO_OFFSETS) {
     const pos = new Position(x, y);
 
-    const wizPos = pos.add(offsets.wiz)
+    const wizPos = pos.add(offsets.wiz);
 
     game.drawImage(
       ASSETS.SPRITE.WIZ,
@@ -90,7 +97,9 @@ class LevelState {
       SPRITE_SIZE
     );
 
-    this.gobbos.forEach((gobbo, idx) => gobbo.render(game, pos, offsets.gobbos[idx]));
+    this.gobbos.forEach((gobbo, idx) =>
+      gobbo.render(game, pos.add(offsets.gobbos[idx]))
+    );
     this.walls.forEach((wall) => this.renderWall(game, wall, pos));
 
     this.aimArea.render(game, wizPos, this.player, this.remainingBombs > 0);

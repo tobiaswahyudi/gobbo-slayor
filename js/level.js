@@ -17,6 +17,7 @@ class LevelManager {
     this.levelIsTransitioning = false;
 
     this.wizardMoveOffset = new Position(0, 0);
+    this.gobboMoveOffsets = [];
   }
 
   get state() {
@@ -126,10 +127,10 @@ class LevelManager {
 
     const offsets = {
       wiz: this.wizardMoveOffset,
-      gobbos: [],
+      gobbos: this.gobboMoveOffsets,
     };
 
-    // console.log(this.wizardMoveOffset);
+    // console.log(JSON.stringify(offsets, null, 2));
 
     this.state.render(
       this.game,
@@ -301,19 +302,20 @@ class LevelManager {
     if (!ok) return false;
 
     this.wizardMoveOffset = this.getMovementOffsetStart(direction);
-    this.pushMovementAnimations(direction);
-
+    
     // move gobbos
     this.state.gobbos.forEach((gobbo) => {
       for (let tries = 0; tries < 2; tries++) {
-        if (!this.tryMove(gobbo, ...this.getDirVec(gobbo.direction))) {
-          gobbo.direction = oppositeDirection(gobbo.direction);
-        } else {
+        if (this.tryMove(gobbo, ...this.getDirVec(gobbo.direction))) {
           gobbo.lastMovedDirection = gobbo.direction;
           break;
+        } else {
+          gobbo.direction = oppositeDirection(gobbo.direction);
         }
       }
     });
+    
+    this.pushMovementAnimations(direction);
 
     this.checkLevelStatus();
 
@@ -391,10 +393,27 @@ class LevelManager {
         }
       )
     );
+
+    this.gobboMoveOffsets = [];
+
+    this.state.gobbos.forEach((gobbo) => {
+      const gobPos = this.getMovementOffsetStart(gobbo.lastMovedDirection);
+      this.gobboMoveOffsets.push(gobPos);
+      this.animations.push(
+        new MotionTweenAnimation(
+          gobPos,
+          gobPos.clone(),
+          new Position(0, 0),
+          MOVE_ANIM_DUR
+        )
+      );
+    });
   }
 
   getMovementOffsetStart(direction) {
-    return new Position(...this.getDirVec(oppositeDirection(direction))).scale(SQUARE_SIZE)
+    return new Position(...this.getDirVec(oppositeDirection(direction))).scale(
+      SQUARE_SIZE
+    );
   }
 
   killGobbo(gobbo, aim) {

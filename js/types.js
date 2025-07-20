@@ -43,6 +43,7 @@ class Position {
   }
 
   add(other) {
+    if (!other) return this.clone();
     return new Position(this.x + other.x, this.y + other.y);
   }
 
