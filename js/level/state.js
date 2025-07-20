@@ -1,3 +1,8 @@
+const LEVEL_NO_OFFSETS = {
+  wiz: new Position(0, 0),
+  gobbos: [],
+};
+
 class LevelState {
   constructor() {
     this.turnCount = 0;
@@ -72,20 +77,23 @@ class LevelState {
     }
   }
 
-  render(game, x, y) {
+  render(game, x, y, offsets = LEVEL_NO_OFFSETS) {
     const pos = new Position(x, y);
+
+    const wizPos = pos.add(offsets.wiz)
 
     game.drawImage(
       ASSETS.SPRITE.WIZ,
-      cellCorner(this.player.x) + SPRITE_PADDING + x,
-      cellCorner(this.player.y) + SPRITE_PADDING + y,
+      cellCorner(this.player.x) + SPRITE_PADDING + wizPos.x,
+      cellCorner(this.player.y) + SPRITE_PADDING + wizPos.y,
       SPRITE_SIZE,
       SPRITE_SIZE
     );
 
-    this.gobbos.forEach((gobbo) => gobbo.render(game, pos));
+    this.gobbos.forEach((gobbo, idx) => gobbo.render(game, pos, offsets.gobbos[idx]));
     this.walls.forEach((wall) => this.renderWall(game, wall, pos));
-    this.aimArea.render(game, pos, this.player, this.remainingBombs > 0);
+
+    this.aimArea.render(game, wizPos, this.player, this.remainingBombs > 0);
   }
 
   renderWall(game, wall, pos) {

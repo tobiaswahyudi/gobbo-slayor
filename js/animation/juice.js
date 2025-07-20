@@ -12,10 +12,11 @@ const JUICE_RENDER =
   };
 
 class JuiceAnimation extends GSAnimation {
-  constructor(juice, frames, magnitude, fn = TAPER_FUNCTION(frames)) {
+  constructor(juice, frames, magnitude, options) {
     super({
+      ...getAnimationOptions(options),
       frames: frames,
-      render: JUICE_RENDER(juice, frames, magnitude, fn),
+      render: JUICE_RENDER(juice, frames, magnitude),
     });
   }
 }

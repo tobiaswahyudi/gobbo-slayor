@@ -1,3 +1,5 @@
+const MOVE_ANIM_DUR = 4;
+
 class LevelManager {
   constructor(game, titleString, levelState) {
     this.game = game;
@@ -13,6 +15,8 @@ class LevelManager {
 
     this.levelIsDone = false;
     this.levelIsTransitioning = false;
+
+    this.wizardMoveOffset = new Position(0, 0);
   }
 
   get state() {
@@ -120,10 +124,18 @@ class LevelManager {
     this.renderSidebar();
     this.renderTutorial();
 
+    const offsets = {
+      wiz: this.wizardMoveOffset,
+      gobbos: [],
+    };
+
+    // console.log(this.wizardMoveOffset);
+
     this.state.render(
       this.game,
       BOARD_PADDING + this.juiceOffset.x,
-      BOARD_PADDING + this.juiceOffset.y
+      BOARD_PADDING + this.juiceOffset.y,
+      offsets
     );
 
     this.animations.forEach((anim) => anim.tick(this.game));
@@ -288,6 +300,9 @@ class LevelManager {
     const ok = this.tryMove(this.state.player, dirVec[0], dirVec[1]);
     if (!ok) return false;
 
+    this.wizardMoveOffset = this.getMovementOffsetStart(direction);
+    this.pushMovementAnimations(direction);
+
     // move gobbos
     this.state.gobbos.forEach((gobbo) => {
       for (let tries = 0; tries < 2; tries++) {
@@ -363,9 +378,31 @@ class LevelManager {
     return true;
   }
 
+  pushMovementAnimations(direction) {
+    // console.log(direction, new Position(...this.getDirVec(direction)).scale(SQUARE_SIZE))
+    this.animations.push(
+      new MotionTweenAnimation(
+        this.wizardMoveOffset,
+        this.getMovementOffsetStart(direction),
+        new Position(0, 0),
+        MOVE_ANIM_DUR,
+        {
+          blocksInput: true,
+        }
+      )
+    );
+  }
+
+  getMovementOffsetStart(direction) {
+    return new Position(...this.getDirVec(oppositeDirection(direction))).scale(SQUARE_SIZE)
+  }
+
   killGobbo(gobbo, aim) {
     this.state.gobbos = this.state.gobbos.filter((g) => g !== gobbo);
-    gobbo.hat.gobboKilled(this.state.aimArea, gobbo.add(this.state.player.negate()));
+    gobbo.hat.gobboKilled(
+      this.state.aimArea,
+      gobbo.add(this.state.player.negate())
+    );
     this.animations.push(
       new EtherealAnimation(
         cellCorner(gobbo.x) + BOARD_PADDING + HALF_SQUARE_SIZE,
