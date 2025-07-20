@@ -144,7 +144,7 @@ class ZoneMap {
       WORLD_WIZ_SIZE
     );
 
-    this.state.walls.forEach((wall) => this.renderWall(wall));
+    this.state.crates.forEach((wall) => this.renderWall(wall));
 
     const hadAnimations = this.animations.length > 0;
 
@@ -193,7 +193,7 @@ class ZoneMap {
     if (this.isOutOfBounds(newX, newY)) {
       return false;
     }
-    if (this.state.walls.some((wall) => wall.x === newX && wall.y === newY)) {
+    if (this.state.crates.some((wall) => wall.x === newX && wall.y === newY)) {
       return false;
     }
     if (

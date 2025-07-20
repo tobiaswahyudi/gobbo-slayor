@@ -201,7 +201,7 @@ class WorldMap {
     if (this.isOutOfBounds(newX, newY)) {
       return false;
     }
-    if (this.state.walls.some((wall) => wall.x === newX && wall.y === newY)) {
+    if (this.state.crates.some((wall) => wall.x === newX && wall.y === newY)) {
       return false;
     }
     return true;

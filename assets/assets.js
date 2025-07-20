@@ -6,6 +6,7 @@ const FONTS = [
 const ASSETS = {
   SPRITE: {
     CRATE: "assets/sprite/crate.png",
+    BLOCK: "assets/sprite/block.png",
     GOBBOS: {
       MOVE: "assets/sprite/gobblin.png",
       SLEEP: "assets/sprite/slepgobbo.png",

@@ -395,6 +395,26 @@ const LEVEL_3_EVIL = LevelState.make({
   bestMoves: 17,
 });
 
+const LEVEL_HOOK = LevelState.make({
+  id: "hook-1",
+  title: "Anti-magic Walls",
+  bombs: 2,
+  level: `
+..|..|..|..|Bl|..|..|..
+..|..|..|..|Bl|..|..|..
+..|Wz|..|..|Bl|..|..|..
+..|..|..|..|..|..|..|..
+..|..|..|..|..|..|..|..
+..|..|..|..|Bl|..|Hs|..
+..|..|..|..|Bl|..|..|Xs
+..|..|..|..|Bl|..|..|..
+`,
+  aimArea: [
+    [2, 0]
+  ],
+  bestMoves: 17,
+});
+
 const ZONE_1_MAP = LevelState.make({
   title: "Sleepy Hill",
   bombs: 0,

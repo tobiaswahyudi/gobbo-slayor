@@ -8,7 +8,8 @@ class LevelState {
     this.turnCount = 0;
     this.player = new Position(0, 0);
     this.gobbos = [];
-    this.walls = [];
+    this.crate = [];
+    this.blocks = []; // Aim-blocking blocks
     this.remainingBombs = 0;
     this.title = "";
     this.specialTiles = [];
@@ -42,7 +43,8 @@ class LevelState {
     state.turnCount = this.turnCount;
     state.player = this.player.clone();
     state.gobbos = this.gobbos.map((gobbo) => gobbo.clone());
-    state.walls = this.walls.map((wall) => wall.clone());
+    state.crates = this.crate.map((wall) => wall.clone());
+    state.blocks = this.blocks.map((wall) => wall.clone());
     state.aimArea = new AimArea(this.aimArea.cells.map((cell) => cell.clone()));
     state.remainingBombs = this.remainingBombs;
     state.title = this.title;
@@ -65,8 +67,11 @@ class LevelState {
           continue;
         }
         switch (cell[0]) {
+          case "B":
+            this.blocks.push(new Position(x, y));
+            break;
           case "C":
-            this.walls.push(new Position(x, y));
+            this.crate.push(new Position(x, y));
             break;
           case "H":
           case "V":
@@ -100,14 +105,25 @@ class LevelState {
     this.gobbos.forEach((gobbo, idx) =>
       gobbo.render(game, pos.add(offsets.gobbos[idx]))
     );
-    this.walls.forEach((wall) => this.renderWall(game, wall, pos));
+    this.crate.forEach((wall) => this.renderCrate(game, wall, pos));
+    this.blocks.forEach((wall) => this.renderBlock(game, wall, pos));
 
     this.aimArea.render(game, wizPos, this.player, this.remainingBombs > 0);
   }
 
-  renderWall(game, wall, pos) {
+  renderCrate(game, wall, pos) {
     game.drawImage(
       ASSETS.SPRITE.CRATE,
+      cellCorner(wall.x) + SPRITE_PADDING + pos.x,
+      cellCorner(wall.y) + SPRITE_PADDING + pos.y,
+      SPRITE_SIZE,
+      SPRITE_SIZE
+    );
+  }
+
+  renderBlock(game, wall, pos) {
+    game.drawImage(
+      ASSETS.SPRITE.BLOCK,
       cellCorner(wall.x) + SPRITE_PADDING + pos.x,
       cellCorner(wall.y) + SPRITE_PADDING + pos.y,
       SPRITE_SIZE,
