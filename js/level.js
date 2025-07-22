@@ -18,6 +18,7 @@ class LevelManager {
 
     this.wizardMoveOffset = new Position(0, 0);
     this.gobboMoveOffsets = [];
+    this.aimAreaOffset = new Position(0, 0);
   }
 
   get state() {
@@ -128,6 +129,7 @@ class LevelManager {
     const offsets = {
       wiz: this.wizardMoveOffset,
       gobbos: this.gobboMoveOffsets,
+      aimArea: this.aimAreaOffset,
     };
 
     // console.log(JSON.stringify(offsets, null, 2));
@@ -306,6 +308,43 @@ class LevelManager {
 
     this.wizardMoveOffset = this.getMovementOffsetStart(direction);
 
+    let aimOverlapsBlocks = false;
+    const overlapBlocks = [];
+    this.state.blocks.forEach((block) => {
+      const pos = block.add(this.state.player.negate());
+      if (this.checkAimArea(pos)) {
+        aimOverlapsBlocks = true;
+        overlapBlocks.push(block);
+      }
+    });
+
+    overlapBlocks.forEach((block) => {
+      this.animations.push(
+        new EtherealAnimation(
+          cellCorner(block.x) + BOARD_PADDING + HALF_SQUARE_SIZE,
+          cellCorner(block.y) + BOARD_PADDING + HALF_SQUARE_SIZE,
+          ASSETS.SPRITE.BLOCK,
+          SQUARE_SIZE
+        )
+      );
+    });
+
+    const aimMoveVec = new Position(
+      ...this.getDirVec(oppositeDirection(direction))
+    );
+
+    if (aimOverlapsBlocks) {
+      // Aim area shrinks from the direction of the move
+      this.aimAreaOffset = this.getMovementOffsetStart(
+        oppositeDirection(direction)
+      );
+      this.state.aimArea.cells = this.state.aimArea.cells.map((cell) =>
+        cell.add(aimMoveVec)
+      );
+    } else {
+      this.aimAreaOffset = new Position(0, 0);
+    }
+
     // move gobbos
     this.state.gobbos.forEach((gobbo) => {
       for (let tries = 0; tries < 2; tries++) {
@@ -323,21 +362,6 @@ class LevelManager {
     this.checkLevelStatus();
 
     return true;
-  }
-
-  // Handle player movement
-  handleMovement(deltaX, deltaY) {
-    if (
-      this.state.player.x + deltaX < 0 ||
-      this.state.player.x + deltaX > 7 ||
-      this.state.player.y + deltaY < 0 ||
-      this.state.player.y + deltaY > 7
-    ) {
-      return false;
-    }
-
-    this.state.player.x += deltaX;
-    this.state.player.y += deltaY;
   }
 
   checkAimArea(pos) {
@@ -394,6 +418,15 @@ class LevelManager {
         {
           blocksInput: true,
         }
+      )
+    );
+
+    this.animations.push(
+      new MotionTweenAnimation(
+        this.aimAreaOffset,
+        this.aimAreaOffset.clone(),
+        new Position(0, 0),
+        MOVE_ANIM_DUR
       )
     );
 

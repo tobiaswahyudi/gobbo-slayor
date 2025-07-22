@@ -1,6 +1,7 @@
 const LEVEL_NO_OFFSETS = {
   wiz: new Position(0, 0),
   gobbos: [],
+  aimArea: new Position(0, 0),
 };
 
 class LevelState {
@@ -108,7 +109,13 @@ class LevelState {
     this.crate.forEach((wall) => this.renderCrate(game, wall, pos));
     this.blocks.forEach((wall) => this.renderBlock(game, wall, pos));
 
-    this.aimArea.render(game, wizPos, this.player, this.remainingBombs > 0);
+    this.aimArea.render(
+      game,
+      wizPos,
+      this.player,
+      this.remainingBombs > 0,
+      offsets.aimArea
+    );
   }
 
   renderCrate(game, wall, pos) {

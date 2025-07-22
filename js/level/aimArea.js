@@ -44,10 +44,12 @@ class AimArea {
     return true;
   }
 
-  render(game, pos, playerPos, hasBombs) {
+  render(game, renderPos, playerPos, hasBombs, animOffset) {
     const areas = this.cells
       .map((cell) => cell.add(playerPos))
       .filter((cell) => !isOutOfBounds(cell.x, cell.y));
+
+    const pos = renderPos.add(animOffset);
 
     if (areas.length == 0) return;
 
@@ -100,8 +102,8 @@ class AimArea {
     const magicStaffY = (11.5 / 32) * SPRITE_SIZE + SPRITE_PADDING;
 
     outline.moveTo(
-      cc(playerPos.x) + magicStaffX + pos.x,
-      cc(playerPos.y) + magicStaffY + pos.y
+      cc(playerPos.x) + magicStaffX + pos.x - animOffset.x,
+      cc(playerPos.y) + magicStaffY + pos.y - animOffset.y
     );
     outline.lineTo(
       cc(leftmostCell.x) + pos.x,
