@@ -326,7 +326,7 @@ Cr|Cr|Cr|Cr|Cr|Cr|Cr|Cr
   aimArea: [
     [0,-2]
   ],
-  bestMoves: 20,
+  bestMoves: 18,
 });
 
 const DEMO = LevelState.make({
