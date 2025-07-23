@@ -268,7 +268,7 @@ const LEVEL_SLEEPING_GOBBOS_3 = LevelState.make({
 
 const LEVEL_SLEEPING_GOBBOS_4 = LevelState.make({
   id: "sleepy-4",
-  title: "?.",
+  title: "?",
   bombs: 4,
   level: `
 ..|..|..|..|..|..|..|..
@@ -287,6 +287,66 @@ const LEVEL_SLEEPING_GOBBOS_4 = LevelState.make({
     [2, 1],
   ],
   bestMoves: 26,
+});
+
+const LEVEL_SLEEPING_GOBBOS_5 = LevelState.make({
+  id: "sleepy-5",
+  title: "Climbing a ladder",
+  bombs: 5,
+  level: `
+..|..|..|Xs|..|..|..|..
+..|..|Vs|..|..|..|..|..
+..|..|..|..|..|..|Vs|..
+..|..|..|..|Vs|..|..|..
+..|Vs|..|..|..|..|..|..
+Cr|Cr|Cr|Cr|Cr|Cr|Cr|Cr
+..|..|..|Wz|..|..|..|..
+..|..|..|..|..|..|..|..
+`,
+  aimArea: [
+    [0,-2]
+  ],
+  bestMoves: 17,
+});
+
+const LEVEL_SLEEPING_GOBBOS_6 = LevelState.make({
+  id: "sleepy-6",
+  title: "second ladder",
+  bombs: 5,
+  level: `
+..|..|Xs|..|..|..|..|..
+..|..|Vs|..|..|..|..|..
+..|..|..|..|..|Vs|..|..
+..|..|..|..|Vs|..|..|..
+..|Vs|..|..|..|..|Vs|..
+Cr|Cr|Cr|Cr|Cr|Cr|Cr|Cr
+..|..|..|Wz|..|..|..|..
+..|..|..|..|..|..|..|..
+`,
+  aimArea: [
+    [0,-2]
+  ],
+  bestMoves: 20,
+});
+
+const DEMO = LevelState.make({
+  id: "demo",
+  title: "snek",
+  bombs: 37,
+  level: `
+Vs|Hs|Hs|Hs|Hs|Hs|Hs|Hs
+Vs|..|..|..|..|..|..|Vs
+Vs|..|Vs|Hs|Hs|Hs|..|Vs
+Vs|..|Xs|..|..|Vs|..|Vs
+Vs|..|..|..|..|Vs|..|Vs
+Hs|Hs|Hs|Hs|Hs|Vs|..|Vs
+Cr|..|..|..|..|..|..|Vs
+Wz|Cr|Hs|Hs|Hs|Hs|Hs|Vs
+`,
+  aimArea: [
+    [2,0]
+  ],
+  bestMoves: 37,
 });
 
 const LEVEL_3 = LevelState.make({
@@ -340,13 +400,13 @@ const ZONE_1_MAP = LevelState.make({
   bombs: 0,
   level: `
 ..|Cr|Cr|Cr|Cr|Cr|Cr|Cr
-..|Cr|..|04|L4|..|05|Cr
-..|Cr|L3|Cr|Cr|..|..|Cr
-..|Cr|..|03|Cr|..|06|Cr
-..|Cr|..|..|Cr|L6|Cr|Cr
-..|Cr|Cr|02|Cr|..|..|..
-..|Wz|01|L1|Cr|..|..|..
-..|Cr|Cr|Cr|Cr|..|..|..
+Cr|Cr|L3|..|05|..|06|Cr
+04|L3|03|Cr|Cr|..|..|Cr
+Cr|Cr|..|02|Cr|..|..|Cr
+..|Cr|..|..|Cr|L7|Cr|Cr
+07|Cr|Cr|L1|Cr|..|..|..
+08|Wz|..|01|Cr|..|..|..
+09|Cr|Cr|Cr|Cr|..|..|..
 `,
   aimArea: [],
 });
@@ -358,6 +418,9 @@ const ZONE_1_LEVELS = [
   LEVEL_SLEEPING_GOBBOS_2,
   LEVEL_SLEEPING_GOBBOS_3,
   LEVEL_SLEEPING_GOBBOS_4,
+  LEVEL_SLEEPING_GOBBOS_5,
+  LEVEL_SLEEPING_GOBBOS_6,
+  DEMO,
 ];
 
 const ZONE_2_MAP = LevelState.make({
@@ -404,6 +467,9 @@ const LEVELS = [
   LEVEL_SLEEPING_GOBBOS_2,
   LEVEL_SLEEPING_GOBBOS_3,
   LEVEL_SLEEPING_GOBBOS_4,
+  LEVEL_SLEEPING_GOBBOS_5,
+  LEVEL_SLEEPING_GOBBOS_6,
+  DEMO,
   LEVEL_3,
   LEVEL_3_EVIL,
   LEVEL_0,
