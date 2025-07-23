@@ -9,7 +9,7 @@ class LevelState {
     this.turnCount = 0;
     this.player = new Position(0, 0);
     this.gobbos = [];
-    this.crate = [];
+    this.crates = [];
     this.blocks = []; // Aim-blocking blocks
     this.remainingBombs = 0;
     this.title = "";
@@ -44,7 +44,7 @@ class LevelState {
     state.turnCount = this.turnCount;
     state.player = this.player.clone();
     state.gobbos = this.gobbos.map((gobbo) => gobbo.clone());
-    state.crates = this.crate.map((wall) => wall.clone());
+    state.crates = this.crates.map((wall) => wall.clone());
     state.blocks = this.blocks.map((wall) => wall.clone());
     state.aimArea = new AimArea(this.aimArea.cells.map((cell) => cell.clone()));
     state.remainingBombs = this.remainingBombs;
@@ -72,7 +72,7 @@ class LevelState {
             this.blocks.push(new Position(x, y));
             break;
           case "C":
-            this.crate.push(new Position(x, y));
+            this.crates.push(new Position(x, y));
             break;
           case "H":
           case "V":
@@ -106,7 +106,7 @@ class LevelState {
     this.gobbos.forEach((gobbo, idx) =>
       gobbo.render(game, pos.add(offsets.gobbos[idx]))
     );
-    this.crate.forEach((wall) => this.renderCrate(game, wall, pos));
+    this.crates.forEach((wall) => this.renderCrate(game, wall, pos));
     this.blocks.forEach((wall) => this.renderBlock(game, wall, pos));
 
     this.aimArea.render(
