@@ -23,7 +23,15 @@ class GameProgress {
   loadProgress() {
     const progressString = localStorage.getItem(PROGRESS_KEY);
     if (progressString) {
-      this.progress = JSON.parse(progressString);
+      const parsedProgress = JSON.parse(progressString);
+      for (const zoneId in ZONE_LEVELS) {
+        for (const level of ZONE_LEVELS[zoneId].levels) {
+          this.progress[zoneId][level.id] = {
+            completed: parsedProgress[zoneId][level.id]?.completed || false,
+            bestMoves: parsedProgress[zoneId][level.id]?.bestMoves || 99999,
+          };
+        }
+      }
     }
   }
 
