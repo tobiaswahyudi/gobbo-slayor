@@ -4,6 +4,7 @@ const LEVEL_NO_OFFSETS = {
   aimArea: new Position(0, 0),
 };
 
+const DEFAULT_SIZE = 8;
 class LevelState {
   constructor() {
     this.turnCount = 0;
@@ -18,6 +19,7 @@ class LevelState {
     this.aimArea = new AimArea([]);
     this.id = "";
     this.bestMoves = 0;
+    this.size = 8;
   }
 
   static make({
@@ -49,6 +51,7 @@ class LevelState {
     state.aimArea = new AimArea(this.aimArea.cells.map((cell) => cell.clone()));
     state.remainingBombs = this.remainingBombs;
     state.title = this.title;
+    state.size = this.size;
     return state;
   }
 
@@ -57,10 +60,12 @@ class LevelState {
 
     const OFFSET_LINES = 1;
 
-    for (let y = 0; y < 8; y++) {
+    this.size = lines.filter((x) => x.length).length;
+
+    for (let y = 0; y < this.size; y++) {
       const line = lines[y + OFFSET_LINES];
       const cells = line.trim().split("|");
-      for (let x = 0; x < 8; x++) {
+      for (let x = 0; x < this.size; x++) {
         const cell = cells[x];
         if (cell in specialTiles) {
           const [ctor, ...args] = specialTiles[cell];
@@ -90,10 +95,19 @@ class LevelState {
     }
   }
 
-  render(game, x, y, offsets = LEVEL_NO_OFFSETS) {
-    const pos = new Position(x, y);
+  render(game, x, y, inputOffsets) {
+    const offsets = {
+      ...LEVEL_NO_OFFSETS,
+      ...inputOffsets,
+    };
 
-    const wizPos = pos.add(offsets.wiz);
+    const scale = DEFAULT_SIZE / this.size;
+
+    game.ctx.save();
+    game.ctx.translate(x, y);
+    game.ctx.scale(scale, scale);
+
+    const wizPos = offsets.wiz || new Position(0, 0);
 
     game.drawImage(
       ASSETS.SPRITE.WIZ,
@@ -104,35 +118,38 @@ class LevelState {
     );
 
     this.gobbos.forEach((gobbo, idx) =>
-      gobbo.render(game, pos.add(offsets.gobbos[idx]))
+      gobbo.render(game, offsets.gobbos[idx])
     );
-    this.crates.forEach((wall) => this.renderCrate(game, wall, pos));
-    this.blocks.forEach((wall) => this.renderBlock(game, wall, pos));
+    this.crates.forEach((wall) => this.renderCrate(game, wall));
+    this.blocks.forEach((wall) => this.renderBlock(game, wall));
 
     this.aimArea.render(
       game,
+      this.size,
       wizPos,
       this.player,
       this.remainingBombs > 0,
       offsets.aimArea
     );
+
+    game.ctx.restore();
   }
 
-  renderCrate(game, wall, pos) {
+  renderCrate(game, wall) {
     game.drawImage(
       ASSETS.SPRITE.CRATE,
-      cellCorner(wall.x) + SPRITE_PADDING + pos.x,
-      cellCorner(wall.y) + SPRITE_PADDING + pos.y,
+      cellCorner(wall.x) + SPRITE_PADDING,
+      cellCorner(wall.y) + SPRITE_PADDING,
       SPRITE_SIZE,
       SPRITE_SIZE
     );
   }
 
-  renderBlock(game, wall, pos) {
+  renderBlock(game, wall) {
     game.drawImage(
       ASSETS.SPRITE.BLOCK,
-      cellCorner(wall.x) + SPRITE_PADDING + pos.x,
-      cellCorner(wall.y) + SPRITE_PADDING + pos.y,
+      cellCorner(wall.x) + SPRITE_PADDING,
+      cellCorner(wall.y) + SPRITE_PADDING,
       SPRITE_SIZE,
       SPRITE_SIZE
     );
