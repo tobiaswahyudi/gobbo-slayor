@@ -415,6 +415,147 @@ const LEVEL_HOOK = LevelState.make({
   bestMoves: 17,
 });
 
+const LEVEL_TRAPPED = LevelState.make({
+  id: "trapped",
+  title: "LET ME OUT",
+  bombs: 4,
+  level: `
+..|..|..|..|..|..|..|..
+Bl|Bl|Bl|Bl|Bl|Bl|..|..
+Bl|..|..|..|..|Bl|Hd|..
+Bl|Wz|..|..|Hl|Bl|..|..
+Bl|..|..|..|..|Bl|..|..
+Bl|..|..|..|Xu|Bl|Hu|..
+Bl|Bl|Bl|Bl|Bl|Bl|..|..
+..|..|..|..|..|..|..|..
+`,
+  aimArea: [
+    [2, 0],
+  ],
+  bestMoves: 17,
+});
+
+const LEVEL_BLOCK_1 = LevelState.make({
+  id: "block-1",
+  title: "Crossing the bridge.",
+  bombs: 2,
+  level: `
+Bl|Bl|Bl|Cr|Cr|Bl|Bl|Bl
+..|..|Bl|Cr|Cr|Bl|..|Hd
+..|..|Bl|Bl|Bl|Bl|..|..
+Wz|..|..|..|..|Bl|..|..
+..|..|Bl|..|..|..|..|..
+..|..|Bl|Bl|Bl|Bl|..|..
+..|..|Bl|Cr|Cr|Bl|..|Hu
+Bl|Bl|Bl|Cr|Cr|Bl|Bl|Bl
+`,
+  aimArea: [
+    [2, 0],
+  ],
+  bestMoves: 9,
+});
+
+const LEVEL_BLOCK_2 = LevelState.make({
+  id: "block-2",
+  title: "One step at a time",
+  bombs: 2,
+  level: `
+..|..|Bl|Bl|..|..|..|Vs
+..|..|Bl|..|..|..|..|..
+..|..|Bl|..|Bl|..|..|..
+..|Wz|Bl|..|..|..|..|..
+..|..|Bl|..|..|Bl|Bl|..
+..|..|Bl|..|..|..|..|..
+..|..|Bl|..|Bl|..|..|..
+..|..|Bl|..|..|Bl|..|Vs
+`,
+  aimArea: [
+    [2, 0],
+  ],
+  bestMoves: 28,
+});
+
+const LEVEL_BLOCK_3 = LevelState.make({
+  id: "block-3",
+  title: "maze",
+  bombs: 4,
+  level: `
+..|..|..|..|..|..|..|Xs
+Bl|..|Bl|..|..|..|..|..
+..|..|..|..|Bl|..|..|..
+..|Bl|Bl|Bl|..|..|..|Bl
+Bl|..|..|..|Bl|Bl|Bl|..
+..|..|..|..|..|..|Bl|..
+..|..|Bl|..|..|..|..|..
+Wz|Xs|Bl|Xs|..|Bl|..|Hs
+`,
+  aimArea: [
+    [0, 0],
+    [0,-4],
+  ],
+  bestMoves: 40,
+});
+
+const LEVEL_BLOCK_4 = LevelState.make({
+  id: "block-4",
+  title: "claustrophobic",
+  bombs: 4,
+  level: `
+..|Bl|..|Bl|..|..|..|..
+Bl|..|..|..|Bl|..|Bl|..
+..|..|Bl|..|..|..|..|Bl
+Bl|..|..|Bl|..|Bl|..|..
+Bl|..|Bl|Xs|Bl|..|..|Bl
+Cr|Bl|Xs|Vs|..|Bl|..|..
+..|..|Cr|..|..|..|..|Bl
+Wz|..|Cr|Xs|Bl|..|Bl|..
+`,
+  aimArea: [
+    [1, -3],
+  ],
+  bestMoves: 67,
+});
+
+const LEVEL_DONUT = LevelState.make({
+  id: "donut",
+  title: "donut",
+  bombs: 1,
+  level: `
+..|..|Bl|..|Bl|..|Bl|..
+Vu|..|..|..|..|..|..|Bl
+..|Bl|..|Bl|Cr|Bl|..|..
+..|..|Bl|Wz|..|Cr|..|Bl
+Bl|..|Cr|..|..|Bl|..|..
+..|..|Bl|Cr|Bl|..|..|Bl
+Bl|..|..|..|..|..|Bl|..
+..|Bl|..|Bl|..|Bl|..|Bl
+`,
+  aimArea: [
+    [-2, -2],
+  ],
+  bestMoves: 76,
+});
+
+const LEVEL_PARITY_3 = LevelState.make({
+  id: "parity-3",
+  title: "The three ways",
+  bombs: 5,
+  level: `
+..|..|Hl|..|..|Bl|..|..
+..|..|Vr|..|Cr|..|..|..
+..|..|..|Cr|..|..|..|..
+..|..|..|..|..|..|..|..
+..|Hr|..|Cr|Cr|Xr|..|..
+Cr|Cr|Cr|Cr|Cr|Cr|Cr|Cr
+..|..|..|..|..|..|..|..
+..|..|Wz|..|..|..|..|..
+`,
+  aimArea: [
+    [0, -5],
+  ],
+  bestMoves: 17,
+});
+
 const ZONE_1_MAP = LevelState.make({
   title: "Sleepy Hill",
   bombs: 0,
@@ -447,13 +588,13 @@ const ZONE_2_MAP = LevelState.make({
   title: "Ruined Fort",
   bombs: 0,
   level: `
-..|..|..|Cr|Cr|Cr|..|..
-..|..|Cr|06|..|05|Cr|..
-..|Cr|L6|..|Cr|..|L4|Cr
-..|Cr|07|L7|..|Cr|04|Cr
-..|..|Cr|..|08|Cr|..|Cr
-..|..|01|Cr|Cr|..|03|Cr
-..|Wz|..|..|02|L2|Cr|..
+15|..|..|Cr|Cr|Cr|..|..
+14|..|Cr|06|..|05|Cr|..
+13|Cr|L6|..|Cr|..|L4|Cr
+12|Cr|07|L7|..|Cr|04|Cr
+11|..|Cr|..|08|Cr|..|Cr
+10|..|01|Cr|Cr|..|03|Cr
+09|Wz|..|..|02|L2|Cr|..
 ..|..|Cr|Cr|Cr|Cr|..|..
 `,
 });
@@ -467,6 +608,13 @@ const ZONE_2_LEVELS = [
   LEVEL_3_EVIL,
   LEVEL_BAD,
   LEVEL_FIN,
+  LEVEL_BLOCK_1,
+  LEVEL_BLOCK_2,
+  LEVEL_BLOCK_3,
+  LEVEL_BLOCK_4,
+  LEVEL_DONUT,
+  LEVEL_TRAPPED,
+  LEVEL_PARITY_3,
 ];
 
 const ZONE_LEVELS = {
