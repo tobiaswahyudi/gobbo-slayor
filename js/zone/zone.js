@@ -183,14 +183,10 @@ class ZoneMap {
     return [0, 0];
   }
 
-  isOutOfBounds(x, y) {
-    return x < 0 || x > 7 || y < 0 || y > 7;
-  }
-
   verifyMoveBounds(srcX, srcY, moveX, moveY) {
     const newX = srcX + moveX;
     const newY = srcY + moveY;
-    if (this.isOutOfBounds(newX, newY)) {
+    if (isOutOfBounds(this.state.size, newX, newY)) {
       return false;
     }
     if (this.state.crates.some((wall) => wall.x === newX && wall.y === newY)) {
@@ -300,7 +296,8 @@ class ZoneMap {
       600 / scale,
       topPosition / scale,
       "#CFC6BD",
-      "#E2D8D4"
+      "#E2D8D4",
+      this.currentLevelTile.level.size
     );
     this.currentLevelTile.level.render(
       this.game,
@@ -319,8 +316,6 @@ class ZoneMap {
         strokeWidth: 4,
       }
     );
-
-    // this.currentLevel.level.render(this.game, 10, 10);
 
     this.game.ctx.restore();
 

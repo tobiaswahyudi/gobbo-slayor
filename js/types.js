@@ -22,8 +22,8 @@ const oppositeDirection = (direction) => {
   return direction;
 };
 
-const isOutOfBounds = (x, y) => {
-  return x < 0 || x > 7 || y < 0 || y > 7;
+const isOutOfBounds = (size, x, y) => {
+  return x < 0 || x >= size || y < 0 || y >= size;
 };
 
 const strPosition = (x, y) => `${x},${y}`;

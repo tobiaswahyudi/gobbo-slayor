@@ -44,10 +44,10 @@ class AimArea {
     return true;
   }
 
-  render(game, renderPos, playerPos, hasBombs, animOffset) {
+  render(game, levelSize, renderPos, playerPos, hasBombs, animOffset) {
     const areas = this.cells
       .map((cell) => cell.add(playerPos))
-      .filter((cell) => !isOutOfBounds(cell.x, cell.y));
+      .filter((cell) => !isOutOfBounds(levelSize, cell.x, cell.y));
 
     const pos = renderPos.add(animOffset);
 
@@ -55,7 +55,7 @@ class AimArea {
 
     const lookup = new AimAreaLookup(areas);
     const isInAimArea = (x, y) =>
-      !isOutOfBounds(x, y) && lookup.has(strPosition(x, y));
+      !isOutOfBounds(levelSize, x, y) && lookup.has(strPosition(x, y));
 
     const outline = new Path2D();
 
@@ -92,7 +92,7 @@ class AimArea {
 
     const leftmostCellPos = areas.reduce(
       (min, area) => (area.x < min ? area.x : min),
-      GRID_SIZE
+      Infinity
     );
     const leftmostCell = areas.find((area) => area.x === leftmostCellPos);
 
