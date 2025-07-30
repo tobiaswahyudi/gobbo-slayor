@@ -560,6 +560,28 @@ Cr|Cr|Cr|Cr|Cr|Cr|Cr|Cr
   bestMoves: 17,
 });
 
+const LEVEL_FORT = LevelState.make({
+  id: "fortress",
+  title: "Impenetrable Fortress",
+  bombs: 2,
+  level: `
+..|..|..|..|..|..|Bl|..|..|..
+..|..|..|..|..|..|Bl|..|Hs|..
+..|..|..|..|..|..|Bl|Bl|..|..
+..|..|..|..|..|..|..|Bl|Bl|Bl
+..|..|..|..|..|..|..|..|..|Cr
+..|..|..|Wz|..|..|..|..|..|Cr
+..|..|..|..|..|..|..|Bl|Bl|Bl
+..|..|..|..|..|..|Bl|Bl|..|..
+..|..|..|..|..|..|Bl|..|Hs|..
+..|..|..|..|..|..|Bl|..|..|..
+`,
+  aimArea: [
+    [2, 0],
+  ],
+  bestMoves: 31,
+});
+
 const ZONE_1_MAP = LevelState.make({
   title: "Sleepy Hill",
   bombs: 0,
@@ -592,7 +614,7 @@ const ZONE_2_MAP = LevelState.make({
   title: "Ruined Fort",
   bombs: 0,
   level: `
-15|..|..|Cr|Cr|Cr|..|..
+15|16|..|Cr|Cr|Cr|..|..
 14|..|Cr|06|..|05|Cr|..
 13|Cr|L6|..|Cr|..|L4|Cr
 12|Cr|07|L7|..|Cr|04|Cr
@@ -619,6 +641,7 @@ const ZONE_2_LEVELS = [
   LEVEL_DONUT,
   LEVEL_TRAPPED,
   LEVEL_PARITY_3,
+  LEVEL_FORT,
 ];
 
 const ZONE_LEVELS = {
