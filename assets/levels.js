@@ -579,7 +579,7 @@ const LEVEL_FORT = LevelState.make({
   aimArea: [
     [2, 0],
   ],
-  bestMoves: 31,
+  bestMoves: 30,
 });
 
 const ZONE_1_MAP = LevelState.make({
