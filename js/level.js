@@ -6,7 +6,19 @@ class LevelManager {
     this.titleString = titleString;
     this.history = new LevelHistory(levelState);
 
-    this.animations = [new TransitionAnimation(TRANSITION_DIRECTION.IN)];
+    this.animations = [
+      new PopupAnimation(
+        320,
+        128,
+        true,
+        this.renderPopupContent.bind(this),
+        () => {
+          this.animations.push(
+            new TransitionAnimation(TRANSITION_DIRECTION.IN)
+          );
+        }
+      ),
+    ];
 
     this.canHandleInput = true;
     this.restartHeldSince = null;
@@ -690,12 +702,12 @@ class LevelManager {
 
   renderPopupContent(game) {
     game.drawText(
-      `LEVEL ${this.currentLevel}`,
+      this.titleString,
       BOARD_PADDING + H_BOARD_SIZE,
       BOARD_PADDING + H_BOARD_SIZE - 56,
       {
         color: "#000",
-        font: "bold 12px Edu-SA",
+        font: "bold 10px Edu-SA",
         align: "center",
       }
     );
