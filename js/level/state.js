@@ -95,7 +95,7 @@ class LevelState {
     }
   }
 
-  render(game, x, y, inputOffsets) {
+  render(game, x, y, inputOffsets, disjointWalls = false) {
     const offsets = {
       ...LEVEL_NO_OFFSETS,
       ...inputOffsets,
@@ -121,7 +121,9 @@ class LevelState {
       gobbo.render(game, offsets.gobbos[idx])
     );
     this.crates.forEach((wall) => this.renderCrate(game, wall));
-    this.blocks.forEach((wall) => this.renderBlock(game, wall));
+    if (disjointWalls)
+      this.blocks.forEach((wall) => this.renderBlock(game, wall));
+    else this.renderBlocks(game, x, y);
 
     this.aimArea.render(
       game,
@@ -133,6 +135,33 @@ class LevelState {
     );
 
     game.ctx.restore();
+  }
+
+  renderThingWithSheet(game, x, y, thingChecker, size, sheet, sliceSize) {
+    for (let i = 0; i <= this.size; i++) {
+      for (let j = 0; j <= this.size; j++) {
+        const ul = !!thingChecker(j - 1, i - 1);
+        const ur = !!thingChecker(j, i - 1);
+        const dl = !!thingChecker(j - 1, i);
+        const dr = !!thingChecker(j, i);
+
+        const [sliceX, sliceY] = getCornerSlicePos(ul, ur, dl, dr);
+
+        game.drawImage(
+          sheet,
+          cellCorner(j - 1) + x,
+          cellCorner(i - 1) + y,
+          size,
+          size,
+          {
+            x: sliceX * sliceSize,
+            y: sliceY * sliceSize,
+            width: sliceSize,
+            height: sliceSize,
+          }
+        );
+      }
+    }
   }
 
   renderCrate(game, wall) {
@@ -152,6 +181,23 @@ class LevelState {
       cellCorner(wall.y) + SPRITE_PADDING,
       SPRITE_SIZE,
       SPRITE_SIZE
+    );
+  }
+
+  renderBlocks(game, x, y) {
+    const lookup = new Map(
+      this.blocks.map((block) => [block.toString(), true])
+    );
+    const checker = (row, col) => lookup.get(strPosition(row, col));
+
+    this.renderThingWithSheet(
+      game,
+      x,
+      y,
+      checker,
+      SQUARE_SIZE,
+      ASSETS.SPRITE.BLOCK_SHEET,
+      32
     );
   }
 }

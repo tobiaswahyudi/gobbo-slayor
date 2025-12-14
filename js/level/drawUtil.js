@@ -15,3 +15,5 @@ const drawCheckeredGrid = (game, x, y, color1, color2, size = GRID_SIZE) => {
     }
   }
 };
+
+const getCornerSlicePos = (ul, ur, dl, dr) => [2 * dl + dr, 2 * ul + ur];

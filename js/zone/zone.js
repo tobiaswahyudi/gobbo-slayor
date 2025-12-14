@@ -302,7 +302,9 @@ class ZoneMap {
     this.currentLevelTile.level.render(
       this.game,
       600 / scale,
-      topPosition / scale
+      topPosition / scale,
+      {},
+      true
     );
 
     this.game.drawRect(

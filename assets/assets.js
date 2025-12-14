@@ -7,6 +7,7 @@ const ASSETS = {
   SPRITE: {
     CRATE: "assets/sprite/crate.png",
     BLOCK: "assets/sprite/block.png",
+    BLOCK_SHEET: "assets/sprite/blocksheet.png",
     GOBBOS: {
       MOVE: "assets/sprite/gobblin.png",
       SLEEP: "assets/sprite/slepgobbo.png",
