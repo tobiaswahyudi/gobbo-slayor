@@ -587,12 +587,12 @@ const ZONE_1_MAP = LevelState.make({
   level: `
 ..|Cr|Cr|Cr|Cr|Cr|Cr|Cr
 Cr|Cr|L3|..|05|..|06|Cr
-04|L3|03|Cr|Cr|..|..|Cr
-Cr|Cr|..|02|Cr|..|..|Cr
-..|Cr|..|..|Cr|L7|Cr|Cr
-07|Cr|Cr|L1|Cr|..|..|..
-08|Wz|..|01|Cr|..|..|..
-09|Cr|Cr|Cr|Cr|..|..|..
+04|L3|03|Cr|Cr|L5|Cr|Cr
+Cr|Cr|..|02|Cr|07|..|Cr
+..|Cr|..|..|Cr|L6|Cr|Cr
+..|Cr|Cr|L1|Cr|08|L7|..
+..|Wz|..|01|Cr|Cr|Cr|..
+..|Cr|Cr|Cr|Cr|..|..|09
 `,
   aimArea: [],
 });
