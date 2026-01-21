@@ -53,6 +53,11 @@ body {
 #game-container {
     position: relative;
     border: 2px solid #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
 }
 
 #gameCanvas {
@@ -63,6 +68,10 @@ body {
     image-rendering: -webkit-crisp-edges;
     -ms-interpolation-mode: nearest-neighbor;
     image-rendering: pixelated;
+    width: 90vw;
+    height: 90vh;
+    max-width: calc(90vh * 13 / 9);
+    max-height: calc(90vw * 9 / 13);
 }
 
 #ui-overlay {
