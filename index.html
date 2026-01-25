@@ -1,18 +1,67 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Gobbo Slayer</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="icon" href="assets/sprite/gobblin.png">
-</head>
-<body>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="icon" href="assets/sprite/gobblin.png" />
+  </head>
+  <body>
     <div id="game-container">
-        <canvas id="gameCanvas"></canvas>
-        <div id="ui-overlay">
-            <!-- Minimal UI elements that can't be done in canvas (e.g., input fields if needed) -->
+      <canvas id="gameCanvas"></canvas>
+      <div id="ui-overlay">
+        <!-- Minimal UI elements that can't be done in canvas (e.g., input fields if needed) -->
+      </div>
+    </div>
+    <div id="gamepad">
+      <div id="level-controls">
+        <div id="dpad">
+          <table>
+            <tr>
+              <td><div class="dpad-corner" id="dc-top-left"></div></td>
+              <td class="dpad-button-container"><button id ="dpad-up">↑</button></td>
+              <td><div class="dpad-corner" id="dc-top-right"></div></td>
+            </tr>
+            <tr>
+              <td class="dpad-button-container"><button id="dpad-left">←</button></td>
+              <td>
+                <div id="dpad-center"></div>
+              </td>
+              <td class="dpad-button-container"><button id="dpad-right">→</button></td>
+            </tr>
+            <tr>
+              <td><div class="dpad-corner" id="dc-bottom-left"></div></td>
+              <td class="dpad-button-container"><button id="dpad-down">↓</button></td>
+              <td><div class="dpad-corner" id="dc-bottom-right"></div></td>
+            </tr>
+          </table>
         </div>
+        <div id="action-controls">
+          <div class="action-control-container">
+            <button id="action-button"></button>
+            <span class="action-control-text">SPELL</span>
+          </div>
+          <div class="action-control-container">
+            <button id="action-button"></button>
+            <span class="action-control-text">UNDO</span>
+          </div>
+        </div>
+      </div>
+      <div id="world-controls">
+        <div class="world-control-container">
+          <button id="back-button"></button>
+          <span class="world-control-text">EXIT LEVEL / ZONE</span>
+        </div>
+        <div class="world-control-container">
+          <button id="start-button"></button>
+          <span class="world-control-text">START LEVEL / ZONE</span>
+        </div>
+        <div class="world-control-container">
+          <button id="restart-button"></button>
+          <span class="world-control-text">RESTART LEVEL</span>
+        </div>
+      </div>
     </div>
     <script src="js/constants.js"></script>
     <script src="assets/assets.js"></script>
@@ -42,5 +91,5 @@
     <script src="js/world.js"></script>
     <script src="js/zone/zone.js"></script>
     <script src="js/game.js"></script>
-</body>
-</html> 
+  </body>
+</html>

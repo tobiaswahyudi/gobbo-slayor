@@ -45,9 +45,11 @@ body {
     font-family: 'Courier New', monospace;
     overflow: hidden;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+    height: 100vh;
 }
 
 #game-container {
@@ -101,3 +103,142 @@ canvas {
     -ms-user-select: none;
     user-select: none;
 } 
+
+#gamepad {
+    display: none;
+    width: 100vw;
+}
+
+@media (max-aspect-ratio: 1) {
+    #gamepad {
+        flex: 0 0 45vh;
+        display: flex;
+        flex-direction: column;
+    }
+}
+
+#level-controls, #world-controls {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+#world-controls {
+    padding: 0 8vw;
+
+    .world-control-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        flex: 1;
+        height: 100%;
+
+        button {
+            width: 15vw;
+            height: 7.5vw;
+            border-radius: 3.75vw;
+        }
+
+        .world-control-text {
+            font-family: 'Edu-SA', sans-serif;
+            font-size: 2vw;
+            color: #fff;
+            text-align: center;
+            margin-top: 10px;
+        }
+    }
+}
+
+#level-controls {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+    padding: 2vh 8vw;
+    flex: 0;
+
+    .action-control-container {
+        display: flex;
+    }
+
+    #dpad {
+        border: none;
+        margin: 0;
+        width: min(42vw, 27vh);
+        height: min(27vh, 42vw);
+        /* background-color: red; */
+
+        table {
+            border-spacing: 0;
+            -webkit-border-spacing: 0;
+        }
+
+        button {
+            width: min(9vh, 14vw);
+            height: min(9vh, 14vw);
+            margin: 0;
+            border: none;
+            border-radius: 0;
+            background-color: linen;
+        }
+
+        td {
+            background-color: hsl(30, 67%, 94%);
+            width: min(4.5vh, 7vw);
+            height: min(4.5vh, 7vw);
+        }
+
+        #dpad-center {
+            width: min(4.5vh, 7vw);
+            height: min(4.5vh, 7vw);
+            background: linear-gradient(to bottom right, hsl(30, 60%, 86%), hsl(30, 64%, 92%));
+            margin: auto;
+            border-radius: 50%;
+        }
+
+        .dpad-corner, td.dpad-button-container {
+            background-color: black;
+            width: 100%;
+            height: 100%;
+            /* border-radius: 50%; */
+        }
+        #dc-top-left {
+            border-bottom-right-radius: 20%;
+        }
+        #dc-top-right {
+            border-bottom-left-radius: 20%;
+        }
+        #dc-bottom-left {
+            border-top-right-radius: 20%;
+        }
+        #dc-bottom-right {
+            border-top-left-radius: 20%;
+        }
+
+        #dpad-up {
+            border-top-left-radius: 10%;
+            border-top-right-radius: 10%;
+        }
+        #dpad-down {
+            border-bottom-left-radius: 10%;
+            border-bottom-right-radius: 10%;
+        }
+        #dpad-left {
+            border-top-left-radius: 10%;
+            border-bottom-left-radius: 10%;
+        }
+        #dpad-right {
+            border-top-right-radius: 10%;
+            border-bottom-right-radius: 10%;
+        }
+    }
+}
+
+button {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
