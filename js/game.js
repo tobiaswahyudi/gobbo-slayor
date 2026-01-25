@@ -78,7 +78,7 @@ class Game {
       this.handleKeyPress("Escape");
     });
     document.getElementById("restart-button").addEventListener("click", () => {
-      this.handleKeyPress("KeyR");
+      this.handleKeyPress("InstaRestart");
     });
     document.getElementById("spell-button").addEventListener("click", () => {
       this.handleKeyPress("Space");

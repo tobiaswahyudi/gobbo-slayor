@@ -99,6 +99,10 @@ class LevelManager {
         this.returnToZone(false);
         return true;
         break;
+      case "InstaRestart":
+        this.restartLevel();
+        return this.handleGameInput("KeyUp");
+        break;
       default:
         // this.history.pop();
         return false;
