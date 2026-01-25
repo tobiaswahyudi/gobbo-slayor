@@ -115,6 +115,12 @@ canvas {
         display: flex;
         flex-direction: column;
     }
+
+    #gameCanvas {
+        width: 100vw;
+        height: 90vh;
+        max-height: calc(100vw * 9 / 13);
+    }
 }
 
 #level-controls, #world-controls {
@@ -125,7 +131,7 @@ canvas {
 }
 
 #world-controls {
-    padding: 0 8vw;
+    padding: calc( min(9vh, 14vw) * 0.3) calc( min(9vh, 14vw) * 1.5) 0;
 
     .world-control-container {
         display: flex;
@@ -181,64 +187,59 @@ canvas {
             height: min(9vh, 14vw);
             margin: 0;
             border: none;
-            border-radius: 0;
-            background-color: linen;
-        }
-
-        td {
-            background-color: hsl(30, 67%, 94%);
-            width: min(4.5vh, 7vw);
-            height: min(4.5vh, 7vw);
-        }
-
-        #dpad-center {
-            width: min(4.5vh, 7vw);
-            height: min(4.5vh, 7vw);
-            background: linear-gradient(to bottom right, hsl(30, 60%, 86%), hsl(30, 64%, 92%));
-            margin: auto;
             border-radius: 50%;
+            background-color: linen;
+            font-size: calc( min(9vh, 14vw) * 0.5 );
         }
 
-        .dpad-corner, td.dpad-button-container {
-            background-color: black;
-            width: 100%;
-            height: 100%;
-            /* border-radius: 50%; */
-        }
-        #dc-top-left {
-            border-bottom-right-radius: 20%;
-        }
-        #dc-top-right {
-            border-bottom-left-radius: 20%;
-        }
-        #dc-bottom-left {
-            border-top-right-radius: 20%;
-        }
-        #dc-bottom-right {
-            border-top-left-radius: 20%;
+        .dpad-text {
+            font-family: 'Edu-SA', sans-serif;
+            font-size: calc( min(9vh, 14vw) * 0.5 );
+            color: #000;
+            text-align: center;
+            display: inline-block;
         }
 
-        #dpad-up {
-            border-top-left-radius: 10%;
-            border-top-right-radius: 10%;
+        .dpad-text-x {
+            transform: skewX(10deg);
         }
-        #dpad-down {
-            border-bottom-left-radius: 10%;
-            border-bottom-right-radius: 10%;
+
+        .dpad-text-y {
+            transform: skewX(10deg) skewY(-4deg);
         }
-        #dpad-left {
-            border-top-left-radius: 10%;
-            border-bottom-left-radius: 10%;
+    }
+
+    #action-controls {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        height: 100%;
+        padding: calc( min(9vh, 14vw) * 0.5) 0;
+
+        .action-control-container {
+            display: flex;
+            flex: 0;
+            flex-direction: row;
+            align-items: center;
+            justify-content: flex-end;
         }
-        #dpad-right {
-            border-top-right-radius: 10%;
-            border-bottom-right-radius: 10%;
+
+        .action-button {
+            width: calc( min(9vh, 14vw) * 0.9);
+            height: calc( min(9vh, 14vw) * 0.9);
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .action-control-text {
+            font-family: 'Edu-SA', sans-serif;
+            font-size: calc( min(9vh, 14vw) * 0.17);
+            color: #fff;
+            text-align: left;
         }
     }
 }
 
-button {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
+button:active {
+    filter: brightness(0.8);
 }

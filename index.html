@@ -19,31 +19,48 @@
         <div id="dpad">
           <table>
             <tr>
-              <td><div class="dpad-corner" id="dc-top-left"></div></td>
-              <td class="dpad-button-container"><button id ="dpad-up">↑</button></td>
-              <td><div class="dpad-corner" id="dc-top-right"></div></td>
-            </tr>
-            <tr>
-              <td class="dpad-button-container"><button id="dpad-left">←</button></td>
-              <td>
-                <div id="dpad-center"></div>
+              <td></td>
+              <td class="dpad-button-container">
+                <button id="dpad-up">
+                  <span class="dpad-text dpad-text-y"> ↑ </span>
+                </button>
               </td>
-              <td class="dpad-button-container"><button id="dpad-right">→</button></td>
+              <td></td>
             </tr>
             <tr>
-              <td><div class="dpad-corner" id="dc-bottom-left"></div></td>
-              <td class="dpad-button-container"><button id="dpad-down">↓</button></td>
-              <td><div class="dpad-corner" id="dc-bottom-right"></div></td>
+              <td class="dpad-button-container">
+                <button id="dpad-left">
+                  <span class="dpad-text dpad-text-x"> ← </span>
+                </button>
+              </td>
+              <td></td>
+              <td class="dpad-button-container">
+                <button id="dpad-right">
+                  <span class="dpad-text dpad-text-x"> → </span>
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td></td>
+              <td class="dpad-button-container">
+                <button id="dpad-down">
+                  <span class="dpad-text dpad-text-y"> ↓ </span>
+                </button>
+              </td>
+              <td></td>
             </tr>
           </table>
         </div>
         <div id="action-controls">
           <div class="action-control-container">
-            <button id="action-button"></button>
-            <span class="action-control-text">SPELL</span>
+            <button class="action-button" id="spell-button"></button>
+            <span class="action-control-text"
+              >SPELL /<br />
+              START LEVEL</span
+            >
           </div>
           <div class="action-control-container">
-            <button id="action-button"></button>
+            <button class="action-button" id="undo-button"></button>
             <span class="action-control-text">UNDO</span>
           </div>
         </div>
@@ -52,10 +69,6 @@
         <div class="world-control-container">
           <button id="back-button"></button>
           <span class="world-control-text">EXIT LEVEL / ZONE</span>
-        </div>
-        <div class="world-control-container">
-          <button id="start-button"></button>
-          <span class="world-control-text">START LEVEL / ZONE</span>
         </div>
         <div class="world-control-container">
           <button id="restart-button"></button>
