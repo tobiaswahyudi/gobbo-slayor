@@ -60,6 +60,33 @@ class Game {
   }
 
   setupEventListeners() {
+
+    // Gamepad events
+    document.getElementById("dpad-up").addEventListener("click", () => {
+      this.handleKeyPress("ArrowUp");
+    });
+    document.getElementById("dpad-left").addEventListener("click", () => {
+      this.handleKeyPress("ArrowLeft");
+    });
+    document.getElementById("dpad-right").addEventListener("click", () => {
+      this.handleKeyPress("ArrowRight");
+    });
+    document.getElementById("dpad-down").addEventListener("click", () => {
+      this.handleKeyPress("ArrowDown");
+    });
+    document.getElementById("back-button").addEventListener("click", () => {
+      this.handleKeyPress("Escape");
+    });
+    document.getElementById("restart-button").addEventListener("click", () => {
+      this.handleKeyPress("KeyR");
+    });
+    document.getElementById("spell-button").addEventListener("click", () => {
+      this.handleKeyPress("Space");
+    });
+    document.getElementById("undo-button").addEventListener("click", () => {
+      this.handleKeyPress("KeyZ");
+    });
+
     // Keyboard events
     window.addEventListener("keydown", (e) => {
       if (!this.keys[e.code]) {
