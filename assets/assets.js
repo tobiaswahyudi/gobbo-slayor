@@ -63,6 +63,21 @@ const ASSETS = {
       WIZ: "assets/worldmap/flag-wiz.png",
     },
     LOCK: "assets/worldmap/lock.png",
+    // World V2
+    SKY: "assets/world-2/sky.png",
+    GROUND: "assets/world-2/land.png",
+    CLOUD_F: "assets/world-2/cloud-f.png",
+    CLOUD_B: "assets/world-2/cloud-b.png",
+    MOUNTAINS: "assets/world-2/mount.png",
+    PEPPER: {
+      TREE_FG: "assets/world-2/tree-fore.png",
+      TREE_BG: "assets/world-2/tree-back.png",
+      ROCKS: "assets/world-2/rocks.png",
+    },
+    LEVEL: {
+      CAMP: "assets/world-2/camp.png",
+      FORT: "assets/world-2/fort.png",
+    }
   },
   COMIC: {
     OUTLINE: "assets/comic/outlines.png",

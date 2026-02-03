@@ -1,5 +1,8 @@
-const WORLD_WIZ_SIZE = 48;
+const WORLD_WIZ_SIZE = 96;
 const WORLD_WIZ_PADDING = (SQUARE_SIZE - WORLD_WIZ_SIZE) * 0.5;
+
+const MOVE_DISTANCE = 50;
+const LEVEL_MOVE_ANIM_HALF_DUR = 16;
 
 const WORLD_MAP = `
 ..|..|..|..|..|..|..|..
@@ -22,6 +25,7 @@ const WORLD_MAP_LOCATIONS = [
     text: "The goblins stole your magic hats!!  >:(\nTheir tracks lead east...\n\n\n\nPress [space] to watch the intro again",
     isZone: false,
     isWizardTower: true,
+    asset: ASSETS.WORLD.CAMP.GOB,
   },
   {
     id: "camp",
@@ -30,7 +34,7 @@ const WORLD_MAP_LOCATIONS = [
     title: "GOBLIN CAMP 1",
     subtitle: "Sleepy Hill",
     text: "Goblins are napping by the fire\nwith their stolen hats.",
-    asset: ASSETS.WORLD.FIRE,
+    asset: ASSETS.WORLD.LEVEL.CAMP,
     isZone: true,
     levels: ZONE_1_LEVELS.length,
     cta: "Dang Gobbos! Get em!",
@@ -42,13 +46,60 @@ const WORLD_MAP_LOCATIONS = [
     title: "GOBLIN CAMP 2",
     subtitle: "Ruined Fort",
     text: "Goblins are running around the old\n ruined fort. (They're actually doing\na good job of rebuilding it.)",
-    asset: ASSETS.WORLD.FORT,
+    asset: ASSETS.WORLD.LEVEL.FORT,
     isZone: true,
     levels: ZONE_2_LEVELS.length,
     cta: "Don't care! Blow up the fort!\nGet your hats back!!",
   },
 ];
 
+const WORLD_LAYERS = [
+  {
+    image: ASSETS.WORLD.SKY,
+  },
+  {
+    image: ASSETS.WORLD.MOUNTAINS,
+    alpha: 0.8,
+    rotationParallax: 0.02,
+    // offset: 0,
+  },
+  {
+    image: ASSETS.WORLD.CLOUD_B,
+    alpha: 0.4,
+    translationParallax: 0.4,
+    offset: 30,
+  },
+  {
+    image: ASSETS.WORLD.CLOUD_F,
+    alpha: 0.9,
+    translationParallax: 1,
+    offset: 160,
+  },
+  {
+    image: ASSETS.WORLD.PEPPER.TREE_BG,
+    rotationParallax: 0.3,
+    offset: 0,
+    filter: "saturate(0.7)",
+  },
+  {
+    image: ASSETS.WORLD.GROUND,
+  },
+  {
+    image: ASSETS.WORLD.PEPPER.TREE_FG,
+    rotationParallax: 1,
+    offset: 0,
+  },
+  {
+    image: ASSETS.WORLD.PEPPER.TREE_FG,
+    rotationParallax: 1.5,
+    offset: 30,
+  },
+  {
+    image: ASSETS.WORLD.PEPPER.ROCKS,
+    rotationParallax: 0.5,
+    offset: 0,
+  },
+];
 class WorldMap {
   constructor(game) {
     this.game = game;
@@ -56,6 +107,12 @@ class WorldMap {
       level: WORLD_MAP,
     });
     this.currentLocation = null;
+
+    this.levelIndex = 0;
+    this.ordinate = 0;
+
+    this.levelRotationTweenValue = new Position(0, 0);
+    this.levelPositionTweenValue = new Position(0, 0);
 
     this.animations = [];
 
@@ -68,24 +125,26 @@ class WorldMap {
     if (inputBlockedByAnimation) return true;
 
     switch (keyCode) {
-      case "ArrowUp":
-      case "KeyW":
-        this.makeMove(Direction.UP);
-        return true;
-        break;
-      case "ArrowDown":
-      case "KeyS":
-        this.makeMove(Direction.DOWN);
-        return true;
-        break;
+      // case "ArrowUp":
+      // case "KeyW":
+      //   this.makeMove(Direction.UP);
+      //   return true;
+      //   break;
+      // case "ArrowDown":
+      // case "KeyS":
+      //   this.makeMove(Direction.DOWN);
+      //   return true;
+      //   break;
       case "ArrowLeft":
       case "KeyA":
-        this.makeMove(Direction.LEFT);
+        // this.makeMove(Direction.LEFT);
+        this.levelMove(false);
         return true;
         break;
       case "ArrowRight":
       case "KeyD":
-        this.makeMove(Direction.RIGHT);
+        // this.makeMove(Direction.RIGHT);
+        this.levelMove(true);
         return true;
         break;
       case "Space":
@@ -101,27 +160,109 @@ class WorldMap {
     }
   }
 
+  levelMove(goingRight) {
+    const delta = goingRight ? 1 : -1;
+
+
+    this.animations.push(
+      new MotionTweenAnimation(
+        this.levelRotationTweenValue,
+        new Position(0, 0),
+        new Position(delta * -0.377, 0),
+        LEVEL_MOVE_ANIM_HALF_DUR,
+        {
+          callback: () => {
+            this.levelIndex += delta;
+            console.log("level move callback", this.levelIndex);
+            this.animations.push(
+              new MotionTweenAnimation(
+                this.levelRotationTweenValue,
+                new Position(delta * 0.377, 0),
+                new Position(0, 0),
+                LEVEL_MOVE_ANIM_HALF_DUR
+              )
+            );
+          },
+        }
+      )
+    );
+    this.animations.push(
+      new MotionTweenAnimation(
+        this.levelPositionTweenValue,
+        this.levelPositionTweenValue.clone(),
+        this.levelPositionTweenValue.add(
+          new Position(delta * -MOVE_DISTANCE, 0)
+        ),
+        LEVEL_MOVE_ANIM_HALF_DUR * 2,
+        {
+          blocksInput: true,
+        }
+      )
+    );
+  }
+
   // World Map Rendering
   render() {
     const { width, height } = this.game;
 
-    // Game area background
-    this.game.drawRect(0, 0, width, height, { fill: "#C5BAB5" });
+    const GROUND_RADIUS = 2.5 * width;
 
-    this.game.drawImage(
-      ASSETS.WORLD.MAP,
-      BOARD_PADDING,
-      BOARD_PADDING,
-      BOARD_SIZE,
-      BOARD_SIZE
-    );
-
-    // World Outline
-    this.game.drawRect(32, 32, 512, 512, {
-      fill: "",
-      stroke: "#BDAFA1",
-      strokeWidth: 4,
+    WORLD_LAYERS.forEach((layer) => {
+      this.game.ctx.save();
+      const ord = layer.offset
+        ? this.levelPositionTweenValue.x + layer.offset
+        : this.levelPositionTweenValue.x;
+      if (!!layer.alpha) {
+        this.game.ctx.globalAlpha = layer.alpha;
+      }
+      if (!!layer.translationParallax) {
+        this.game.ctx.translate(layer.translationParallax * ord, 0);
+      }
+      if (!!layer.rotationParallax) {
+        this.game.ctx.translate(width / 2, GROUND_RADIUS);
+        this.game.ctx.rotate(layer.rotationParallax * ord * 0.01);
+        this.game.ctx.translate(-width / 2, -GROUND_RADIUS);
+      }
+      if (!!layer.filter) {
+        this.game.ctx.filter = layer.filter;
+      }
+      this.game.drawImage(layer.image, 0, 0, width, height);
+      this.game.ctx.restore();
     });
+
+    this.game.ctx.save();
+    const levelRotation = this.levelRotationTweenValue.x;
+    this.game.ctx.translate(width / 2, GROUND_RADIUS);
+    this.game.ctx.rotate(levelRotation);
+    this.game.ctx.translate(-width / 2, -GROUND_RADIUS);
+    if (this.levelIndex > 0 && WORLD_MAP_LOCATIONS[this.levelIndex]?.asset) {
+      this.game.drawImage(
+        WORLD_MAP_LOCATIONS[this.levelIndex].asset,
+        0,
+        0,
+        width,
+        height
+      );
+    }
+    this.game.ctx.restore();
+
+    // Game area background
+    // this.game.drawRect(0, 0, width, height, { fill: "#C5BAB5" });
+
+    // this.game.drawImage(
+    //   ASSETS.WORLD.MAP,
+    //   BOARD_PADDING,
+    //   BOARD_PADDING,
+    //   BOARD_SIZE,
+    //   BOARD_SIZE
+    // );
+
+    // // World Outline
+    // this.game.drawRect(32, 32, 512, 512, {
+    //   fill: "",
+    //   stroke: "#BDAFA1",
+    //   strokeWidth: 4,
+    // });
 
     // this.game.ctx.globalAlpha = 0.75;
     // this.game.drawImage(ASSETS.UI.TITLE, 54, 96, 384, 128);
@@ -129,41 +270,65 @@ class WorldMap {
     // this.game.drawImage(ASSETS.UI.CREDITS, 320, 224, 128, 64);
     // this.game.ctx.globalAlpha = 1;
 
-    this.currentLocation = WORLD_MAP_LOCATIONS.find(
-      (location) =>
-        location.x === this.state.player.x && location.y === this.state.player.y
+    // this.currentLocation = WORLD_MAP_LOCATIONS.find(
+    //   (location) =>
+    //     location.x === this.state.player.x && location.y === this.state.player.y
+    // );
+
+    // if (this.currentLocation) {
+    //   this.renderZoneSidebar();
+    // } else {
+    //   this.renderEmptySidebar();
+    // }
+
+    // WORLD_MAP_LOCATIONS.forEach((location) => {
+    //   if (!location.asset) return;
+    //   const silverStars = this.game.progress.getLevelSilver(location.id);
+    //   const isZoneDone = silverStars == location.levels;
+    //   const status = isZoneDone ? "CLEAR" : "GOB";
+    //   const asset = location.asset[status];
+    //   this.game.drawImage(
+    //     asset,
+    //     cellCorner(location.x) + BOARD_PADDING,
+    //     cellCorner(location.y) + BOARD_PADDING,
+    //     SQUARE_SIZE,
+    //     SQUARE_SIZE
+    //   );
+    // });
+
+    this.game.ctx.beginPath();
+    this.game.ctx.fillStyle = "#00000044";
+    this.game.ctx.ellipse(
+      0.3 * width + WORLD_WIZ_SIZE * 0.28,
+      0.75 * height + WORLD_WIZ_SIZE * 0.97,
+      WORLD_WIZ_SIZE * 0.29,
+      WORLD_WIZ_SIZE * 0.1,
+      0,
+      0,
+      Math.PI * 2
     );
-
-    if (this.currentLocation) {
-      this.renderZoneSidebar();
-    } else {
-      this.renderEmptySidebar();
-    }
-
-    WORLD_MAP_LOCATIONS.forEach((location) => {
-      if (!location.asset) return;
-      const silverStars = this.game.progress.getLevelSilver(location.id);
-      const isZoneDone = silverStars == location.levels;
-      const status = isZoneDone ? "CLEAR" : "GOB";
-      const asset = location.asset[status];
-      this.game.drawImage(
-        asset,
-        cellCorner(location.x) + BOARD_PADDING,
-        cellCorner(location.y) + BOARD_PADDING,
-        SQUARE_SIZE,
-        SQUARE_SIZE
-      );
-    });
+    this.game.ctx.ellipse(
+      0.3 * width + WORLD_WIZ_SIZE * 0.65,
+      0.75 * height + WORLD_WIZ_SIZE * 0.97,
+      WORLD_WIZ_SIZE * 0.18,
+      WORLD_WIZ_SIZE * 0.06,
+      0,
+      0,
+      Math.PI * 2
+    );
+    this.game.ctx.fill();
 
     this.game.drawImage(
       ASSETS.SPRITE.WIZ,
-      cellCorner(this.state.player.x) + WORLD_WIZ_PADDING + BOARD_PADDING,
-      cellCorner(this.state.player.y) + WORLD_WIZ_PADDING + BOARD_PADDING,
+      0.3 * width,
+      0.75 * height,
       WORLD_WIZ_SIZE,
       WORLD_WIZ_SIZE
     );
 
     this.animations.forEach((anim) => anim.tick(this.game));
+
+    console.log("animations", this.animations);
 
     const hadAnimations = this.animations.length > 0;
 
