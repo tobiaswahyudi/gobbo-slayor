@@ -16,10 +16,10 @@ Cr|..|..|..|..|Cr|..|..
 `;
 
 const HALF_SCREEN_WIDTH = 0.5 * GAME_WIDTH;
-const WIZARD_TARGET_POSITION_X = 0.2 * GAME_WIDTH;
+const WIZARD_TARGET_POSITION_X = 0.3 * GAME_WIDTH;
 const WIZARD_TARGET_POSITION_Y = 0.75 * GAME_HEIGHT;
 
-const WIZARD_SAME_SIDE_SHUFFLE_FACTOR = 0.4;
+const WIZARD_TARGET_POSITION_THETA = -0.2;
 
 const WIZARD_SINE_AMPLITUDE = 10;
 
@@ -128,12 +128,14 @@ class WorldMap {
     this.goldAnimation = false;
 
     // When starting, wizard is on the left
-    this.wizardPosition = new Position(
-      HALF_SCREEN_WIDTH - WIZARD_TARGET_POSITION_X,
-      WIZARD_TARGET_POSITION_Y
-    );
-    this.wizardTweenPosition = this.wizardPosition.clone();
-    this.wizardSinePosition = new Position(0, 0);
+    this.wizardTheta = WIZARD_TARGET_POSITION_THETA;
+
+    // this.wizardPosition = new Position(
+    //   HALF_SCREEN_WIDTH - WIZARD_TARGET_POSITION_X,
+    //   WIZARD_TARGET_POSITION_Y
+    // );
+    this.wizardTweenTheta = new Position(0, 0);
+    // this.wizardSinePosition = new Position(0, 0);
 
     this.wizardOnLeft = true;
   }
@@ -169,59 +171,6 @@ class WorldMap {
   levelMove(goingRight) {
     const delta = goingRight ? 1 : -1;
 
-    let wizardMoveTarget = 0;
-    let wizardMidMoveTarget = 0;
-
-    // if(goingRight) {
-    //   wizardMoveTarget = HALF_SCREEN_WIDTH - WIZARD_TARGET_POSITION_X;
-    //   if(this.wizardOnLeft) {
-    //     // Same Side Shuffle
-    //     wizardMidMoveTarget = HALF_SCREEN_WIDTH - WIZARD_TARGET_POSITION_X * WIZARD_SAME_SIDE_SHUFFLE_FACTOR;
-    //   } else {
-    //     wizardMidMoveTarget = HALF_SCREEN_WIDTH;
-    //   }
-    // } else {
-    //   wizardMoveTarget = HALF_SCREEN_WIDTH + WIZARD_TARGET_POSITION_X;
-    //   if(!this.wizardOnLeft) {
-    //     // Same Side Shuffle
-    //     wizardMidMoveTarget = HALF_SCREEN_WIDTH + WIZARD_TARGET_POSITION_X * WIZARD_SAME_SIDE_SHUFFLE_FACTOR;
-    //   } else {
-    //     wizardMidMoveTarget = HALF_SCREEN_WIDTH;
-    //   }
-    // }
-
-    // this.animations.push(
-    //   new MotionTweenAnimation(
-    //     this.wizardTweenPosition,
-    //     this.wizardTweenPosition.clone(),
-    //     new Position(wizardMidMoveTarget, WIZARD_TARGET_POSITION_Y),
-    //     LEVEL_MOVE_ANIM_HALF_DUR,
-    //     {
-    //       callback: () => {
-    //         this.animations.push(
-    //           new MotionTweenAnimation(
-    //             this.wizardTweenPosition,
-    //             this.wizardTweenPosition.clone(),
-    //             new Position(wizardMoveTarget, WIZARD_TARGET_POSITION_Y),
-    //             LEVEL_MOVE_ANIM_HALF_DUR
-    //           )
-    //         );
-    //       }
-    //     }
-    //   )
-    // );
-    // this.animations.push(
-    //   new SineAnimation(
-    //     this.wizardSinePosition,
-    //     LEVEL_MOVE_ANIM_HALF_DUR * 2,
-    //     0,
-    //     3,
-    //     0
-    //   )
-    // );
-
-    this.wizardOnLeft = goingRight;
-
     this.animations.push(
       new MotionTweenAnimation(
         this.levelRotationTweenValue,
@@ -231,7 +180,7 @@ class WorldMap {
         {
           callback: () => {
             this.levelIndex += delta;
-            console.log("level move callback", this.levelIndex);
+            this.wizardOnLeft = goingRight;
             this.animations.push(
               new MotionTweenAnimation(
                 this.levelRotationTweenValue,
@@ -240,6 +189,14 @@ class WorldMap {
                 LEVEL_MOVE_ANIM_HALF_DUR
               )
             );
+            this.animations.push(
+              new MotionTweenAnimation(
+                this.wizardTweenTheta,
+                new Position(-2 * delta * 0.377, 0),
+                new Position(0, 0),
+                LEVEL_MOVE_ANIM_HALF_DUR * 2
+              )
+            )
           },
         }
       )
@@ -304,61 +261,30 @@ class WorldMap {
     }
     this.game.ctx.restore();
 
-    // Game area background
-    // this.game.drawRect(0, 0, width, height, { fill: "#C5BAB5" });
+    this.game.ctx.save();
 
-    // this.game.drawImage(
-    //   ASSETS.WORLD.MAP,
-    //   BOARD_PADDING,
-    //   BOARD_PADDING,
-    //   BOARD_SIZE,
-    //   BOARD_SIZE
-    // );
+    const heightRad = height - WIZARD_TARGET_POSITION_Y;
 
-    // // World Outline
-    // this.game.drawRect(32, 32, 512, 512, {
-    //   fill: "",
-    //   stroke: "#BDAFA1",
-    //   strokeWidth: 4,
-    // });
+    this.game.ctx.translate(width / 2, GROUND_RADIUS + heightRad);
+    this.game.ctx.rotate(this.levelRotationTweenValue.x + this.wizardTweenTheta.x);
+    this.game.ctx.translate(-width / 2, -(GROUND_RADIUS + heightRad));
 
-    // this.game.ctx.globalAlpha = 0.75;
-    // this.game.drawImage(ASSETS.UI.TITLE, 54, 96, 384, 128);
-    // this.game.ctx.globalAlpha = 0.5;
-    // this.game.drawImage(ASSETS.UI.CREDITS, 320, 224, 128, 64);
-    // this.game.ctx.globalAlpha = 1;
+    const scaleX = this.wizardOnLeft ? 1 : -1;
 
-    // this.currentLocation = WORLD_MAP_LOCATIONS.find(
-    //   (location) =>
-    //     location.x === this.state.player.x && location.y === this.state.player.y
-    // );
-
-    // if (this.currentLocation) {
-    //   this.renderZoneSidebar();
-    // } else {
-    //   this.renderEmptySidebar();
-    // }
-
-    // WORLD_MAP_LOCATIONS.forEach((location) => {
-    //   if (!location.asset) return;
-    //   const silverStars = this.game.progress.getLevelSilver(location.id);
-    //   const isZoneDone = silverStars == location.levels;
-    //   const status = isZoneDone ? "CLEAR" : "GOB";
-    //   const asset = location.asset[status];
-    //   this.game.drawImage(
-    //     asset,
-    //     cellCorner(location.x) + BOARD_PADDING,
-    //     cellCorner(location.y) + BOARD_PADDING,
-    //     SQUARE_SIZE,
-    //     SQUARE_SIZE
-    //   );
-    // });
+    this.game.ctx.scale(scaleX, 1);
 
     this.game.ctx.beginPath();
     this.game.ctx.fillStyle = "#00000044";
+
+    const shadowY = 0.75 * height + WORLD_WIZ_SIZE * 0.97;
+    // 1 -> wx
+    // -1 -> -1 + wx
+    const wizardX = -HALF_SCREEN_WIDTH + scaleX * HALF_SCREEN_WIDTH + WIZARD_TARGET_POSITION_X;
+    // const wizardX = WIZARD_TARGET_POSITION_X;
+
     this.game.ctx.ellipse(
-      0.3 * width + WORLD_WIZ_SIZE * 0.28,
-      0.75 * height + WORLD_WIZ_SIZE * 0.97,
+      wizardX + WORLD_WIZ_SIZE * 0.28,
+      shadowY,
       WORLD_WIZ_SIZE * 0.29,
       WORLD_WIZ_SIZE * 0.1,
       0,
@@ -366,8 +292,8 @@ class WorldMap {
       Math.PI * 2
     );
     this.game.ctx.ellipse(
-      0.3 * width + WORLD_WIZ_SIZE * 0.65,
-      0.75 * height + WORLD_WIZ_SIZE * 0.97,
+      wizardX + WORLD_WIZ_SIZE * 0.65,
+      shadowY,
       WORLD_WIZ_SIZE * 0.18,
       WORLD_WIZ_SIZE * 0.06,
       0,
@@ -376,19 +302,10 @@ class WorldMap {
     );
     this.game.ctx.fill();
 
-    // const wizardX = this.wizardTweenPosition.x + this.wizardSinePosition.x;
-    // const wizardY = this.wizardTweenPosition.y// + this.wizardSinePosition.x;
-
-    this.game.ctx.save();
-
-    this.game.ctx.translate(width / 2, GROUND_RADIUS);
-    this.game.ctx.rotate(layer.rotationParallax * ord * 0.01);
-    this.game.ctx.translate(-width / 2, -GROUND_RADIUS);
-    
     this.game.drawImage(
       ASSETS.SPRITE.WIZ,
       wizardX,
-      wizardY,
+      WIZARD_TARGET_POSITION_Y,
       WORLD_WIZ_SIZE,
       WORLD_WIZ_SIZE
     );
