@@ -15,6 +15,14 @@ Cr|..|..|..|..|Cr|..|..
 ..|Wz|..|Cr|Cr|Cr|..|..
 `;
 
+const HALF_SCREEN_WIDTH = 0.5 * GAME_WIDTH;
+const WIZARD_TARGET_POSITION_X = 0.2 * GAME_WIDTH;
+const WIZARD_TARGET_POSITION_Y = 0.75 * GAME_HEIGHT;
+
+const WIZARD_SAME_SIDE_SHUFFLE_FACTOR = 0.4;
+
+const WIZARD_SINE_AMPLITUDE = 10;
+
 const WORLD_MAP_LOCATIONS = [
   {
     id: "wiz",
@@ -118,6 +126,16 @@ class WorldMap {
 
     this.silverAnimation = false;
     this.goldAnimation = false;
+
+    // When starting, wizard is on the left
+    this.wizardPosition = new Position(
+      HALF_SCREEN_WIDTH - WIZARD_TARGET_POSITION_X,
+      WIZARD_TARGET_POSITION_Y
+    );
+    this.wizardTweenPosition = this.wizardPosition.clone();
+    this.wizardSinePosition = new Position(0, 0);
+
+    this.wizardOnLeft = true;
   }
 
   handleInput(keyCode) {
@@ -125,25 +143,13 @@ class WorldMap {
     if (inputBlockedByAnimation) return true;
 
     switch (keyCode) {
-      // case "ArrowUp":
-      // case "KeyW":
-      //   this.makeMove(Direction.UP);
-      //   return true;
-      //   break;
-      // case "ArrowDown":
-      // case "KeyS":
-      //   this.makeMove(Direction.DOWN);
-      //   return true;
-      //   break;
       case "ArrowLeft":
       case "KeyA":
-        // this.makeMove(Direction.LEFT);
         this.levelMove(false);
         return true;
         break;
       case "ArrowRight":
       case "KeyD":
-        // this.makeMove(Direction.RIGHT);
         this.levelMove(true);
         return true;
         break;
@@ -163,6 +169,58 @@ class WorldMap {
   levelMove(goingRight) {
     const delta = goingRight ? 1 : -1;
 
+    let wizardMoveTarget = 0;
+    let wizardMidMoveTarget = 0;
+
+    // if(goingRight) {
+    //   wizardMoveTarget = HALF_SCREEN_WIDTH - WIZARD_TARGET_POSITION_X;
+    //   if(this.wizardOnLeft) {
+    //     // Same Side Shuffle
+    //     wizardMidMoveTarget = HALF_SCREEN_WIDTH - WIZARD_TARGET_POSITION_X * WIZARD_SAME_SIDE_SHUFFLE_FACTOR;
+    //   } else {
+    //     wizardMidMoveTarget = HALF_SCREEN_WIDTH;
+    //   }
+    // } else {
+    //   wizardMoveTarget = HALF_SCREEN_WIDTH + WIZARD_TARGET_POSITION_X;
+    //   if(!this.wizardOnLeft) {
+    //     // Same Side Shuffle
+    //     wizardMidMoveTarget = HALF_SCREEN_WIDTH + WIZARD_TARGET_POSITION_X * WIZARD_SAME_SIDE_SHUFFLE_FACTOR;
+    //   } else {
+    //     wizardMidMoveTarget = HALF_SCREEN_WIDTH;
+    //   }
+    // }
+
+    // this.animations.push(
+    //   new MotionTweenAnimation(
+    //     this.wizardTweenPosition,
+    //     this.wizardTweenPosition.clone(),
+    //     new Position(wizardMidMoveTarget, WIZARD_TARGET_POSITION_Y),
+    //     LEVEL_MOVE_ANIM_HALF_DUR,
+    //     {
+    //       callback: () => {
+    //         this.animations.push(
+    //           new MotionTweenAnimation(
+    //             this.wizardTweenPosition,
+    //             this.wizardTweenPosition.clone(),
+    //             new Position(wizardMoveTarget, WIZARD_TARGET_POSITION_Y),
+    //             LEVEL_MOVE_ANIM_HALF_DUR
+    //           )
+    //         );
+    //       }
+    //     }
+    //   )
+    // );
+    // this.animations.push(
+    //   new SineAnimation(
+    //     this.wizardSinePosition,
+    //     LEVEL_MOVE_ANIM_HALF_DUR * 2,
+    //     0,
+    //     3,
+    //     0
+    //   )
+    // );
+
+    this.wizardOnLeft = goingRight;
 
     this.animations.push(
       new MotionTweenAnimation(
@@ -318,13 +376,24 @@ class WorldMap {
     );
     this.game.ctx.fill();
 
+    // const wizardX = this.wizardTweenPosition.x + this.wizardSinePosition.x;
+    // const wizardY = this.wizardTweenPosition.y// + this.wizardSinePosition.x;
+
+    this.game.ctx.save();
+
+    this.game.ctx.translate(width / 2, GROUND_RADIUS);
+    this.game.ctx.rotate(layer.rotationParallax * ord * 0.01);
+    this.game.ctx.translate(-width / 2, -GROUND_RADIUS);
+    
     this.game.drawImage(
       ASSETS.SPRITE.WIZ,
-      0.3 * width,
-      0.75 * height,
+      wizardX,
+      wizardY,
       WORLD_WIZ_SIZE,
       WORLD_WIZ_SIZE
     );
+
+    this.game.ctx.restore();
 
     this.animations.forEach((anim) => anim.tick(this.game));
 

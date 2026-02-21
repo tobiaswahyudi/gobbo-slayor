@@ -16,11 +16,11 @@ class Game {
     this.isRunning = false;
 
     // Canvas dimensions
-    this.width = 832; // Inner: 768 = 32 * 24
-    this.height = 576; // Inner: 512 = 32 * 16
+    this.width = GAME_WIDTH;
+    this.height = GAME_HEIGHT;
 
     // Scene management
-    this.scene = "comic"; // comic|menus|level
+    this.scene = "world"; // comic|menus|level
 
     // Input handling
     this.keys = {};
