@@ -1,27 +1,12 @@
 const WORLD_WIZ_SIZE = 96;
-const WORLD_WIZ_PADDING = (SQUARE_SIZE - WORLD_WIZ_SIZE) * 0.5;
-
 const MOVE_DISTANCE = 50;
 const LEVEL_MOVE_ANIM_HALF_DUR = 16;
-
-const WORLD_MAP = `
-..|..|..|..|..|..|..|..
-..|..|..|..|..|..|..|..
-..|..|..|..|..|..|..|Cr
-..|..|..|..|Cr|..|Cr|..
-Cr|Cr|Cr|Cr|..|Cr|..|..
-..|..|..|Cr|..|..|..|..
-Cr|..|..|..|..|Cr|..|..
-..|Wz|..|Cr|Cr|Cr|..|..
-`;
 
 const HALF_SCREEN_WIDTH = 0.5 * GAME_WIDTH;
 const WIZARD_TARGET_POSITION_X = 0.3 * GAME_WIDTH;
 const WIZARD_TARGET_POSITION_Y = 0.75 * GAME_HEIGHT;
 
 const WIZARD_TARGET_POSITION_THETA = -0.2;
-
-const WIZARD_SINE_AMPLITUDE = 10;
 
 const WORLD_MAP_LOCATIONS = [
   {
@@ -120,12 +105,10 @@ const WORLD_LAYERS = [
     offset: 0,
   },
 ];
+
 class WorldMap {
   constructor(game) {
     this.game = game;
-    this.state = LevelState.make({
-      level: WORLD_MAP,
-    });
     this.currentLocation = null;
 
     this.levelIndex = 0;
@@ -141,14 +124,7 @@ class WorldMap {
 
     // When starting, wizard is on the left
     this.wizardTheta = WIZARD_TARGET_POSITION_THETA;
-
-    // this.wizardPosition = new Position(
-    //   HALF_SCREEN_WIDTH - WIZARD_TARGET_POSITION_X,
-    //   WIZARD_TARGET_POSITION_Y
-    // );
     this.wizardTweenTheta = new Position(0, 0);
-    // this.wizardSinePosition = new Position(0, 0);
-
     this.wizardOnLeft = true;
   }
 
@@ -161,20 +137,16 @@ class WorldMap {
       case "KeyA":
         this.levelMove(false);
         return true;
-        break;
       case "ArrowRight":
       case "KeyD":
         this.levelMove(true);
         return true;
-        break;
       case "Space":
         this.goToZone();
         return true;
-        break;
       case "KeyR":
         this.resetProgress();
         return true;
-        break;
       default:
         return false;
     }
@@ -289,10 +261,7 @@ class WorldMap {
     this.game.ctx.fillStyle = "#00000044";
 
     const shadowY = 0.75 * height + WORLD_WIZ_SIZE * 0.97;
-    // 1 -> wx
-    // -1 -> -1 + wx
     const wizardX = -HALF_SCREEN_WIDTH + scaleX * HALF_SCREEN_WIDTH + WIZARD_TARGET_POSITION_X;
-    // const wizardX = WIZARD_TARGET_POSITION_X;
 
     this.game.ctx.ellipse(
       wizardX + WORLD_WIZ_SIZE * 0.28,
@@ -326,74 +295,14 @@ class WorldMap {
 
     this.animations.forEach((anim) => anim.tick(this.game));
 
-    console.log("animations", this.animations);
-
     const hadAnimations = this.animations.length > 0;
 
     this.animations = this.animations.filter((anim) => !anim.finished);
 
-    // return true;
     return hadAnimations;
   }
 
-  getDirVec(direction) {
-    switch (direction) {
-      case Direction.UP:
-        return [0, -1];
-        break;
-      case Direction.DOWN:
-        return [0, 1];
-        break;
-      case Direction.LEFT:
-        return [-1, 0];
-        break;
-      case Direction.RIGHT:
-        return [1, 0];
-        break;
-    }
-    return [0, 0];
-  }
-
-  verifyMoveBounds(srcX, srcY, moveX, moveY) {
-    const newX = srcX + moveX;
-    const newY = srcY + moveY;
-    if (isOutOfBounds(this.state.size, newX, newY)) {
-      return false;
-    }
-    if (this.state.crates.some((wall) => wall.x === newX && wall.y === newY)) {
-      return false;
-    }
-    return true;
-  }
-
-  tryMove(src, moveX, moveY) {
-    if (!this.verifyMoveBounds(src.x, src.y, moveX, moveY)) return false;
-    src.x += moveX;
-    src.y += moveY;
-    return true;
-  }
-
-  // Game Logic
-  makeMove(direction) {
-    const dirVec = this.getDirVec(direction);
-    const ok = this.tryMove(this.state.player, dirVec[0], dirVec[1]);
-  }
-
   // Handle player movement
-  handleMovement(deltaX, deltaY) {
-    if (
-      this.state.player.x + deltaX < 0 ||
-      this.state.player.x + deltaX > 7 ||
-      this.state.player.y + deltaY < 0 ||
-      this.state.player.y + deltaY > 7
-    ) {
-      return false;
-    }
-
-    this.state.player.x += deltaX;
-    this.state.player.y += deltaY;
-  }
-
   renderEmptySidebar() {
     this.animations = [];
 
