@@ -33,7 +33,7 @@ const WORLD_MAP_LOCATIONS = [
     text: "The goblins stole your magic hats!!  >:(\nTheir tracks lead east...\n\n\n\nPress [space] to watch the intro again",
     isZone: false,
     isWizardTower: true,
-    asset: ASSETS.WORLD.CAMP.GOB,
+    asset: ASSETS.WORLD.LEVEL.TOWER,
   },
   {
     id: "camp",
@@ -55,6 +55,18 @@ const WORLD_MAP_LOCATIONS = [
     subtitle: "Ruined Fort",
     text: "Goblins are running around the old\n ruined fort. (They're actually doing\na good job of rebuilding it.)",
     asset: ASSETS.WORLD.LEVEL.FORT,
+    isZone: true,
+    levels: ZONE_2_LEVELS.length,
+    cta: "Don't care! Blow up the fort!\nGet your hats back!!",
+  },
+  {
+    id: "castle",
+    x: 7,
+    y: 5,
+    title: "GOBLIN CAMP 3",
+    subtitle: "Ransacked Castle",
+    text: "They've taken over a castle and loaded up with Anti-Magic armor! Magic-proof doesn't mean Revenge-proof! Get em!",
+    asset: ASSETS.WORLD.LEVEL.CASTLE,
     isZone: true,
     levels: ZONE_2_LEVELS.length,
     cta: "Don't care! Blow up the fort!\nGet your hats back!!",
@@ -250,7 +262,7 @@ class WorldMap {
     this.game.ctx.translate(width / 2, GROUND_RADIUS);
     this.game.ctx.rotate(levelRotation);
     this.game.ctx.translate(-width / 2, -GROUND_RADIUS);
-    if (this.levelIndex > 0 && WORLD_MAP_LOCATIONS[this.levelIndex]?.asset) {
+    if (WORLD_MAP_LOCATIONS[this.levelIndex]?.asset) {
       this.game.drawImage(
         WORLD_MAP_LOCATIONS[this.levelIndex].asset,
         0,
