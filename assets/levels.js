@@ -633,6 +633,24 @@ const ZONE_2_LEVELS = [
   LEVEL_3_EVIL,
   LEVEL_BAD,
   LEVEL_FIN,
+];
+
+const ZONE_3_MAP = LevelState.make({
+  title: "Ransacked Castle",
+  bombs: 0,
+  level: `
+..|Cr|..|Cr|..|Cr|..|05
+..|Cr|..|Cr|03|L3|04|..
+..|Bl|..|Bl|..|Cr|..|..
+..|Bl|Bl|Bl|02|Cr|L5|Cr
+Wz|..|01|L1|..|Cr|..|..
+..|Bl|Bl|Bl|Bl|Bl|06|Bl
+..|Bl|..|Bl|08|..|L6|..
+..|Cr|..|Cr|Bl|Bl|Bl|07
+`,
+});
+
+const ZONE_3_LEVELS = [
   LEVEL_BLOCK_1,
   LEVEL_BLOCK_2,
   LEVEL_BLOCK_3,
@@ -652,4 +670,8 @@ const ZONE_LEVELS = {
     map: ZONE_2_MAP,
     levels: ZONE_2_LEVELS,
   },
+  castle: {
+    map: ZONE_3_MAP,
+    levels: ZONE_3_LEVELS
+  }
 };
