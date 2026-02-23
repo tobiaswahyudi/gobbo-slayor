@@ -138,10 +138,10 @@ class ZoneMap {
 
     this.game.drawImage(
       ASSETS.SPRITE.WIZ,
-      cellCorner(this.state.player.x) + WORLD_WIZ_PADDING + BOARD_PADDING,
-      cellCorner(this.state.player.y) + WORLD_WIZ_PADDING + BOARD_PADDING,
-      WORLD_WIZ_SIZE,
-      WORLD_WIZ_SIZE
+      cellCorner(this.state.player.x) + WIZ_PADDING + BOARD_PADDING,
+      cellCorner(this.state.player.y) + WIZ_PADDING + BOARD_PADDING,
+      WIZ_SIZE,
+      WIZ_SIZE
     );
 
     this.state.crates.forEach((wall) => this.renderWall(wall));

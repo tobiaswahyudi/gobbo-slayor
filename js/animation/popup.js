@@ -4,13 +4,10 @@ const POPUP_NINESLICE_SIZE = 128;
 
 const POPUP_CORNER_SIZE = POPUP_CORNER_SLICE_SIZE;
 
-const RENDER_POPUP = (width, height, showBackground, renderContents) => {
+const RENDER_POPUP = (width, height, hMid, vMid, showBackground, renderContents, opacity) => {
   const VERTICAL_FRAMES = height * POPUP_FRAMES_PER_PX;
   const HORIZONTAL_FRAMES = width * POPUP_FRAMES_PER_PX;
   return (game, frame) => {
-    const hMid = BOARD_PADDING + H_BOARD_SIZE;
-    const vMid = BOARD_PADDING + H_BOARD_SIZE;
-
     let left = 0;
     let top = 0;
     let innerWidth = 0;
@@ -37,6 +34,9 @@ const RENDER_POPUP = (width, height, showBackground, renderContents) => {
         fill: "#BDAFA1",
       });
     }
+
+    game.ctx.save();
+    game.ctx.globalAlpha = opacity;
 
     // draw corners
     game.drawImage(
@@ -159,6 +159,8 @@ const RENDER_POPUP = (width, height, showBackground, renderContents) => {
       }
     );
 
+    game.ctx.restore();
+
     const mask = new Path2D();
 
     mask.rect(
@@ -178,18 +180,19 @@ const RENDER_POPUP = (width, height, showBackground, renderContents) => {
 };
 
 class PopupAnimation extends GSAnimation {
-  constructor(width, height, showBackground, renderContents, callback) {
+  constructor(width, height, hMid, vMid, showBackground, renderContents, callback, overrides = {}) {
     const handleInput = () => {
       return this.frame > this.frames;
     };
 
     super({
       frames: Math.ceil((width + height) * POPUP_FRAMES_PER_PX),
-      render: RENDER_POPUP(width, height, showBackground, renderContents),
+      render: RENDER_POPUP(width, height, hMid, vMid, showBackground, renderContents, overrides.opacity ?? 1),
       blocksInput: true,
       needsInput: true,
       handleInput,
       callback,
+      ...overrides
     });
   }
 }

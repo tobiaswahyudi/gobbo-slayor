@@ -1,4 +1,5 @@
 const WORLD_WIZ_SIZE = 96;
+
 const MOVE_DISTANCE = 50;
 const LEVEL_MOVE_ANIM_HALF_DUR = 16;
 
@@ -8,22 +9,23 @@ const WIZARD_TARGET_POSITION_Y = 0.75 * GAME_HEIGHT;
 
 const WIZARD_TARGET_POSITION_THETA = -0.2;
 
+const POPUP_WIDTH = 320;
+const POPUP_HEIGHT = 240;
+const POPUP_H_POS = HALF_SCREEN_WIDTH;
+const POPUP_V_POS = 180;
+
 const WORLD_MAP_LOCATIONS = [
   {
     id: "wiz",
-    x: 2,
-    y: 6,
     title: "HOME BASE",
     subtitle: "Wizard Tower",
-    text: "The goblins stole your magic hats!!  >:(\nTheir tracks lead east...\n\n\n\nPress [space] to watch the intro again",
+    text: "The goblins stole your magic hats!!  >:(\nTheir tracks lead east...\n\n\n\nOr press [space] to watch the intro again",
     isZone: false,
     isWizardTower: true,
     asset: ASSETS.WORLD.LEVEL.TOWER,
   },
   {
     id: "camp",
-    x: 4,
-    y: 5,
     title: "GOBLIN CAMP 1",
     subtitle: "Sleepy Hill",
     text: "Goblins are napping by the fire\nwith their stolen hats.",
@@ -34,8 +36,6 @@ const WORLD_MAP_LOCATIONS = [
   },
   {
     id: "fort",
-    x: 7,
-    y: 5,
     title: "GOBLIN CAMP 2",
     subtitle: "Ruined Fort",
     text: "Goblins are running around the old\n ruined fort. (They're actually doing\na good job of rebuilding it.)",
@@ -46,8 +46,6 @@ const WORLD_MAP_LOCATIONS = [
   },
   {
     id: "castle",
-    x: 7,
-    y: 5,
     title: "GOBLIN CAMP 3",
     subtitle: "Ransacked Castle",
     text: "They've taken over a castle and loaded up with Anti-Magic armor! Magic-proof doesn't mean Revenge-proof! Get em!",
@@ -126,6 +124,44 @@ class WorldMap {
     this.wizardTheta = WIZARD_TARGET_POSITION_THETA;
     this.wizardTweenTheta = new Position(0, 0);
     this.wizardOnLeft = true;
+
+    this.popup = undefined;
+
+    this.silverAnimation = undefined;
+    this.goldAnimation = undefined;
+  }
+
+  closePopup() {
+    if (!this.popup) return;
+    console.log(this.animations);
+    this.animations = [];
+    this.popup = undefined;
+    this.silverAnimation = undefined;
+    this.goldAnimation = undefined;
+  }
+
+  showPopup(stuff) {
+    this.currentLocation =
+      WORLD_MAP_LOCATIONS[this.levelIndex] ?? WORLD_MAP_LOCATIONS[0];
+
+    this.popup = new PopupAnimation(
+      POPUP_WIDTH,
+      POPUP_HEIGHT,
+      POPUP_H_POS,
+      POPUP_V_POS,
+      false,
+      (game, frame) => {
+        // render stuff
+        this.renderZoneSidebar(frame);
+      },
+      undefined,
+      {
+        blocksInput: false,
+        handleInput: () => false,
+        opacity: 0.8,
+      },
+    );
+    this.animations.push(this.popup);
   }
 
   handleInput(keyCode) {
@@ -155,6 +191,8 @@ class WorldMap {
   levelMove(goingRight) {
     const delta = goingRight ? 1 : -1;
 
+    this.closePopup();
+
     this.animations.push(
       new MotionTweenAnimation(
         this.levelRotationTweenValue,
@@ -170,33 +208,38 @@ class WorldMap {
                 this.levelRotationTweenValue,
                 new Position(delta * 0.377, 0),
                 new Position(0, 0),
-                LEVEL_MOVE_ANIM_HALF_DUR
-              )
+                LEVEL_MOVE_ANIM_HALF_DUR,
+                {
+                  callback: () => {
+                    this.showPopup();
+                  },
+                },
+              ),
             );
             this.animations.push(
               new MotionTweenAnimation(
                 this.wizardTweenTheta,
                 new Position(-2 * delta * 0.377, 0),
                 new Position(0, 0),
-                LEVEL_MOVE_ANIM_HALF_DUR * 2
-              )
-            )
+                LEVEL_MOVE_ANIM_HALF_DUR * 2,
+              ),
+            );
           },
-        }
-      )
+        },
+      ),
     );
     this.animations.push(
       new MotionTweenAnimation(
         this.levelPositionTweenValue,
         this.levelPositionTweenValue.clone(),
         this.levelPositionTweenValue.add(
-          new Position(delta * -MOVE_DISTANCE, 0)
+          new Position(delta * -MOVE_DISTANCE, 0),
         ),
         LEVEL_MOVE_ANIM_HALF_DUR * 2,
         {
           blocksInput: true,
-        }
-      )
+        },
+      ),
     );
   }
 
@@ -240,7 +283,7 @@ class WorldMap {
         0,
         0,
         width,
-        height
+        height,
       );
     }
     this.game.ctx.restore();
@@ -250,7 +293,9 @@ class WorldMap {
     const heightRad = height - WIZARD_TARGET_POSITION_Y;
 
     this.game.ctx.translate(width / 2, GROUND_RADIUS + heightRad);
-    this.game.ctx.rotate(this.levelRotationTweenValue.x + this.wizardTweenTheta.x);
+    this.game.ctx.rotate(
+      this.levelRotationTweenValue.x + this.wizardTweenTheta.x,
+    );
     this.game.ctx.translate(-width / 2, -(GROUND_RADIUS + heightRad));
 
     const scaleX = this.wizardOnLeft ? 1 : -1;
@@ -261,7 +306,10 @@ class WorldMap {
     this.game.ctx.fillStyle = "#00000044";
 
     const shadowY = 0.75 * height + WORLD_WIZ_SIZE * 0.97;
-    const wizardX = -HALF_SCREEN_WIDTH + scaleX * HALF_SCREEN_WIDTH + WIZARD_TARGET_POSITION_X;
+    const wizardX =
+      -HALF_SCREEN_WIDTH +
+      scaleX * HALF_SCREEN_WIDTH +
+      WIZARD_TARGET_POSITION_X;
 
     this.game.ctx.ellipse(
       wizardX + WORLD_WIZ_SIZE * 0.28,
@@ -270,7 +318,7 @@ class WorldMap {
       WORLD_WIZ_SIZE * 0.1,
       0,
       0,
-      Math.PI * 2
+      Math.PI * 2,
     );
     this.game.ctx.ellipse(
       wizardX + WORLD_WIZ_SIZE * 0.65,
@@ -279,7 +327,7 @@ class WorldMap {
       WORLD_WIZ_SIZE * 0.06,
       0,
       0,
-      Math.PI * 2
+      Math.PI * 2,
     );
     this.game.ctx.fill();
 
@@ -288,7 +336,7 @@ class WorldMap {
       wizardX,
       WIZARD_TARGET_POSITION_Y,
       WORLD_WIZ_SIZE,
-      WORLD_WIZ_SIZE
+      WORLD_WIZ_SIZE,
     );
 
     this.game.ctx.restore();
@@ -302,162 +350,99 @@ class WorldMap {
     return hadAnimations;
   }
 
-  // Handle player movement
-  renderEmptySidebar() {
-    this.animations = [];
+  renderZoneSidebar(frame) {
+    let topPosition = POPUP_V_POS - POPUP_HEIGHT / 2;
 
-    const SIDEBAR_WIDTH = 224;
-    const SIDEBAR_CENTER = 688;
+    topPosition += 4;
 
-    let topPosition = 32;
-
-    // Sidebar background
-    this.game.drawRect(576, 32, SIDEBAR_WIDTH, 512, {
-      fill: "#E2D8D4",
-      stroke: "#BDAFA1",
-      strokeWidth: 4,
+    this.game.drawText(this.currentLocation.title, POPUP_H_POS, topPosition, {
+      color: "#000",
+      font: "700 10px Edu-SA",
+      align: "center",
     });
-
-    // Shtuff
-    topPosition += 24;
-
-    this.game.drawImage(
-      ASSETS.UI.TITLE,
-      SIDEBAR_CENTER - 192 / 2,
-      topPosition,
-      192,
-      64
-    );
-
-    topPosition += 80;
-
-    this.game.drawImage(
-      ASSETS.UI.CREDITS,
-      SIDEBAR_CENTER - 64,
-      topPosition,
-      128,
-      64
-    );
-
-    topPosition += 80;
-
-    this.game.drawRect(576, topPosition, SIDEBAR_WIDTH, 0, {
-      fill: "",
-      stroke: "#BDAFA1",
-      strokeWidth: 4,
-    });
-
-    topPosition += 40;
-
-    this.game.drawImage(
-      ASSETS.TUTORIAL.MOVE,
-      SIDEBAR_CENTER - 128 / 2,
-      topPosition,
-      128,
-      128
-    );
-  }
-
-  renderZoneSidebar() {
-    const SIDEBAR_WIDTH = 224;
-    const SIDEBAR_CENTER = 688;
-
-    let topPosition = 32;
-
-    this.game.drawRect(576, 32, SIDEBAR_WIDTH, 512, {
-      fill: "#E2D8D4",
-      stroke: "#BDAFA1",
-      strokeWidth: 4,
-    });
-
-    topPosition += 24;
-
-    this.game.drawText(
-      this.currentLocation.title,
-      SIDEBAR_CENTER,
-      topPosition,
-      {
-        color: "#000",
-        font: "700 10px Edu-SA",
-        align: "center",
-      }
-    );
 
     topPosition += 10;
     topPosition += 16;
 
-    const titleFontSize = this.state.title.length > 10 ? 14 : 18;
+    //const titleFontSize = this.currentLocation.title.length > 10 ? 14 : 18;
+    const titleFontSize = 18;
 
     this.game.drawText(
       this.currentLocation.subtitle,
-      SIDEBAR_CENTER,
+      POPUP_H_POS,
       topPosition,
       {
         color: "#000",
         font: `500 ${titleFontSize}px Edu-SA`,
         align: "center",
-      }
+      },
     );
 
     topPosition += titleFontSize;
-    topPosition += 12;
+    topPosition += 16;
 
-    this.game.drawRect(600, topPosition, 176, 0, {
-      fill: "",
-      stroke: "#000",
-      strokeWidth: 2,
-    });
+    // this.game.drawRect(600, topPosition, 176, 0, {
+    //   fill: "",
+    //   stroke: "#000",
+    //   strokeWidth: 2,
+    // });
 
-    topPosition += 24;
+    // topPosition += 24;
 
     topPosition = this.game.drawText(
       this.currentLocation.text.split("\n"),
-      SIDEBAR_CENTER,
+      POPUP_H_POS,
       topPosition,
       {
         color: "#000",
         font: `500 12px Edu-SA`,
         align: "center",
         lineSpacing: 20,
-      }
+      },
     );
 
     if (!this.currentLocation.isZone) return;
 
-    topPosition += 24;
+    topPosition += 16;
+
+    const STAR_OFFSET = 80;
+
+    // Silver Stars
 
     this.game.drawImage(
       ASSETS.UI.STAR.SILVER,
-      SIDEBAR_CENTER - 36,
+      POPUP_H_POS - 36 - STAR_OFFSET,
       topPosition - 12,
       24,
-      24
+      24,
     );
 
     const silverStars = this.game.progress.getLevelSilver(
-      this.currentLocation.id
+      this.currentLocation.id,
     );
 
     const isZoneDone = silverStars == this.currentLocation.levels;
 
     this.game.drawText(
       `× ${silverStars}/${this.currentLocation.levels}`,
-      SIDEBAR_CENTER,
+      POPUP_H_POS - STAR_OFFSET,
       topPosition - 10,
       {
         color: isZoneDone ? "#551280" : "#000",
         font: `500 24px Tiny5`,
         align: "left",
-      }
+      },
     );
 
-    if (isZoneDone) {
+    console.log(isZoneDone, this.silverAnimation, this.levelIndex)
+
+    if (isZoneDone && frame > 5) {
       // woohoo!
+
       const pushAnimation = (top, current) => {
         if (this.currentLocation != current) return;
-        this.animations.push(
-          new EtherealAnimation(
-            SIDEBAR_CENTER - 24,
+        this.silverAnimation = new EtherealAnimation(
+            POPUP_H_POS - 24 - STAR_OFFSET,
             top,
             ASSETS.UI.STAR.SILVER,
             24,
@@ -469,41 +454,27 @@ class WorldMap {
             },
             () => {
               setTimeout(() => {
-                pushAnimation(top, current);
+                // If nav closed; don't repeat
+                if(this.silverAnimation) pushAnimation(top, current);
               }, 100);
-            }
-          )
-        );
+            },
+          );
+        
+        this.animations.push(this.silverAnimation);
       };
 
-      if (this.animations.length == 0) {
+      if (!this.silverAnimation) {
         pushAnimation(topPosition, this.currentLocation);
       }
-
-      topPosition += 24;
-
-      topPosition = this.game.drawText(
-        `Great job!!!`,
-        SIDEBAR_CENTER,
-        topPosition,
-        {
-          color: "#551280",
-          font: `500 14px Edu-SA`,
-          align: "center",
-        }
-      );
-    } else {
-      topPosition += 12;
     }
 
-    topPosition += 24;
 
     this.game.drawImage(
       ASSETS.UI.STAR.GOLD,
-      SIDEBAR_CENTER - 36,
+      POPUP_H_POS - 36 + STAR_OFFSET,
       topPosition - 12,
       24,
-      24
+      24,
     );
 
     const goldStars = this.game.progress.getLevelGold(this.currentLocation.id);
@@ -512,40 +483,99 @@ class WorldMap {
 
     this.game.drawText(
       `× ${goldStars}/${this.currentLocation.levels}`,
-      SIDEBAR_CENTER,
+      POPUP_H_POS + STAR_OFFSET,
       topPosition - 10,
       {
         color: isGoldDone ? "#551280" : "#000",
         font: `500 24px Tiny5`,
         align: "left",
-      }
+      },
     );
 
-    topPosition += 24;
+    if (isGoldDone && frame > 5) {
+      // woohoo!
 
-    if (isZoneDone) {
+      const pushAnimation = (top, current) => {
+        if (this.currentLocation != current) return;
+        this.goldAnimation = new EtherealAnimation(
+            POPUP_H_POS - 24 + STAR_OFFSET,
+            top,
+            ASSETS.UI.STAR.GOLD,
+            24,
+            {
+              etherealInFrames: 1,
+              etherealOutFrames: 30,
+              etherealEnd: 1.8,
+              etherealStart: 1,
+            },
+            () => {
+              setTimeout(() => {
+                // If nav closed; don't repeat
+                if(this.goldAnimation) pushAnimation(top, current);
+              }, 100);
+            },
+          );
+        
+        this.animations.push(this.goldAnimation);
+      };
+
+      if (!this.goldAnimation) {
+        pushAnimation(topPosition, this.currentLocation);
+      }
+    }
+
+    topPosition += 32;
+
+    if (isGoldDone) {
+      topPosition += 6;
       topPosition = this.game.drawText(
-        "Try for all gold stars!\nYou can do it!".split("\n"),
-        SIDEBAR_CENTER,
+        `Perfect clear!!!`,
+        POPUP_H_POS,
+        topPosition,
+        {
+          color: "#551280",
+          font: `500 18px Edu-SA`,
+          align: "center",
+        },
+      );
+
+      topPosition += 12;
+    } else if (isZoneDone) {
+      topPosition = this.game.drawText(
+        `Great job!`,
+        POPUP_H_POS,
+        topPosition,
+        {
+          color: "#551280",
+          font: `500 12px Edu-SA`,
+          align: "center",
+        },
+      );
+      
+      topPosition += 12;
+
+      topPosition = this.game.drawText(
+        "Try for all gold stars! You can do it!".split("\n"),
+        POPUP_H_POS,
         topPosition,
         {
           color: "#000",
           font: `500 12px Edu-SA`,
           align: "center",
           lineSpacing: 16,
-        }
+        },
       );
     } else {
       topPosition = this.game.drawText(
         this.currentLocation.cta.split("\n"),
-        SIDEBAR_CENTER,
+        POPUP_H_POS,
         topPosition,
         {
           color: "#000",
           font: `500 12px Edu-SA`,
           align: "center",
           lineSpacing: 16,
-        }
+        },
       );
     }
 
@@ -555,13 +585,13 @@ class WorldMap {
 
     this.game.drawImage(
       ASSETS.UI.SPACEBAR,
-      SIDEBAR_CENTER + 2,
+      POPUP_H_POS + 2,
       topPosition - 9,
       54,
-      18
+      18,
     );
 
-    this.game.drawText("Press ", SIDEBAR_CENTER - 2, topPosition - 8, {
+    this.game.drawText("Press ", POPUP_H_POS - 2, topPosition - 8, {
       color: "#000",
       font: `500 16px Tiny5`,
       align: "right",
@@ -592,10 +622,10 @@ class WorldMap {
     this.animations.push(
       new TransitionAnimation(TRANSITION_DIRECTION.OUT, () => {
         this.game.zoneMap.animations.push(
-          new TransitionAnimation(TRANSITION_DIRECTION.IN)
+          new TransitionAnimation(TRANSITION_DIRECTION.IN),
         );
         this.game.scene = "zone";
-      })
+      }),
     );
 
     this.game.currentZone = this.currentLocation;

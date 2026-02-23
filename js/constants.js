@@ -11,6 +11,9 @@ const GRID_SIZE = 8;
 const SPRITE_SIZE = 56;
 const SPRITE_PADDING = (SQUARE_SIZE - SPRITE_SIZE) / 2;
 
+const WIZ_SIZE = 58;
+const WIZ_PADDING = (SQUARE_SIZE - WIZ_SIZE) * 0.5;
+
 const cellCorner = (num) => {
   return num * SQUARE_SIZE;
 };

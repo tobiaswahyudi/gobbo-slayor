@@ -10,6 +10,8 @@ class LevelManager {
       new PopupAnimation(
         320,
         128,
+        BOARD_PADDING + H_BOARD_SIZE,
+        BOARD_PADDING + H_BOARD_SIZE,
         true,
         this.renderPopupContent.bind(this),
         () => {
