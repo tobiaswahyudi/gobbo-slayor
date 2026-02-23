@@ -33,7 +33,8 @@ class ZoneMap {
     this.state.parse(specialTiles);
     this.currentLevelTile = null;
 
-    this.animations = [new TransitionAnimation(TRANSITION_DIRECTION.IN)];
+    this.animations = new AnimationManager(game, this.state);
+    this.animations.push(new TransitionAnimation(TRANSITION_DIRECTION.IN));
 
     this.juiceOffset = new Position(0, 0);
 
@@ -46,7 +47,7 @@ class ZoneMap {
   }
 
   handleInput(keyCode) {
-    const inputBlockedByAnimation = this.animations.some((a) => a.blocksInput);
+    const inputBlockedByAnimation = this.animations.inputBlockedByAnimation;
     if (inputBlockedByAnimation) return true;
 
     switch (keyCode) {
@@ -96,6 +97,7 @@ class ZoneMap {
 
     // Game area background
     this.game.drawRect(0, 0, width, height, { fill: "#C5BAB5" });
+    const hadAnimations = this.animations.needsRerender;
 
     drawCheckeredGrid(
       this.game,
@@ -134,11 +136,8 @@ class ZoneMap {
       this.renderZoneSidebar();
     }
 
-    const hadAnimations = this.animations.length > 0;
-
-    this.animations.forEach((anim) => anim.tick(this.game));
-    this.animations = this.animations.filter((anim) => !anim.finished);
-
+    this.animations.tick();
+    
     // return true;
     return hadAnimations;
   }

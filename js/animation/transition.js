@@ -41,6 +41,7 @@ class TransitionAnimation extends GSAnimation {
       render: TRANSITION_RENDER(direction, color),
       callback: callback,
       blocksInput: true,
+      absoluteSize: true,
     });
     this.direction = direction;
     this.name = direction + this.name;

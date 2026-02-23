@@ -192,6 +192,7 @@ class PopupAnimation extends GSAnimation {
       needsInput: true,
       handleInput,
       callback,
+      absoluteSize: true,
       ...overrides
     });
   }

@@ -6,7 +6,9 @@ class LevelManager {
     this.titleString = titleString;
     this.history = new LevelHistory(levelState);
 
-    this.animations = [
+    this.animations = new AnimationManager(game, this.state);
+
+    this.animations.push(
       new PopupAnimation(
         320,
         128,
@@ -20,7 +22,7 @@ class LevelManager {
           );
         }
       ),
-    ];
+    );
 
     this.canHandleInput = true;
     this.restartHeldSince = null;
@@ -49,11 +51,9 @@ class LevelManager {
 
     if (!this.canHandleInput) return;
 
-    const inputBlockedByAnimation = this.animations.some((a) => a.blocksInput);
-    this.animations.forEach((a) => {
-      if (a.needsInput) a.handleInput(keyCode);
-    });
-
+    const inputBlockedByAnimation = this.animations.inputBlockedByAnimation;
+    this.animations.handleInput(keyCode);
+    
     if (inputBlockedByAnimation) return true;
 
     switch (keyCode) {
@@ -116,7 +116,7 @@ class LevelManager {
   renderGame() {
     const { width, height } = this.game;
     // check now, because we need a re-render if an animation finishes this frame.
-    const NEEDS_RE_RENDER = this.animations.length > 0;
+    const NEEDS_RE_RENDER = this.animations.needsRerender;
 
     // Game area background
     this.game.drawRect(0, 0, width, height, { fill: "#C5BAB5" });
@@ -162,17 +162,7 @@ class LevelManager {
 
     const scale = DEFAULT_SIZE / this.state.size;
 
-    this.game.ctx.save();
-    this.game.ctx.translate(BOARD_PADDING, BOARD_PADDING);
-    this.game.ctx.scale(scale, scale);
-    this.game.ctx.translate(-HALF_SQUARE_SIZE, -HALF_SQUARE_SIZE);
-
-    this.animations.forEach((anim) => anim.tick(this.game));
-
-    this.game.ctx.restore();
-
-    // console.log("anims pre-filter", this.animations);
-    this.animations = this.animations.filter((anim) => !anim.finished);
+    this.animations.tick();
 
     if (this.restartHeldSince) {
       const millisDelta = new Date().getTime() - this.restartHeldSince;

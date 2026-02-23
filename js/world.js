@@ -48,11 +48,11 @@ const WORLD_MAP_LOCATIONS = [
     id: "castle",
     title: "GOBLIN CAMP 3",
     subtitle: "Ransacked Castle",
-    text: "They've taken over a castle and loaded up with Anti-Magic armor! Magic-proof doesn't mean Revenge-proof! Get em!",
+    text: "They've taken over a castle and loaded up with\nAnti-Magic armor! Nasty scheming goblins!",
     asset: ASSETS.WORLD.LEVEL.CASTLE,
     isZone: true,
     levels: ZONE_2_LEVELS.length,
-    cta: "Don't care! Blow up the fort!\nGet your hats back!!",
+    cta: "Magic-proof doesn't mean Revenge-proof!\nGet em!",
   },
 ];
 
