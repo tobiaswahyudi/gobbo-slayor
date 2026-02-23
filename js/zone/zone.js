@@ -97,21 +97,14 @@ class ZoneMap {
     // Game area background
     this.game.drawRect(0, 0, width, height, { fill: "#C5BAB5" });
 
-    // Draw a 8x8 grid of 64px squares. They alternate between 6a9848 and 7fb259
-    for (let i = 0; i < GRID_SIZE; i++) {
-      for (let j = 0; j < GRID_SIZE; j++) {
-        const color = (i + j) % 2 === 0 ? "#6a9848" : "#7fb259";
-        this.game.drawRect(
-          i * SQUARE_SIZE + HALF_SQUARE_SIZE + this.juiceOffset.x * 0.5,
-          j * SQUARE_SIZE + HALF_SQUARE_SIZE + this.juiceOffset.y * 0.5,
-          SQUARE_SIZE,
-          SQUARE_SIZE,
-          {
-            fill: color,
-          }
-        );
-      }
-    }
+    drawCheckeredGrid(
+      this.game,
+      BOARD_PADDING + 0.5 * this.juiceOffset.x,
+      BOARD_PADDING + 0.5 * this.juiceOffset.y,
+      "#6a9848",
+      "#7fb259",
+      this.state.size
+    );
 
     // World Outline
     this.game.drawRect(32, 32, 512, 512, {
@@ -120,7 +113,12 @@ class ZoneMap {
       strokeWidth: 4,
     });
 
-    this.state.specialTiles.forEach((tile) => tile.render(this.game));
+    this.state.render(
+      this.game,
+      BOARD_PADDING + this.juiceOffset.x,
+      BOARD_PADDING + this.juiceOffset.y
+    );
+    // this.state.specialTiles.forEach((tile) => tile.render(this.game));
 
     this.currentLevelTile = this.state.specialTiles.find(
       (tile) => tile.x == this.state.player.x && tile.y == this.state.player.y
@@ -135,16 +133,6 @@ class ZoneMap {
     } else {
       this.renderZoneSidebar();
     }
-
-    this.game.drawImage(
-      ASSETS.SPRITE.WIZ,
-      cellCorner(this.state.player.x) + WIZ_PADDING + BOARD_PADDING,
-      cellCorner(this.state.player.y) + WIZ_PADDING + BOARD_PADDING,
-      WIZ_SIZE,
-      WIZ_SIZE
-    );
-
-    this.state.crates.forEach((wall) => this.renderWall(wall));
 
     const hadAnimations = this.animations.length > 0;
 
@@ -190,6 +178,9 @@ class ZoneMap {
       return false;
     }
     if (this.state.crates.some((wall) => wall.x === newX && wall.y === newY)) {
+      return false;
+    }
+    if (this.state.blocks.some((wall) => wall.x === newX && wall.y === newY)) {
       return false;
     }
     if (
