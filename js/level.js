@@ -160,7 +160,17 @@ class LevelManager {
       offsets
     );
 
+    const scale = DEFAULT_SIZE / this.state.size;
+
+    this.game.ctx.save();
+    this.game.ctx.translate(BOARD_PADDING, BOARD_PADDING);
+    this.game.ctx.scale(scale, scale);
+    this.game.ctx.translate(-HALF_SQUARE_SIZE, -HALF_SQUARE_SIZE);
+
     this.animations.forEach((anim) => anim.tick(this.game));
+
+    this.game.ctx.restore();
+
     // console.log("anims pre-filter", this.animations);
     this.animations = this.animations.filter((anim) => !anim.finished);
 

@@ -38,7 +38,7 @@ const WORLD_MAP_LOCATIONS = [
     id: "fort",
     title: "GOBLIN CAMP 2",
     subtitle: "Ruined Fort",
-    text: "Goblins are running around the old\n ruined fort. (They're actually doing\na good job of rebuilding it.)",
+    text: "Goblins are running around the old ruined fort.\n (They're actually keeping it pretty clean.)",
     asset: ASSETS.WORLD.LEVEL.FORT,
     isZone: true,
     levels: ZONE_2_LEVELS.length,
