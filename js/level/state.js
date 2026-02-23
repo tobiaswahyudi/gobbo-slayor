@@ -109,6 +109,10 @@ class LevelState {
 
     const wizPos = offsets.wiz || new Position(0, 0);
 
+    game.ctx.translate(-HALF_SQUARE_SIZE, -HALF_SQUARE_SIZE);
+    this.specialTiles.forEach((tile) => tile.render(game));
+    game.ctx.translate(HALF_SQUARE_SIZE, HALF_SQUARE_SIZE);
+
     game.drawImage(
       ASSETS.SPRITE.WIZ,
       cellCorner(this.player.x) + SPRITE_PADDING + wizPos.x,
