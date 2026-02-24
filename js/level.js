@@ -1,5 +1,14 @@
 const MOVE_ANIM_DUR = 4;
 
+const WIN_POPUP_WIDTH = 300;
+const WIN_POPUP_HEIGHT = 100;
+const WIN_POPUP_H_POS = BOARD_PADDING + H_BOARD_SIZE;
+const WIN_POPUP_V_POS = 200;
+
+const CONGRATS_MESSAGES = [
+  "Congratulations!", "Level Complete!", "Gobbos Slayed!"
+];
+
 class LevelManager {
   constructor(game, titleString, levelState) {
     this.game = game;
@@ -18,9 +27,9 @@ class LevelManager {
         this.renderPopupContent.bind(this),
         () => {
           this.animations.push(
-            new TransitionAnimation(TRANSITION_DIRECTION.IN)
+            new TransitionAnimation(TRANSITION_DIRECTION.IN),
           );
-        }
+        },
       ),
     );
 
@@ -35,6 +44,10 @@ class LevelManager {
     this.wizardMoveOffset = new Position(0, 0);
     this.gobboMoveOffsets = [];
     this.aimAreaOffset = new Position(0, 0);
+
+    this.congratsMessage = randomChoice(CONGRATS_MESSAGES);
+
+    this.levelBase = levelState;
   }
 
   get state() {
@@ -53,7 +66,7 @@ class LevelManager {
 
     const inputBlockedByAnimation = this.animations.inputBlockedByAnimation;
     this.animations.handleInput(keyCode);
-    
+
     if (inputBlockedByAnimation) return true;
 
     switch (keyCode) {
@@ -111,6 +124,10 @@ class LevelManager {
     }
   }
 
+  renderParticles() {
+
+  }
+
   // Level Rendering
   // returns true if another re-render is needed
   renderGame() {
@@ -127,7 +144,7 @@ class LevelManager {
       BOARD_PADDING + 0.5 * this.juiceOffset.y,
       "#CFC6BD",
       "#E2D8D4",
-      this.state.size
+      this.state.size,
     );
 
     this.game.drawRect(
@@ -139,7 +156,7 @@ class LevelManager {
         fill: "",
         stroke: "#BDAFA1",
         strokeWidth: 4,
-      }
+      },
     );
 
     this.renderSidebar();
@@ -157,10 +174,8 @@ class LevelManager {
       this.game,
       BOARD_PADDING + this.juiceOffset.x,
       BOARD_PADDING + this.juiceOffset.y,
-      offsets
+      offsets,
     );
-
-    const scale = DEFAULT_SIZE / this.state.size;
 
     this.animations.tick();
 
@@ -176,12 +191,12 @@ class LevelManager {
 
       const vignetteOpacity = Math.min(
         MAX_OPACITY * (millisDelta / VIGNETTE_OPAQUE_TIME),
-        MAX_OPACITY
+        MAX_OPACITY,
       );
 
       const tooltipOpacity = Math.min(
         MAX_OPACITY * (millisDelta / TOOLTIP_OPAQUE_TIME),
-        MAX_OPACITY
+        MAX_OPACITY,
       );
 
       this.game.ctx.globalAlpha = vignetteOpacity;
@@ -193,7 +208,7 @@ class LevelManager {
         512,
         {
           fill: "#CFC6BD",
-        }
+        },
       );
 
       this.game.ctx.globalAlpha = tooltipOpacity;
@@ -203,7 +218,7 @@ class LevelManager {
         32 + SQUARE_SIZE * 2,
         32 + SQUARE_SIZE * 3,
         256,
-        128
+        128,
       );
 
       const count = COUNT - Math.floor(millisDelta / MILLIS_PER_COUNT);
@@ -215,7 +230,7 @@ class LevelManager {
         {
           font: "40px Tiny5",
           color: "#000",
-        }
+        },
       );
 
       this.game.ctx.globalAlpha = 1;
@@ -240,28 +255,28 @@ class LevelManager {
       32 + 2 * SQUARE_SIZE + 0.5 * this.juiceOffset.x,
       32 + 6 * SQUARE_SIZE + 0.5 * this.juiceOffset.y,
       SQUARE_SIZE,
-      SQUARE_SIZE
+      SQUARE_SIZE,
     );
     this.game.drawImage(
       ASSETS.TUTORIAL.MOVE,
       32 + 1 * SQUARE_SIZE + 0.5 * this.juiceOffset.x,
       32 + 6 * SQUARE_SIZE + 0.5 * this.juiceOffset.y,
       SQUARE_SIZE,
-      SQUARE_SIZE
+      SQUARE_SIZE,
     );
     this.game.drawImage(
       ASSETS.TUTORIAL.UNDO,
       32 + 3 * SQUARE_SIZE + 0.5 * this.juiceOffset.x,
       32 + 6 * SQUARE_SIZE + 0.5 * this.juiceOffset.y,
       SQUARE_SIZE,
-      SQUARE_SIZE
+      SQUARE_SIZE,
     );
     this.game.drawImage(
       ASSETS.TUTORIAL.RESTART,
       32 + 4 * SQUARE_SIZE + 0.5 * this.juiceOffset.x + SPRITE_PADDING,
       32 + 6 * SQUARE_SIZE + 0.5 * this.juiceOffset.y + SPRITE_PADDING,
       SPRITE_SIZE,
-      SPRITE_SIZE
+      SPRITE_SIZE,
     );
 
     this.game.drawImage(
@@ -269,7 +284,7 @@ class LevelManager {
       480 + 0.5 * this.juiceOffset.x,
       96 + 0.5 * this.juiceOffset.y,
       64,
-      128
+      128,
     );
     this.game.ctx.globalAlpha = 1;
   }
@@ -339,22 +354,22 @@ class LevelManager {
           cellCorner(block.x) + BOARD_PADDING + HALF_SQUARE_SIZE,
           cellCorner(block.y) + BOARD_PADDING + HALF_SQUARE_SIZE,
           ASSETS.SPRITE.BLOCK,
-          SQUARE_SIZE
-        )
+          SQUARE_SIZE,
+        ),
       );
     });
 
     const aimMoveVec = new Position(
-      ...this.getDirVec(oppositeDirection(direction))
+      ...this.getDirVec(oppositeDirection(direction)),
     );
 
     if (aimOverlapsBlocks) {
       // Aim area shrinks from the direction of the move
       this.aimAreaOffset = this.getMovementOffsetStart(
-        oppositeDirection(direction)
+        oppositeDirection(direction),
       );
       this.state.aimArea.cells = this.state.aimArea.cells.map((cell) =>
-        cell.add(aimMoveVec)
+        cell.add(aimMoveVec),
       );
     } else {
       this.aimAreaOffset = new Position(0, 0);
@@ -400,11 +415,11 @@ class LevelManager {
           cellCorner(area.x) + BOARD_PADDING + this.juiceOffset.x,
           cellCorner(area.y) + BOARD_PADDING + this.juiceOffset.y,
           SQUARE_SIZE,
-          this.juiceOffset
-        )
+          this.juiceOffset,
+        ),
       );
       this.animations.push(
-        new JuiceAnimation(this.juiceOffset, EXPLOSION_FRAMES, 20)
+        new JuiceAnimation(this.juiceOffset, EXPLOSION_FRAMES, 20),
       );
     });
 
@@ -432,8 +447,8 @@ class LevelManager {
         MOVE_ANIM_DUR,
         {
           blocksInput: true,
-        }
-      )
+        },
+      ),
     );
 
     this.animations.push(
@@ -441,8 +456,8 @@ class LevelManager {
         this.aimAreaOffset,
         this.aimAreaOffset.clone(),
         new Position(0, 0),
-        MOVE_ANIM_DUR
-      )
+        MOVE_ANIM_DUR,
+      ),
     );
 
     this.gobboMoveOffsets = [];
@@ -455,15 +470,15 @@ class LevelManager {
           gobPos,
           gobPos.clone(),
           new Position(0, 0),
-          MOVE_ANIM_DUR
-        )
+          MOVE_ANIM_DUR,
+        ),
       );
     });
   }
 
   getMovementOffsetStart(direction) {
     return new Position(...this.getDirVec(oppositeDirection(direction))).scale(
-      SQUARE_SIZE
+      SQUARE_SIZE,
     );
   }
 
@@ -471,15 +486,15 @@ class LevelManager {
     this.state.gobbos = this.state.gobbos.filter((g) => g !== gobbo);
     gobbo.hat.gobboKilled(
       this.state.aimArea,
-      gobbo.add(this.state.player.negate())
+      gobbo.add(this.state.player.negate()),
     );
     this.animations.push(
       new EtherealAnimation(
         cellCorner(gobbo.x) + BOARD_PADDING + HALF_SQUARE_SIZE,
         cellCorner(gobbo.y) + BOARD_PADDING + HALF_SQUARE_SIZE,
         gobbo.hat.display,
-        SPRITE_SIZE
-      )
+        SPRITE_SIZE,
+      ),
     );
   }
 
@@ -497,8 +512,95 @@ class LevelManager {
       this.animations.length === 0
     ) {
       this.levelIsTransitioning = true;
-      this.returnToZone(true);
+      this.doLevelWinStuff();
     }
+  }
+
+  drawWinPopup(frame) {
+    let topPosition = WIN_POPUP_V_POS - WIN_POPUP_HEIGHT / 2;
+
+    topPosition += 16;
+
+    const fontSize = 32;
+
+    this.game.drawText(this.congratsMessage, WIN_POPUP_H_POS, topPosition, {
+      color: "#000",
+      font: `700 ${fontSize}px Edu-SA`,
+      align: "center",
+    });
+
+    topPosition += fontSize;
+    topPosition += 24;
+
+    this.game.drawText(
+      `Solved in ${this.state.turnCount} moves!`,
+      WIN_POPUP_H_POS,
+      topPosition,
+      {
+        color: "#000",
+        font: `500 16px Edu-SA`,
+        align: "center",
+      },
+    );
+
+    topPosition += 48;
+
+    const isGold = this.state.turnCount <= this.levelBase.bestMoves;
+
+    if (isGold) {
+      // this.game.drawImage(
+      //   ASSETS.UI.STAR.GOLD,
+      //   WIN_POPUP_H_POS - 30,
+      //   topPosition - 10,
+      //   24,
+      //   24,
+      // );
+    } else {
+      // this.game.drawImage(
+      //   ASSETS.UI.STAR.GOLD,
+      //   WIN_POPUP_H_POS - 30,
+      //   topPosition - 10,
+      //   24,
+      //   24,
+      // );
+    }
+  }
+
+  doLevelWinStuff() {
+    this.animations.push(
+      new JuiceAnimation(this.juiceOffset, 3 * EXPLOSION_FRAMES, 30),
+    );
+    const howManyBooms = Math.floor(randomRange(5, 10));
+    for (let i = 0; i < howManyBooms; i++) {
+      const delay = randomRange(0, 200);
+      const boomSize = randomRange(0.6 * SQUARE_SIZE, 1.4 * SQUARE_SIZE);
+      const boomX = randomRange(BOARD_PADDING, BOARD_SIZE - 2 * BOARD_PADDING);
+      const boomY = randomRange(BOARD_PADDING, BOARD_SIZE - 2 * BOARD_PADDING);
+      setTimeout(() => {
+        this.animations.push(
+          new ExplosionAnimation(boomX, boomY, boomSize, this.juiceOffset),
+        );
+      }, delay);
+    }
+    this.animations.push(
+      (this.popup = new PopupAnimation(
+        WIN_POPUP_WIDTH,
+        WIN_POPUP_HEIGHT,
+        WIN_POPUP_H_POS,
+        WIN_POPUP_V_POS,
+        false,
+        (game, frame) => {
+          // render stuff
+          this.drawWinPopup(frame);
+        },
+        () => {
+          this.returnToZone(true);
+        },
+        {
+          opacity: 0.9,
+        },
+      )),
+    );
   }
 
   renderSidebar() {
@@ -516,7 +618,7 @@ class LevelManager {
         fill: "#E2D8D4",
         stroke: "#BDAFA1",
         strokeWidth: 4,
-      }
+      },
     );
 
     topPosition += 24;
@@ -529,7 +631,7 @@ class LevelManager {
         color: "#000",
         font: "700 10px Edu-SA",
         align: "center",
-      }
+      },
     );
 
     topPosition += 10;
@@ -545,7 +647,7 @@ class LevelManager {
         color: "#000",
         font: `500 ${titleFontSize}px Edu-SA`,
         align: "center",
-      }
+      },
     );
 
     topPosition += titleFontSize;
@@ -560,7 +662,7 @@ class LevelManager {
         fill: "",
         stroke: "#000",
         strokeWidth: 2,
-      }
+      },
     );
 
     topPosition += 32;
@@ -573,7 +675,7 @@ class LevelManager {
         color: "#000",
         font: "500 16px Edu-SA",
         align: "left",
-      }
+      },
     );
 
     this.game.drawImage(
@@ -581,7 +683,7 @@ class LevelManager {
       SIDEBAR_CENTER + this.juiceOffset.x,
       topPosition - 22 + this.juiceOffset.y,
       36,
-      36
+      36,
     );
 
     this.game.drawText(
@@ -592,7 +694,7 @@ class LevelManager {
         color: "#000",
         font: "24px Tiny5",
         align: "left",
-      }
+      },
     );
 
     topPosition += 40;
@@ -607,7 +709,7 @@ class LevelManager {
         color: spellColor,
         font: "500 16px Edu-SA",
         align: "left",
-      }
+      },
     );
 
     if (this.state.remainingBombs == 0) {
@@ -619,7 +721,7 @@ class LevelManager {
       692 + this.juiceOffset.x,
       topPosition - 16 + this.juiceOffset.y,
       32,
-      32
+      32,
     );
 
     this.game.ctx.filter = "none";
@@ -632,7 +734,7 @@ class LevelManager {
         color: spellColor,
         font: "24px Tiny5",
         align: "left",
-      }
+      },
     );
 
     topPosition += 32;
@@ -645,7 +747,7 @@ class LevelManager {
         color: "#000",
         font: "500 16px Edu-SA",
         align: "center",
-      }
+      },
     );
 
     topPosition = 300;
@@ -658,7 +760,7 @@ class LevelManager {
         color: "#000",
         font: "500 16px Edu-SA",
         align: "center",
-      }
+      },
     );
 
     topPosition += 16;
@@ -673,7 +775,7 @@ class LevelManager {
         fill: "",
         stroke: "#000",
         strokeWidth: 2,
-      }
+      },
     );
 
     topPosition += 16;
@@ -683,7 +785,7 @@ class LevelManager {
       SIDEBAR_CENTER - 64 - 12 + this.juiceOffset.x,
       topPosition + this.juiceOffset.y,
       64,
-      64
+      64,
     );
 
     this.game.drawImage(
@@ -691,7 +793,7 @@ class LevelManager {
       SIDEBAR_CENTER + 12 + this.juiceOffset.x,
       topPosition + this.juiceOffset.y,
       64,
-      64
+      64,
     );
 
     topPosition += 64;
@@ -702,7 +804,7 @@ class LevelManager {
       SIDEBAR_CENTER - 64 - 8 + this.juiceOffset.x,
       topPosition + this.juiceOffset.y,
       64,
-      64
+      64,
     );
   }
 
@@ -715,7 +817,7 @@ class LevelManager {
         color: "#000",
         font: "bold 10px Edu-SA",
         align: "center",
-      }
+      },
     );
 
     game.drawText(
@@ -726,7 +828,7 @@ class LevelManager {
         color: "#000",
         font: "500 18px Edu-SA",
         align: "center",
-      }
+      },
     );
 
     game.drawText(
@@ -737,7 +839,7 @@ class LevelManager {
         color: "#000",
         font: "500 12px Edu-SA",
         align: "center",
-      }
+      },
     );
 
     this.game.drawImage(
@@ -745,7 +847,7 @@ class LevelManager {
       BOARD_PADDING + H_BOARD_SIZE - 64 - 36,
       BOARD_PADDING + H_BOARD_SIZE + 20,
       32,
-      32
+      32,
     );
 
     this.game.drawText(
@@ -756,7 +858,7 @@ class LevelManager {
         color: "#000",
         font: "24px Tiny5",
         align: "left",
-      }
+      },
     );
 
     game.drawText(
@@ -767,7 +869,7 @@ class LevelManager {
         color: "#000",
         font: "500 12px Edu-SA",
         align: "center",
-      }
+      },
     );
 
     this.game.drawImage(
@@ -775,7 +877,7 @@ class LevelManager {
       BOARD_PADDING + H_BOARD_SIZE + 64 - 32,
       BOARD_PADDING + H_BOARD_SIZE + 28,
       24,
-      24
+      24,
     );
 
     this.game.drawText(
@@ -786,7 +888,7 @@ class LevelManager {
         color: "#000",
         font: "24px Tiny5",
         align: "left",
-      }
+      },
     );
   }
 
@@ -796,16 +898,16 @@ class LevelManager {
       this.game.progress.setProgress(
         this.game.currentZone.id,
         this.game.currentLevel.id,
-        this.state.turnCount
+        this.state.turnCount,
       );
     }
     this.animations.push(
       new TransitionAnimation(TRANSITION_DIRECTION.OUT, {}, () => {
         this.game.zoneMap.animations.push(
-          new TransitionAnimation(TRANSITION_DIRECTION.IN)
+          new TransitionAnimation(TRANSITION_DIRECTION.IN),
         );
         this.game.scene = "zone";
-      })
+      }),
     );
   }
 
