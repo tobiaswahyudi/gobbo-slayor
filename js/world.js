@@ -14,6 +14,8 @@ const POPUP_HEIGHT = 240;
 const POPUP_H_POS = HALF_SCREEN_WIDTH;
 const POPUP_V_POS = 180;
 
+const WORLD_MAP_BORDERS_AND_SQUISH = true;
+
 const WORLD_MAP_LOCATIONS = [
   {
     id: "wiz",
@@ -129,6 +131,8 @@ class WorldMap {
 
     this.silverAnimation = undefined;
     this.goldAnimation = undefined;
+
+    this.showPopup()
   }
 
   closePopup() {
@@ -247,6 +251,26 @@ class WorldMap {
   render() {
     const { width, height } = this.game;
 
+    // squish that shit
+    if (WORLD_MAP_BORDERS_AND_SQUISH) {
+      this.game.drawRect(0, 0, width, height, { fill: "#C5BAB5" });
+
+      this.game.ctx.save();
+      this.game.ctx.translate(BOARD_PADDING, BOARD_PADDING);
+      this.game.ctx.scale(
+        1 - (2 * BOARD_PADDING) / width,
+        1 - (2 * BOARD_PADDING) / height,
+      );
+      const bounds = new Path2D();
+
+      bounds.moveTo(0, 0);
+      bounds.lineTo(width, 0);
+      bounds.lineTo(width, height);
+      bounds.lineTo(0, height);
+      bounds.closePath();
+      this.game.ctx.clip(bounds, "evenodd");
+    }
+
     const GROUND_RADIUS = 2.5 * width;
 
     WORLD_LAYERS.forEach((layer) => {
@@ -346,6 +370,22 @@ class WorldMap {
     const hadAnimations = this.animations.length > 0;
 
     this.animations = this.animations.filter((anim) => !anim.finished);
+
+    // unsquish
+    if (WORLD_MAP_BORDERS_AND_SQUISH) {
+      this.game.ctx.restore();
+      this.game.drawRect(
+        BOARD_PADDING,
+        BOARD_PADDING,
+        width - 2 * BOARD_PADDING,
+        height - 2 * BOARD_PADDING,
+        {
+          fill: "",
+          stroke: "#BDAFA1",
+          strokeWidth: 4,
+        },
+      );
+    }
 
     return hadAnimations;
   }
@@ -625,7 +665,11 @@ class WorldMap {
         },
         () => {
           this.game.zoneMap.animations.push(
-            new TransitionAnimation(TRANSITION_DIRECTION.IN),
+            new TransitionAnimation(TRANSITION_DIRECTION.IN, {
+              width: GAME_WIDTH_NET,
+              height: GAME_HEIGHT_NET,
+              center: new Position(GAME_WIDTH / 2, GAME_HEIGHT / 2),
+            }),
           );
           this.game.scene = "zone";
         },

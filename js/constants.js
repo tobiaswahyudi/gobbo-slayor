@@ -2,6 +2,10 @@ const GAME_WIDTH = 832; // Inner: 768 = 32 * 24
 const GAME_HEIGHT = 576; // Inner: 512 = 32 * 16
 
 const BOARD_PADDING = 32;
+
+const GAME_WIDTH_NET = GAME_WIDTH - 2 * BOARD_PADDING;
+const GAME_HEIGHT_NET = GAME_HEIGHT - 2 * BOARD_PADDING;
+
 const BOARD_SIZE = 512;
 const H_BOARD_SIZE = BOARD_SIZE / 2;
 

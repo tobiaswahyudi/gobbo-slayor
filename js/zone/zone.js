@@ -34,7 +34,6 @@ class ZoneMap {
     this.currentLevelTile = null;
 
     this.animations = new AnimationManager(game, this.state);
-    this.animations.push(new TransitionAnimation(TRANSITION_DIRECTION.IN));
 
     this.juiceOffset = new Position(0, 0);
 
@@ -77,16 +76,24 @@ class ZoneMap {
         break;
       case "Escape":
         this.animations.push(
-          new TransitionAnimation(TRANSITION_DIRECTION.OUT, {}, () => {
-            this.game.worldMap.animations.push(
-              new TransitionAnimation(TRANSITION_DIRECTION.IN, {
-                width: GAME_WIDTH,
-                height: GAME_HEIGHT,
-                center: new Position(GAME_WIDTH / 2, GAME_HEIGHT / 2),
-              }),
-            );
-            this.game.scene = "world";
-          }),
+          new TransitionAnimation(
+            TRANSITION_DIRECTION.OUT,
+            {
+              width: GAME_WIDTH_NET,
+              height: GAME_HEIGHT_NET,
+              center: new Position(GAME_WIDTH / 2, GAME_HEIGHT / 2),
+            },
+            () => {
+              this.game.worldMap.animations.push(
+                new TransitionAnimation(TRANSITION_DIRECTION.IN, {
+                  width: GAME_WIDTH,
+                  height: GAME_HEIGHT,
+                  center: new Position(GAME_WIDTH / 2, GAME_HEIGHT / 2),
+                }),
+              );
+              this.game.scene = "world";
+            },
+          ),
         );
         return true;
         break;
