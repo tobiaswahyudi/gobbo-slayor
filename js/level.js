@@ -800,7 +800,7 @@ class LevelManager {
       );
     }
     this.animations.push(
-      new TransitionAnimation(TRANSITION_DIRECTION.OUT, () => {
+      new TransitionAnimation(TRANSITION_DIRECTION.OUT, {}, () => {
         this.game.zoneMap.animations.push(
           new TransitionAnimation(TRANSITION_DIRECTION.IN)
         );

@@ -77,12 +77,16 @@ class ZoneMap {
         break;
       case "Escape":
         this.animations.push(
-          new TransitionAnimation(TRANSITION_DIRECTION.OUT, () => {
+          new TransitionAnimation(TRANSITION_DIRECTION.OUT, {}, () => {
             this.game.worldMap.animations.push(
-              new TransitionAnimation(TRANSITION_DIRECTION.IN)
+              new TransitionAnimation(TRANSITION_DIRECTION.IN, {
+                width: GAME_WIDTH,
+                height: GAME_HEIGHT,
+                center: new Position(GAME_WIDTH / 2, GAME_HEIGHT / 2),
+              }),
             );
             this.game.scene = "world";
-          })
+          }),
         );
         return true;
         break;
@@ -105,7 +109,7 @@ class ZoneMap {
       BOARD_PADDING + 0.5 * this.juiceOffset.y,
       "#6a9848",
       "#7fb259",
-      this.state.size
+      this.state.size,
     );
 
     // World Outline
@@ -118,12 +122,12 @@ class ZoneMap {
     this.state.render(
       this.game,
       BOARD_PADDING + this.juiceOffset.x,
-      BOARD_PADDING + this.juiceOffset.y
+      BOARD_PADDING + this.juiceOffset.y,
     );
     // this.state.specialTiles.forEach((tile) => tile.render(this.game));
 
     this.currentLevelTile = this.state.specialTiles.find(
-      (tile) => tile.x == this.state.player.x && tile.y == this.state.player.y
+      (tile) => tile.x == this.state.player.x && tile.y == this.state.player.y,
     );
 
     if (!(this.currentLevelTile instanceof LevelTile)) {
@@ -137,7 +141,7 @@ class ZoneMap {
     }
 
     this.animations.tick();
-    
+
     // return true;
     return hadAnimations;
   }
@@ -148,7 +152,7 @@ class ZoneMap {
       cellCorner(wall.x) + BOARD_PADDING + SPRITE_PADDING + this.juiceOffset.x,
       cellCorner(wall.y) + BOARD_PADDING + SPRITE_PADDING + this.juiceOffset.y,
       SPRITE_SIZE,
-      SPRITE_SIZE
+      SPRITE_SIZE,
     );
   }
 
@@ -188,7 +192,7 @@ class ZoneMap {
           tile.x === newX &&
           tile.y === newY &&
           tile instanceof LockTile &&
-          tile.closed
+          tile.closed,
       )
     ) {
       return false;
@@ -252,7 +256,7 @@ class ZoneMap {
         color: "#000",
         font: "700 10px Edu-SA",
         align: "center",
-      }
+      },
     );
 
     topPosition += 10;
@@ -287,14 +291,14 @@ class ZoneMap {
       topPosition / scale,
       "#CFC6BD",
       "#E2D8D4",
-      this.currentLevelTile.level.size
+      this.currentLevelTile.level.size,
     );
     this.currentLevelTile.level.render(
       this.game,
       600 / scale,
       topPosition / scale,
       {},
-      true
+      true,
     );
 
     this.game.drawRect(
@@ -306,7 +310,7 @@ class ZoneMap {
         fill: "",
         stroke: "#000",
         strokeWidth: 4,
-      }
+      },
     );
 
     this.game.ctx.restore();
@@ -316,7 +320,7 @@ class ZoneMap {
 
     const levelProgress = this.game.progress.getProgress(
       this.currentLocation.id,
-      this.currentLevelTile.level.id
+      this.currentLevelTile.level.id,
     );
 
     if (levelProgress.completed) {
@@ -325,7 +329,7 @@ class ZoneMap {
         SIDEBAR_CENTER - 60,
         topPosition - 12,
         24,
-        24
+        24,
       );
 
       this.game.drawText(`Completed!`, SIDEBAR_CENTER - 24, topPosition - 4, {
@@ -345,7 +349,7 @@ class ZoneMap {
           SIDEBAR_CENTER - 60,
           topPosition - 12,
           24,
-          24
+          24,
         );
 
         this.game.drawText(
@@ -356,7 +360,7 @@ class ZoneMap {
             color: "#000",
             font: `500 16px Edu-SA`,
             align: "left",
-          }
+          },
         );
       }
 
@@ -370,7 +374,7 @@ class ZoneMap {
           color: "#000",
           font: `500 12px Edu-SA`,
           align: "center",
-        }
+        },
       );
 
       topPosition += 48;
@@ -381,7 +385,7 @@ class ZoneMap {
           SIDEBAR_CENTER - 30,
           topPosition - 10,
           24,
-          24
+          24,
         );
 
         this.game.drawText(
@@ -393,7 +397,7 @@ class ZoneMap {
             font: `500 16px Edu-SA`,
             align: "center",
             lineSpacing: 24,
-          }
+          },
         );
 
         topPosition += 24;
@@ -406,7 +410,7 @@ class ZoneMap {
             color: "#000",
             font: `500 12px Edu-SA`,
             align: "center",
-          }
+          },
         );
       }
     } else {
@@ -440,7 +444,7 @@ class ZoneMap {
         color: "#000",
         font: "700 10px Edu-SA",
         align: "center",
-      }
+      },
     );
 
     topPosition += 10;
@@ -456,7 +460,7 @@ class ZoneMap {
         color: "#000",
         font: `500 ${titleFontSize}px Edu-SA`,
         align: "center",
-      }
+      },
     );
 
     topPosition += titleFontSize;
@@ -479,7 +483,7 @@ class ZoneMap {
         font: `500 12px Edu-SA`,
         align: "center",
         lineSpacing: 20,
-      }
+      },
     );
 
     if (!this.currentLocation.isZone) return;
@@ -491,11 +495,11 @@ class ZoneMap {
       SIDEBAR_CENTER - 36,
       topPosition - 12,
       24,
-      24
+      24,
     );
 
     const silverStars = this.game.progress.getLevelSilver(
-      this.currentLocation.id
+      this.currentLocation.id,
     );
 
     const isZoneDone = silverStars == this.currentLocation.levels;
@@ -508,7 +512,7 @@ class ZoneMap {
         color: isZoneDone ? "#551280" : "#000",
         font: `500 24px Tiny5`,
         align: "left",
-      }
+      },
     );
 
     if (isZoneDone) {
@@ -532,8 +536,8 @@ class ZoneMap {
               setTimeout(() => {
                 pushAnimation(top, current);
               }, 100);
-            }
-          )
+            },
+          ),
         );
       };
 
@@ -551,7 +555,7 @@ class ZoneMap {
           color: "#551280",
           font: `500 14px Edu-SA`,
           align: "center",
-        }
+        },
       );
     } else {
       topPosition += 12;
@@ -564,7 +568,7 @@ class ZoneMap {
       SIDEBAR_CENTER - 36,
       topPosition - 12,
       24,
-      24
+      24,
     );
 
     const goldStars = this.game.progress.getLevelGold(this.currentLocation.id);
@@ -579,7 +583,7 @@ class ZoneMap {
         color: isGoldDone ? "#551280" : "#000",
         font: `500 24px Tiny5`,
         align: "left",
-      }
+      },
     );
 
     topPosition += 24;
@@ -594,7 +598,7 @@ class ZoneMap {
           font: `500 12px Edu-SA`,
           align: "center",
           lineSpacing: 16,
-        }
+        },
       );
     } else {
       topPosition = this.game.drawText(
@@ -606,7 +610,7 @@ class ZoneMap {
           font: `500 12px Edu-SA`,
           align: "center",
           lineSpacing: 16,
-        }
+        },
       );
     }
 
@@ -622,7 +626,7 @@ class ZoneMap {
         color: "#000",
         font: `500 16px Tiny5`,
         align: "center",
-      }
+      },
     );
   }
 
@@ -632,7 +636,7 @@ class ZoneMap {
     this.game.levelManager = new LevelManager(
       this.game,
       `${this.currentLocation.title}  -  LEVEL ${this.currentLevelTile.number}`,
-      this.currentLevelTile.level
+      this.currentLevelTile.level,
     );
 
     if (Number(this.currentLevelTile.number) <= 1) {
@@ -640,9 +644,9 @@ class ZoneMap {
     }
 
     this.animations.push(
-      new TransitionAnimation(TRANSITION_DIRECTION.OUT, () => {
+      new TransitionAnimation(TRANSITION_DIRECTION.OUT, {}, () => {
         this.game.scene = "level";
-      })
+      }),
     );
   }
 }

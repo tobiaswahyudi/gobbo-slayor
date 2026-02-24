@@ -434,32 +434,30 @@ class WorldMap {
       },
     );
 
-    console.log(isZoneDone, this.silverAnimation, this.levelIndex)
-
     if (isZoneDone && frame > 5) {
       // woohoo!
 
       const pushAnimation = (top, current) => {
         if (this.currentLocation != current) return;
         this.silverAnimation = new EtherealAnimation(
-            POPUP_H_POS - 24 - STAR_OFFSET,
-            top,
-            ASSETS.UI.STAR.SILVER,
-            24,
-            {
-              etherealInFrames: 1,
-              etherealOutFrames: 30,
-              etherealEnd: 1.8,
-              etherealStart: 1,
-            },
-            () => {
-              setTimeout(() => {
-                // If nav closed; don't repeat
-                if(this.silverAnimation) pushAnimation(top, current);
-              }, 100);
-            },
-          );
-        
+          POPUP_H_POS - 24 - STAR_OFFSET,
+          top,
+          ASSETS.UI.STAR.SILVER,
+          24,
+          {
+            etherealInFrames: 1,
+            etherealOutFrames: 30,
+            etherealEnd: 1.8,
+            etherealStart: 1,
+          },
+          () => {
+            setTimeout(() => {
+              // If nav closed; don't repeat
+              if (this.silverAnimation) pushAnimation(top, current);
+            }, 100);
+          },
+        );
+
         this.animations.push(this.silverAnimation);
       };
 
@@ -467,7 +465,6 @@ class WorldMap {
         pushAnimation(topPosition, this.currentLocation);
       }
     }
-
 
     this.game.drawImage(
       ASSETS.UI.STAR.GOLD,
@@ -498,24 +495,24 @@ class WorldMap {
       const pushAnimation = (top, current) => {
         if (this.currentLocation != current) return;
         this.goldAnimation = new EtherealAnimation(
-            POPUP_H_POS - 24 + STAR_OFFSET,
-            top,
-            ASSETS.UI.STAR.GOLD,
-            24,
-            {
-              etherealInFrames: 1,
-              etherealOutFrames: 30,
-              etherealEnd: 1.8,
-              etherealStart: 1,
-            },
-            () => {
-              setTimeout(() => {
-                // If nav closed; don't repeat
-                if(this.goldAnimation) pushAnimation(top, current);
-              }, 100);
-            },
-          );
-        
+          POPUP_H_POS - 24 + STAR_OFFSET,
+          top,
+          ASSETS.UI.STAR.GOLD,
+          24,
+          {
+            etherealInFrames: 1,
+            etherealOutFrames: 30,
+            etherealEnd: 1.8,
+            etherealStart: 1,
+          },
+          () => {
+            setTimeout(() => {
+              // If nav closed; don't repeat
+              if (this.goldAnimation) pushAnimation(top, current);
+            }, 100);
+          },
+        );
+
         this.animations.push(this.goldAnimation);
       };
 
@@ -541,17 +538,12 @@ class WorldMap {
 
       topPosition += 12;
     } else if (isZoneDone) {
-      topPosition = this.game.drawText(
-        `Great job!`,
-        POPUP_H_POS,
-        topPosition,
-        {
-          color: "#551280",
-          font: `500 12px Edu-SA`,
-          align: "center",
-        },
-      );
-      
+      topPosition = this.game.drawText(`Great job!`, POPUP_H_POS, topPosition, {
+        color: "#551280",
+        font: `500 12px Edu-SA`,
+        align: "center",
+      });
+
       topPosition += 12;
 
       topPosition = this.game.drawText(
@@ -619,18 +611,26 @@ class WorldMap {
 
     if (!this.currentLocation || !this.currentLocation.isZone) return;
 
-    this.animations.push(
-      new TransitionAnimation(TRANSITION_DIRECTION.OUT, () => {
-        this.game.zoneMap.animations.push(
-          new TransitionAnimation(TRANSITION_DIRECTION.IN),
-        );
-        this.game.scene = "zone";
-      }),
-    );
-
     this.game.currentZone = this.currentLocation;
     this.game.zoneMap = new ZoneMap(this.game);
     this.game.zoneMap.currentLevel = null;
+
+    this.animations.push(
+      new TransitionAnimation(
+        TRANSITION_DIRECTION.OUT,
+        {
+          width: GAME_WIDTH,
+          height: GAME_HEIGHT,
+          center: new Position(GAME_WIDTH / 2, GAME_HEIGHT / 2),
+        },
+        () => {
+          this.game.zoneMap.animations.push(
+            new TransitionAnimation(TRANSITION_DIRECTION.IN),
+          );
+          this.game.scene = "zone";
+        },
+      ),
+    );
   }
 
   resetProgress() {
