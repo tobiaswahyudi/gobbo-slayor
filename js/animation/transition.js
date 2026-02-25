@@ -11,9 +11,6 @@ const TRANSITION_RENDER = (direction, color, ww, hh, cc) => (game, frame) => {
   const height = hh || BOARD_SIZE;
   const bs = BOARD_SIZE / 2 + BOARD_PADDING;
   const center = cc || new Position(bs, bs);
-
-  console.log(width, height, center);
-
   const progress =
     direction === TRANSITION_DIRECTION.OUT
       ? 1 - frame / TRANSITION_FRAMES
@@ -28,9 +25,7 @@ const TRANSITION_RENDER = (direction, color, ww, hh, cc) => (game, frame) => {
   const R = L + width;
   const U = center.y - height / 2;
   const D = U + height;
-
-  console.log(L, R, U, D);
-
+  
   vignette.arc(center.x, center.y, radius, 0, Math.PI * 2);
   vignette.lineTo(R, center.y);
   vignette.lineTo(R, D);

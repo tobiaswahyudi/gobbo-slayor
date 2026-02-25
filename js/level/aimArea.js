@@ -61,8 +61,6 @@ class AimArea {
 
     const cc = cellCorner;
 
-    console.log();
-
     areas.forEach((area) => {
       game.drawRect(
         cc(area.x) + pos.x,

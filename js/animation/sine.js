@@ -1,10 +1,8 @@
 const SINE_RENDER = (tgt, frames, amplitude, frequency, phase) => {
   return (game, frame) => {
     const progress = frame / frames;
-    console.log("progress", progress);
     tgt.x = amplitude * Math.sin((frequency * progress + phase) * (Math.PI * 2));
     tgt.y = amplitude * Math.cos((frequency * progress + phase) * (Math.PI * 2));
-    console.log("sine", tgt.x, tgt.y);
   };
 };
 

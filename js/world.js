@@ -137,7 +137,6 @@ class WorldMap {
 
   closePopup() {
     if (!this.popup) return;
-    console.log(this.animations);
     this.animations = [];
     this.popup = undefined;
     this.silverAnimation = undefined;
