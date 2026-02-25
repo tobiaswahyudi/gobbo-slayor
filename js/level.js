@@ -544,29 +544,24 @@ class LevelManager {
     );
 
     topPosition += 48;
+  }
 
+  spawnParticles() {
     const isGold = this.state.turnCount <= this.levelBase.bestMoves;
-
-    if (isGold) {
-      // this.game.drawImage(
-      //   ASSETS.UI.STAR.GOLD,
-      //   WIN_POPUP_H_POS - 30,
-      //   topPosition - 10,
-      //   24,
-      //   24,
-      // );
-    } else {
-      // this.game.drawImage(
-      //   ASSETS.UI.STAR.GOLD,
-      //   WIN_POPUP_H_POS - 30,
-      //   topPosition - 10,
-      //   24,
-      //   24,
-      // );
+    const star = isGold ? ASSETS.UI.STAR.GOLD : ASSETS.UI.STAR.SILVER;
+    const howManyStars = 32;
+    for (let i = 0; i < howManyStars; i++) {
+      const pos = new Position(WIN_POPUP_H_POS, WIN_POPUP_V_POS);
+      const vel = new Position(maybeFlip(randomRange(5, 20)), randomRange(-20, 5));
+      const size = randomRange(8, 18);
+      this.animations.push(new ParticleAnimation(60, pos, vel, star, size));
     }
   }
 
   doLevelWinStuff() {
+    const getRandomInBoard = () =>
+      randomRange(BOARD_PADDING, BOARD_SIZE - 2 * BOARD_PADDING);
+    const boomY = randomRange(BOARD_PADDING, BOARD_SIZE - 2 * BOARD_PADDING);
     this.animations.push(
       new JuiceAnimation(this.juiceOffset, 3 * EXPLOSION_FRAMES, 30),
     );
@@ -574,8 +569,8 @@ class LevelManager {
     for (let i = 0; i < howManyBooms; i++) {
       const delay = randomRange(0, 200);
       const boomSize = randomRange(0.6 * SQUARE_SIZE, 1.4 * SQUARE_SIZE);
-      const boomX = randomRange(BOARD_PADDING, BOARD_SIZE - 2 * BOARD_PADDING);
-      const boomY = randomRange(BOARD_PADDING, BOARD_SIZE - 2 * BOARD_PADDING);
+      const boomX = getRandomInBoard();
+      const boomY = getRandomInBoard();
       setTimeout(() => {
         this.animations.push(
           new ExplosionAnimation(boomX, boomY, boomSize, this.juiceOffset),
@@ -583,13 +578,15 @@ class LevelManager {
       }, delay);
     }
     this.animations.push(
-    new ExplosionAnimation(
+      new ExplosionAnimation(
         WIN_POPUP_H_POS,
         WIN_POPUP_V_POS,
         WIN_POPUP_WIDTH,
         this.juiceOffset,
       ),
     );
+
+    this.spawnParticles();
     this.animations.push(
       (this.popup = new PopupAnimation(
         WIN_POPUP_WIDTH,

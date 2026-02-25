@@ -5,3 +5,7 @@ const randomChoice = (choices) => {
 const randomRange = (min, max) => {
     return min + Math.random() * (max - min);
 }
+
+const maybeFlip = (n) => {
+    return Math.random() < 0.5 ? n : -n;
+}
