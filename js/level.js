@@ -6,7 +6,9 @@ const WIN_POPUP_H_POS = BOARD_PADDING + H_BOARD_SIZE;
 const WIN_POPUP_V_POS = 200;
 
 const CONGRATS_MESSAGES = [
-  "Congratulations!", "Level Complete!", "Gobbos Slayed!"
+  "Congratulations!",
+  "Level Complete!",
+  "Gobbos Slayed!",
 ];
 
 class LevelManager {
@@ -124,9 +126,7 @@ class LevelManager {
     }
   }
 
-  renderParticles() {
-
-  }
+  renderParticles() {}
 
   // Level Rendering
   // returns true if another re-render is needed
@@ -412,8 +412,8 @@ class LevelManager {
     areas.forEach((area) => {
       this.animations.push(
         new ExplosionAnimation(
-          cellCorner(area.x) + BOARD_PADDING + this.juiceOffset.x,
-          cellCorner(area.y) + BOARD_PADDING + this.juiceOffset.y,
+          cellCorner(area.x + 0.5) + BOARD_PADDING + this.juiceOffset.x,
+          cellCorner(area.y + 0.5) + BOARD_PADDING + this.juiceOffset.y,
           SQUARE_SIZE,
           this.juiceOffset,
         ),
@@ -582,6 +582,14 @@ class LevelManager {
         );
       }, delay);
     }
+    this.animations.push(
+    new ExplosionAnimation(
+        WIN_POPUP_H_POS,
+        WIN_POPUP_V_POS,
+        WIN_POPUP_WIDTH,
+        this.juiceOffset,
+      ),
+    );
     this.animations.push(
       (this.popup = new PopupAnimation(
         WIN_POPUP_WIDTH,
