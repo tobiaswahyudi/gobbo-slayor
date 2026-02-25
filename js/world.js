@@ -10,9 +10,9 @@ const WIZARD_TARGET_POSITION_Y = 0.75 * GAME_HEIGHT;
 const WIZARD_TARGET_POSITION_THETA = -0.2;
 
 const POPUP_WIDTH = 320;
-const POPUP_HEIGHT = 240;
+const POPUP_HEIGHT = 220;
 const POPUP_H_POS = HALF_SCREEN_WIDTH;
-const POPUP_V_POS = 180;
+const POPUP_V_POS = 200;
 
 const WORLD_MAP_BORDERS_AND_SQUISH = true;
 
@@ -132,7 +132,7 @@ class WorldMap {
     this.silverAnimation = undefined;
     this.goldAnimation = undefined;
 
-    this.showPopup()
+    this.showPopup();
   }
 
   closePopup() {
@@ -364,12 +364,6 @@ class WorldMap {
 
     this.game.ctx.restore();
 
-    this.animations.forEach((anim) => anim.tick(this.game));
-
-    const hadAnimations = this.animations.length > 0;
-
-    this.animations = this.animations.filter((anim) => !anim.finished);
-
     // unsquish
     if (WORLD_MAP_BORDERS_AND_SQUISH) {
       this.game.ctx.restore();
@@ -385,6 +379,12 @@ class WorldMap {
         },
       );
     }
+
+    this.animations.forEach((anim) => anim.tick(this.game));
+
+    const hadAnimations = this.animations.length > 0;
+
+    this.animations = this.animations.filter((anim) => !anim.finished);
 
     return hadAnimations;
   }
@@ -643,8 +643,23 @@ class WorldMap {
 
   goToZone() {
     if (this.currentLocation && this.currentLocation.isWizardTower) {
-      this.game.scene = "comic";
-      this.game.comic = new IntroComic(this.game);
+      this.animations.push(
+        new TransitionAnimation(
+          TRANSITION_DIRECTION.OUT,
+          {
+            width: GAME_WIDTH,
+            height: GAME_HEIGHT,
+            center: new Position(GAME_WIDTH / 2, GAME_HEIGHT / 2),
+            absoluteSize: true,
+            color: "#000000",
+            frames: 30,
+          },
+          () => {
+            this.game.scene = "comic";
+            this.game.comic = new IntroComic(this.game);
+          },
+        ),
+      );
       return;
     }
 

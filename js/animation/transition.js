@@ -5,7 +5,7 @@ const TRANSITION_DIRECTION = {
   OUT: "out",
 };
 
-const TRANSITION_RENDER = (direction, color, ww, hh, cc) => (game, frame) => {
+const TRANSITION_RENDER = (frames, direction, color, ww, hh, cc) => (game, frame) => {
   // Easier to read than defaults
   const width = ww || BOARD_SIZE;
   const height = hh || BOARD_SIZE;
@@ -13,8 +13,8 @@ const TRANSITION_RENDER = (direction, color, ww, hh, cc) => (game, frame) => {
   const center = cc || new Position(bs, bs);
   const progress =
     direction === TRANSITION_DIRECTION.OUT
-      ? 1 - frame / TRANSITION_FRAMES
-      : frame / TRANSITION_FRAMES;
+      ? 1 - frame / frames
+      : frame / frames;
 
   const maxRadius = Math.hypot(width, height);
   const radius = maxRadius * progress;
@@ -25,7 +25,7 @@ const TRANSITION_RENDER = (direction, color, ww, hh, cc) => (game, frame) => {
   const R = L + width;
   const U = center.y - height / 2;
   const D = U + height;
-  
+
   vignette.arc(center.x, center.y, radius, 0, Math.PI * 2);
   vignette.lineTo(R, center.y);
   vignette.lineTo(R, D);
@@ -46,9 +46,11 @@ const TRANSITION_RENDER = (direction, color, ww, hh, cc) => (game, frame) => {
 
 class TransitionAnimation extends GSAnimation {
   constructor(direction = TRANSITION_DIRECTION.IN, options, callback) {
+    const frames = options?.frames || TRANSITION_FRAMES;
     super({
-      frames: TRANSITION_FRAMES,
+      frames: frames,
       render: TRANSITION_RENDER(
+        frames,
         direction,
         options?.color || '#BDAFA1',
         options?.width,
