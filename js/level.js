@@ -126,8 +126,6 @@ class LevelManager {
     }
   }
 
-  renderParticles() {}
-
   // Level Rendering
   // returns true if another re-render is needed
   renderGame() {
@@ -549,13 +547,15 @@ class LevelManager {
   spawnParticles() {
     const isGold = this.state.turnCount <= this.levelBase.bestMoves;
     const star = isGold ? ASSETS.UI.STAR.GOLD : ASSETS.UI.STAR.SILVER;
-    const howManyStars = 32;
+    const howManyStars = randomRange(20, 40);
     for (let i = 0; i < howManyStars; i++) {
       const pos = new Position(WIN_POPUP_H_POS, WIN_POPUP_V_POS);
       const vel = new Position(maybeFlip(randomRange(5, 20)), randomRange(-20, 5));
       const size = randomRange(8, 18);
       this.animations.push(new ParticleAnimation(60, pos, vel, star, size));
     }
+    // const delay = randomRange(400, 2000);
+    // setTimeout(() => this.spawnParticles(), delay);
   }
 
   doLevelWinStuff() {
@@ -603,6 +603,7 @@ class LevelManager {
         },
         {
           opacity: 0.9,
+          layer: 2
         },
       )),
     );

@@ -27,7 +27,8 @@ class GSAnimation {
       return true;
     },
     callback = () => {},
-    absoluteSize = false
+    absoluteSize = false,
+    layer = 0
   }) {
     this.frame = 0;
     this.frames = frames;
@@ -37,6 +38,7 @@ class GSAnimation {
     this.inputHandler = handleInput;
     this.callback = callback;
     this.absoluteSize = absoluteSize;
+    this.layer = layer;
 
     this.finished = false;
   }

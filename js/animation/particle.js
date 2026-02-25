@@ -29,7 +29,8 @@ class ParticleAnimation extends GSAnimation {
       frames: frames,
       render: PARTICLE_RENDER(img, pos, vel, originalSize, defaultedParams),
       callback: callback,
-      absoluteSize: true
+      absoluteSize: true,
+      ...params
     });
   }
 }

@@ -33,6 +33,7 @@ class AnimationManager {
 
     tick() {
         if(this.state) {
+            this.animations.sort((a,b) => a.layer - b.layer);
             const absAnim = this.animations.filter(x => x.absoluteSize);
             const relAnim = this.animations.filter(x => !x.absoluteSize);
 
