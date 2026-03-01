@@ -116,6 +116,7 @@ class WorldMap {
 
     this.levelRotationTweenValue = new Position(0, 0);
     this.levelPositionTweenValue = new Position(0, 0);
+    this.isLevelMoveAnimating = false;
 
     this.animations = [];
 
@@ -196,6 +197,8 @@ class WorldMap {
 
     this.closePopup();
 
+    this.isLevelMoveAnimating = true;
+
     this.animations.push(
       new MotionTweenAnimation(
         this.levelRotationTweenValue,
@@ -215,6 +218,7 @@ class WorldMap {
                 {
                   callback: () => {
                     this.showPopup();
+                    this.isLevelMoveAnimating = false;
                   },
                 },
               ),
@@ -361,6 +365,8 @@ class WorldMap {
       WORLD_WIZ_SIZE,
       WORLD_WIZ_SIZE,
     );
+
+    // Draw arrows if not moving
 
     this.game.ctx.restore();
 

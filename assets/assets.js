@@ -79,6 +79,14 @@ const ASSETS = {
       CAMP: "assets/world-2/camp.png",
       FORT: "assets/world-2/fort.png",
       CASTLE: "assets/world-2/castle.png",
+    },
+    SPRITES: {
+      FORT: "assets/worldmap/fort-sprite.png",
+      CASTLE: "assets/worldmap/castle-sprite.png",
+    },
+    ARROW: {
+      LOCKED: "assets/worldmap/arrow-lock.png",
+      UNLOCKED: "assets/worldmap/arrow.png",
     }
   },
   COMIC: {
