@@ -40,7 +40,7 @@ const WORLD_MAP_LOCATIONS = [
     id: "fort",
     title: "GOBLIN CAMP 2",
     subtitle: "Ruined Fort",
-    text: "Goblins are running around the old ruined fort.\n (They're actually keeping it pretty clean.)",
+    text: "Goblins are running around the\n old ruined fort. (They're actually\nkeeping it pretty clean.)",
     asset: ASSETS.WORLD.LEVEL.FORT,
     isZone: true,
     levels: ZONE_2_LEVELS.length,
@@ -50,11 +50,11 @@ const WORLD_MAP_LOCATIONS = [
     id: "castle",
     title: "GOBLIN CAMP 3",
     subtitle: "Ransacked Castle",
-    text: "They've taken over a castle and loaded up with\nAnti-Magic armor! Nasty scheming goblins!",
+    text: "They've taken over a castle and\nloaded up with Anti-Magic armor!\nThose thieving goblins!",
     asset: ASSETS.WORLD.LEVEL.CASTLE,
     isZone: true,
     levels: ZONE_2_LEVELS.length,
-    cta: "Magic-proof doesn't mean Revenge-proof!\nGet em!",
+    cta: "Luckily magic-proof doesn't mean\nrevenge-proof! Get em!",
   },
 ];
 
