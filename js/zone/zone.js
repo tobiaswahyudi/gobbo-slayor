@@ -16,6 +16,9 @@ class ZoneMap {
     this.silverStars = this.game.progress.getLevelSilver(
       this.currentLocation.id,
     );
+    this.goldStars = this.game.progress.getLevelGold(
+      this.currentLocation.id,
+    );
 
     for (let i = 0; i < numLevels; i++) {
       const numString = String(i + 1).padStart(2, "0");
@@ -113,6 +116,13 @@ class ZoneMap {
   // Zone Map Rendering
   render() {
     const { width, height } = this.game;
+
+    this.silverStars = this.game.progress.getLevelSilver(
+      this.currentLocation.id,
+    );
+    this.goldStars = this.game.progress.getLevelGold(
+      this.currentLocation.id,
+    );
 
     // Game area background
     this.game.drawRect(0, 0, width, height, { fill: "#C5BAB5" });
@@ -315,7 +325,7 @@ class ZoneMap {
     );
 
     this.game.drawText(
-      `× ${this.silverStars}/${this.currentLocation.levels}`,
+      `× ${this.goldStars}/${this.currentLocation.levels}`,
       SIDEBAR_CENTER + 42 - 6,
       topPosition - 10,
       {
