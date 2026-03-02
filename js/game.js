@@ -20,7 +20,7 @@ class Game {
     this.height = GAME_HEIGHT;
 
     // Scene management
-    this.scene = "world"; // comic|menus|level
+    this.scene = "comic"; // comic|menus|level
 
     // Input handling
     this.keys = {};
