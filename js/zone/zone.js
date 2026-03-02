@@ -294,6 +294,11 @@ class ZoneMap {
 
     topPosition += titleFontSize;
     topPosition += 22;
+    return topPosition;
+  }
+
+  renderLevelSidebar(topPosition) {
+    const level = this.currentLevelTile.level;
 
     this.game.drawImage(
       ASSETS.UI.STAR.SILVER,
@@ -344,12 +349,6 @@ class ZoneMap {
     });
 
     topPosition += 20;
-
-    return topPosition;
-  }
-
-  renderLevelSidebar(topPosition) {
-    const level = this.currentLevelTile.level;
 
     this.game.drawText(
       `LEVEL ${this.currentLevelTile.number}`,
@@ -549,7 +548,60 @@ class ZoneMap {
   }
 
   renderZoneSidebar(topPosition) {
-    topPosition += 24;
+
+    topPosition += 12;
+
+    this.game.drawImage(
+      ASSETS.UI.STAR.SILVER,
+      SIDEBAR_CENTER - 32 - 6,
+      topPosition - 14,
+      24,
+      24,
+    );
+
+    const isZoneDone = this.silverStars == this.currentLocation.levels;
+
+    this.game.drawText(
+      `× ${this.silverStars}/${this.currentLocation.levels}`,
+      SIDEBAR_CENTER - 6,
+      topPosition - 10,
+      {
+        color: isZoneDone ? "#551280" : "#000",
+        font: `500 24px Tiny5`,
+        align: "left",
+      },
+    );
+
+    topPosition += 36;
+
+    this.game.drawImage(
+      ASSETS.UI.STAR.GOLD,
+      SIDEBAR_CENTER - 32 - 6,
+      topPosition - 14,
+      24,
+      24,
+    );
+
+    this.game.drawText(
+      `× ${this.goldStars}/${this.currentLocation.levels}`,
+      SIDEBAR_CENTER - 6,
+      topPosition - 10,
+      {
+        color: isZoneDone ? "#551280" : "#000",
+        font: `500 24px Tiny5`,
+        align: "left",
+      },
+    );
+
+    topPosition += 32;
+
+    this.game.drawRect(600, topPosition, 176, 0, {
+      fill: "",
+      stroke: "#000",
+      strokeWidth: 2,
+    });
+
+    topPosition += 32;
 
     topPosition = this.game.drawText(
       this.currentLocation.text.split("\n"),
