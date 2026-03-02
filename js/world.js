@@ -21,7 +21,7 @@ const WORLD_MAP_LOCATIONS = [
     id: "wiz",
     title: "HOME BASE",
     subtitle: "Wizard Tower",
-    text: "The goblins stole your magic hats!!  >:(\nTheir tracks lead east...\n\n\n\nOr press [space] to watch the intro again",
+    text: "The goblins stole your magic hats!!  >:(\nTheir tracks lead east...\n\nPRESS [→]\n\nOr press [space] to watch the intro again",
     isZone: false,
     isWizardTower: true,
     asset: ASSETS.WORLD.LEVEL.TOWER,
