@@ -10,7 +10,7 @@ const WIZARD_TARGET_POSITION_Y = 0.75 * GAME_HEIGHT;
 const WIZARD_TARGET_POSITION_THETA = -0.2;
 
 const POPUP_WIDTH = 320;
-const POPUP_HEIGHT = 220;
+const POPUP_HEIGHT = 240;
 const POPUP_H_POS = HALF_SCREEN_WIDTH;
 const POPUP_V_POS = 200;
 
@@ -194,6 +194,69 @@ class WorldMap {
 
   levelMove(goingRight) {
     const delta = goingRight ? 1 : -1;
+
+    const targetLevelPos = this.levelIndex + delta;
+    if(targetLevelPos < 0 || targetLevelPos > 3) {
+      // limit left
+      this.isLevelMoveAnimating = true;
+
+      const bumpScale = 0.03;
+      const bumpTimeScale = 0.1;
+      this.animations.push(
+        new MotionTweenAnimation(
+          this.levelRotationTweenValue,
+          new Position(0, 0),
+          new Position(delta * -0.377 * bumpScale, 0),
+          LEVEL_MOVE_ANIM_HALF_DUR * bumpTimeScale,
+          {
+            callback: () => {
+              this.animations.push(
+                new MotionTweenAnimation(
+                  this.levelRotationTweenValue,
+                  new Position(delta * -0.377 * bumpScale, 0),
+                  new Position(0, 0),
+                  LEVEL_MOVE_ANIM_HALF_DUR * bumpTimeScale,
+                  {
+                    callback: () => {
+                      this.isLevelMoveAnimating = false;
+                    },
+                  },
+                ),
+              );
+            },
+          },
+        ),
+      );
+      this.animations.push(
+        new MotionTweenAnimation(
+          this.levelPositionTweenValue,
+          this.levelPositionTweenValue.clone(),
+          this.levelPositionTweenValue.add(
+            new Position(delta * -MOVE_DISTANCE * bumpScale, 0),
+          ),
+          LEVEL_MOVE_ANIM_HALF_DUR * bumpTimeScale,
+          {
+            blocksInput: true,
+            callback: () => {
+              this.animations.push(
+              new MotionTweenAnimation(
+                this.levelPositionTweenValue,
+                this.levelPositionTweenValue.clone(),
+                this.levelPositionTweenValue.add(
+                  new Position(delta * MOVE_DISTANCE * bumpScale, 0),
+                ),
+                LEVEL_MOVE_ANIM_HALF_DUR * bumpTimeScale,
+                {
+                  blocksInput: true,
+                },
+              ),
+            );
+            }
+          },
+        ),
+      );
+      return;
+    }
 
     this.closePopup();
 
