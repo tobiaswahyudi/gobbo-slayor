@@ -43,6 +43,7 @@ class LevelState {
 
   clone() {
     const state = new LevelState();
+
     state.turnCount = this.turnCount;
     state.player = this.player.clone();
     state.gobbos = this.gobbos.map((gobbo) => gobbo.clone());
@@ -50,13 +51,19 @@ class LevelState {
     state.blocks = this.blocks.map((wall) => wall.clone());
     state.aimArea = new AimArea(this.aimArea.cells.map((cell) => cell.clone()));
     state.remainingBombs = this.remainingBombs;
+    state.specialTiles = [...this.specialTiles];
     state.title = this.title;
     state.size = this.size;
+
+    state.levelString = this.levelString;
+    state.id = this.id;
     return state;
   }
 
   parse(specialTiles = {}) {
     const lines = this.levelString.split("\n");
+
+    this.gobbos = [];
 
     const OFFSET_LINES = 1;
 

@@ -11,11 +11,22 @@ const CONGRATS_MESSAGES = [
   "Gobbos Slayed!",
 ];
 
+const TUTORIAL_MURALS = {
+  TA: [TutorialTile, ASSETS.TUTORIAL.ATTACK],
+  TM: [TutorialTile, ASSETS.TUTORIAL.MOVE],
+  TU: [TutorialTile, ASSETS.TUTORIAL.UNDO],
+  TR: [TutorialTile, ASSETS.TUTORIAL.RESTART],
+  TT: [TutorialTile, ASSETS.TUTORIAL.TOOLTIP, TUTORIAL_MURAL_SIZE, TUTORIAL_MURAL_SIZE * 2.1],
+  TE: [TextTutorialTile, "If you get stuck on\na level, press [esc]\nand come back\nany time", 12, 12],
+};
+
 class LevelManager {
   constructor(game, titleString, levelState) {
     this.game = game;
     this.titleString = titleString;
-    this.history = new LevelHistory(levelState);
+    const stateClone = levelState.clone();
+    stateClone.parse(TUTORIAL_MURALS);
+    this.history = new LevelHistory(stateClone);
 
     this.animations = new AnimationManager(game, this.state);
 
@@ -50,6 +61,8 @@ class LevelManager {
     this.congratsMessage = randomChoice(CONGRATS_MESSAGES);
 
     this.levelBase = levelState;
+
+    this.outOfSpellsJuice = new Position(0, 0);
   }
 
   get state() {
@@ -158,7 +171,7 @@ class LevelManager {
     );
 
     this.renderSidebar();
-    this.renderTutorial();
+    // this.renderTutorial();
 
     const offsets = {
       wiz: this.wizardMoveOffset,
@@ -242,49 +255,6 @@ class LevelManager {
     this.checkLevelDone();
 
     return NEEDS_RE_RENDER;
-  }
-
-  renderTutorial() {
-    if (this.currentLevel !== 0) return;
-
-    this.game.ctx.globalAlpha = 0.4;
-    this.game.drawImage(
-      ASSETS.TUTORIAL.ATTACK,
-      32 + 2 * SQUARE_SIZE + 0.5 * this.juiceOffset.x,
-      32 + 6 * SQUARE_SIZE + 0.5 * this.juiceOffset.y,
-      SQUARE_SIZE,
-      SQUARE_SIZE,
-    );
-    this.game.drawImage(
-      ASSETS.TUTORIAL.MOVE,
-      32 + 1 * SQUARE_SIZE + 0.5 * this.juiceOffset.x,
-      32 + 6 * SQUARE_SIZE + 0.5 * this.juiceOffset.y,
-      SQUARE_SIZE,
-      SQUARE_SIZE,
-    );
-    this.game.drawImage(
-      ASSETS.TUTORIAL.UNDO,
-      32 + 3 * SQUARE_SIZE + 0.5 * this.juiceOffset.x,
-      32 + 6 * SQUARE_SIZE + 0.5 * this.juiceOffset.y,
-      SQUARE_SIZE,
-      SQUARE_SIZE,
-    );
-    this.game.drawImage(
-      ASSETS.TUTORIAL.RESTART,
-      32 + 4 * SQUARE_SIZE + 0.5 * this.juiceOffset.x + SPRITE_PADDING,
-      32 + 6 * SQUARE_SIZE + 0.5 * this.juiceOffset.y + SPRITE_PADDING,
-      SPRITE_SIZE,
-      SPRITE_SIZE,
-    );
-
-    this.game.drawImage(
-      ASSETS.TUTORIAL.TOOLTIP,
-      480 + 0.5 * this.juiceOffset.x,
-      96 + 0.5 * this.juiceOffset.y,
-      64,
-      128,
-    );
-    this.game.ctx.globalAlpha = 1;
   }
 
   getDirVec(direction) {
@@ -398,6 +368,9 @@ class LevelManager {
 
   handleAction() {
     if (this.state.remainingBombs == 0) {
+      this.animations.push(
+      new JuiceAnimation(this.outOfSpellsJuice, EXPLOSION_FRAMES, 15)
+    )
       return false;
     }
 
@@ -550,7 +523,10 @@ class LevelManager {
     const howManyStars = randomRange(20, 40);
     for (let i = 0; i < howManyStars; i++) {
       const pos = new Position(WIN_POPUP_H_POS, WIN_POPUP_V_POS);
-      const vel = new Position(maybeFlip(randomRange(5, 20)), randomRange(-20, 5));
+      const vel = new Position(
+        maybeFlip(randomRange(5, 20)),
+        randomRange(-20, 5),
+      );
       const size = randomRange(8, 18);
       this.animations.push(new ParticleAnimation(60, pos, vel, star, size));
     }
@@ -603,7 +579,7 @@ class LevelManager {
         },
         {
           opacity: 0.9,
-          layer: 2
+          layer: 2,
         },
       )),
     );
@@ -707,6 +683,9 @@ class LevelManager {
 
     const spellColor = this.state.remainingBombs == 0 ? "#808080" : "#000000";
 
+    this.game.ctx.save();
+    this.game.ctx.translate(this.outOfSpellsJuice.x, this.outOfSpellsJuice.y);
+
     this.game.drawText(
       "Spells",
       612 + this.juiceOffset.x,
@@ -731,7 +710,7 @@ class LevelManager {
     );
 
     this.game.ctx.filter = "none";
-
+    
     this.game.drawText(
       `×${this.state.remainingBombs}`,
       736 + this.juiceOffset.x,
@@ -742,6 +721,7 @@ class LevelManager {
         align: "left",
       },
     );
+    this.game.ctx.restore();
 
     topPosition += 32;
 
