@@ -68,6 +68,7 @@ class LevelState {
     const OFFSET_LINES = 1;
 
     this.size = lines.filter((x) => x.length).length;
+    this.specialTiles = [];
 
     for (let y = 0; y < this.size; y++) {
       const line = lines[y + OFFSET_LINES];
