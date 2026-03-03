@@ -190,9 +190,6 @@ class WorldMap {
     this.arrowPositionTween = new Position(0, 0);
 
     this.showPopup();
-    setTimeout(() => {
-      this.shakeArrows();
-    }, 500);
   }
 
   closePopup() {
@@ -256,14 +253,18 @@ class WorldMap {
     }
   }
 
-  shakeArrows() {
-    this.animations.push(
-      new JuiceAnimation(
-        this.arrowPositionTween,
-        ARROW_SHAKE_FRAMES,
-        ARROW_SHAKE_AMPLITUDE,
-      ),
-    );
+  shakeArrows(timeout) {
+    if (!timeout) {
+      this.animations.push(
+        new JuiceAnimation(
+          this.arrowPositionTween,
+          ARROW_SHAKE_FRAMES,
+          ARROW_SHAKE_AMPLITUDE,
+        ),
+      );
+    } else {
+      setTimeout(() => this.shakeArrows(), timeout);
+    }
   }
 
   levelMove(goingRight) {
@@ -867,7 +868,9 @@ class WorldMap {
         // render stuff
         let topPosition = 290;
         this.game.drawText(
-          "THIS IS GONNA RESET YOUR PROGRESS\n\npress [y] to confirm".split("\n"),
+          "THIS IS GONNA RESET YOUR PROGRESS\n\npress [y] to confirm".split(
+            "\n",
+          ),
           POPUP_H_POS,
           topPosition,
           {

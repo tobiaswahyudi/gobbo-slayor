@@ -221,6 +221,7 @@ class Game {
 
         if (!anotherRender) {
           this.scene = "world";
+          this.worldMap.shakeArrows(500);
           anotherRender = true;
         }
         break;

@@ -373,6 +373,7 @@ class IntroComic {
     if (keyCode == 'Space' && this.isTryingToSkip) {
       // skip
       this.game.scene = "world";
+      this.game.worldMap.shakeArrows(500);
       return true;
     } else {
       this.isTryingToSkip = true;
