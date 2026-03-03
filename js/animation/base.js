@@ -60,7 +60,7 @@ class GSAnimation {
 
   handleInput(input) {
     if (this.needsInput && this.frame >= this.frames) {
-      const res = this.inputHandler(input);
+      const res = !this.inputHandler(input);
       this.needsInput = res;
     }
   }

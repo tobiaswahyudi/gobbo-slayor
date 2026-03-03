@@ -220,6 +220,7 @@ class WorldMap {
       undefined,
       {
         blocksInput: false,
+        needsInput: true,
         handleInput: () => false,
         opacity: 0.8,
       },
@@ -230,6 +231,10 @@ class WorldMap {
   handleInput(keyCode) {
     const inputBlockedByAnimation = this.animations.some((a) => a.blocksInput);
     if (inputBlockedByAnimation) return true;
+
+    this.animations.forEach((a) => {
+      if (a.needsInput) a.handleInput(keyCode);
+    });
 
     switch (keyCode) {
       case "ArrowLeft":
@@ -253,8 +258,12 @@ class WorldMap {
 
   shakeArrows() {
     this.animations.push(
-      new JuiceAnimation(this.arrowPositionTween, ARROW_SHAKE_FRAMES, ARROW_SHAKE_AMPLITUDE)
-    )
+      new JuiceAnimation(
+        this.arrowPositionTween,
+        ARROW_SHAKE_FRAMES,
+        ARROW_SHAKE_AMPLITUDE,
+      ),
+    );
   }
 
   levelMove(goingRight) {
@@ -843,6 +852,42 @@ class WorldMap {
   }
 
   resetProgress() {
+    const callback = (keyCode) => {
+      if (keyCode == "KeyY") this.actuallyResetProgress;
+      return true;
+    };
+
+    const popup = new PopupAnimation(
+      300,
+      60,
+      POPUP_H_POS,
+      300,
+      false,
+      (game, frame) => {
+        // render stuff
+        let topPosition = 290;
+        this.game.drawText(
+          "THIS IS GONNA RESET YOUR PROGRESS\n\npress [y] to confirm".split("\n"),
+          POPUP_H_POS,
+          topPosition,
+          {
+            color: "#000",
+            font: "700 12px Edu-SA",
+            align: "center",
+          },
+        );
+      },
+      undefined,
+      {
+        blocksInput: false,
+        handleInput: callback,
+        opacity: 0.8,
+      },
+    );
+    this.animations.push(popup);
+  }
+
+  actuallyResetProgress() {
     if (this.currentLocation && this.currentLocation.id == "wiz") {
       this.game.progress = new GameProgress();
       this.game.progress.saveProgress();
