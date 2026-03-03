@@ -63,6 +63,7 @@ const ASSETS = {
       WIZ: "assets/worldmap/flag-wiz.png",
     },
     LOCK: "assets/worldmap/lock.png",
+    LOCK_OPEN: "assets/worldmap/lock-open.png",
     // World V2
     SKY: "assets/world-2/sky.png",
     GROUND: "assets/world-2/land.png",

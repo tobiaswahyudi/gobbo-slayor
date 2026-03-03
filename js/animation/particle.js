@@ -1,8 +1,8 @@
-const PARTICLE_RENDER = (img, pos, vel, size, params) => (game, frame) => {
-    const {
-        gravity,
-        shrink,
-    } = params;
+const PARTICLE_RENDER = (img, pos, vel, size, params) => {
+  let rotation = randomRange(-2, 2);
+  const omega = randomRange(-0.3, 0.3);
+  return (game, frame) => {
+    const { gravity, shrink } = params;
 
     vel.x += gravity.x;
     vel.y += gravity.y;
@@ -12,25 +12,32 @@ const PARTICLE_RENDER = (img, pos, vel, size, params) => (game, frame) => {
 
     size -= shrink;
 
-    if(size < 1) return;
+    if (size < 1) return;
 
-    game.drawImage(img, pos.x - size/2, pos.y - size/2, size, size);
+    game.ctx.save();
+    game.ctx.translate(pos.x, pos.y);
+    game.ctx.rotate(rotation);
+    rotation += omega;
+
+    game.drawImage(img, -size / 2, -size / 2, size, size);
+    game.ctx.restore();
+  };
 };
 
 class ParticleAnimation extends GSAnimation {
   constructor(frames, pos, vel, img, originalSize, params = {}, callback) {
     const defaultedParams = {
-        gravity: new Position(0, 1),
-        shrink: 0,
-        ...params
-    }
+      gravity: new Position(0, 1),
+      shrink: 0,
+      ...params,
+    };
 
     super({
       frames: frames,
       render: PARTICLE_RENDER(img, pos, vel, originalSize, defaultedParams),
       callback: callback,
       absoluteSize: true,
-      ...params
+      ...params,
     });
   }
 }

@@ -47,6 +47,7 @@ class ZoneMap {
     }
 
     this.state.parse(specialTiles);
+    this.state.tick(this.game);
     this.currentLevelTile = null;
 
     this.animations = new AnimationManager(game, this.state);
@@ -61,6 +62,18 @@ class ZoneMap {
 
     this.silverTextJuice = new Position(0, 0);
     this.goldTextJuice = new Position(0, 0);
+  }
+
+  worldToScreenSpace(pos) {
+    return pos
+      .add(new Position(0.5, 0.5))
+      .scale((DEFAULT_SIZE / this.state.size) * SQUARE_SIZE)
+      .add(
+        new Position(
+          BOARD_PADDING - STAR_SUCCESS_SIZE / 2,
+          BOARD_PADDING - STAR_SUCCESS_SIZE / 2,
+        ),
+      );
   }
 
   get currentLocation() {
@@ -325,19 +338,13 @@ class ZoneMap {
 
     const isZoneDone = this.silverStars == this.currentLocation.levels;
     const isGoldDone = this.goldStars == this.currentLocation.levels;
-    
-    this.game.ctx.save();
-    this.game.ctx.translate(SIDEBAR_CENTER - 40, topPosition - 4)
-    this.game.ctx.translate(this.silverTextJuice.x, this.silverTextJuice.y)
-    this.game.ctx.scale(this.silverTextScale.x, this.silverTextScale.x)
 
-    this.game.drawImage(
-      ASSETS.UI.STAR.SILVER,
-      -30,
-      -8,
-      16,
-      16,
-    );
+    this.game.ctx.save();
+    this.game.ctx.translate(SIDEBAR_CENTER - 40, topPosition - 4);
+    this.game.ctx.translate(this.silverTextJuice.x, this.silverTextJuice.y);
+    this.game.ctx.scale(this.silverTextScale.x, this.silverTextScale.x);
+
+    this.game.drawImage(ASSETS.UI.STAR.SILVER, -30, -8, 16, 16);
     this.game.drawText(
       `× ${this.silverStars}/${this.currentLocation.levels}`,
       -8,
@@ -352,17 +359,11 @@ class ZoneMap {
     this.game.ctx.restore();
 
     this.game.ctx.save();
-    this.game.ctx.translate(SIDEBAR_CENTER + 44, topPosition - 4)
-    this.game.ctx.translate(this.goldTextJuice.x, this.goldTextJuice.y)
-    this.game.ctx.scale(this.goldTextScale.x, this.goldTextScale.x)
+    this.game.ctx.translate(SIDEBAR_CENTER + 44, topPosition - 4);
+    this.game.ctx.translate(this.goldTextJuice.x, this.goldTextJuice.y);
+    this.game.ctx.scale(this.goldTextScale.x, this.goldTextScale.x);
 
-    this.game.drawImage(
-      ASSETS.UI.STAR.GOLD,
-      -30,
-      -8,
-      16,
-      16,
-    );
+    this.game.drawImage(ASSETS.UI.STAR.GOLD, -30, -8, 16, 16);
     this.game.drawText(
       `× ${this.goldStars}/${this.currentLocation.levels}`,
       -8,
@@ -664,8 +665,8 @@ class ZoneMap {
   }
 
   spawnProgressStar(isGold, callback) {
-    const FLOAT_UP_FRAMES = 10;
-    const GO_TO_TARGET_FRAMES = 12;
+    const FLOAT_UP_FRAMES = 8;
+    const GO_TO_TARGET_FRAMES = 9;
     const TEXT_BLOWUP_SCALE = 2.5;
     const TEXT_JUICE_AMPLITUDE = 16;
     const TEXT_SHRINK_FRAMES = 14;
@@ -676,15 +677,7 @@ class ZoneMap {
     ).add(new Position(-STAR_SUCCESS_SIZE / 2, -STAR_SUCCESS_SIZE / 2));
 
     // starting position is the screen space position of the player.
-    const pos = this.state.player
-      .add(new Position(0.5, 0.5))
-      .scale((DEFAULT_SIZE / this.state.size) * SQUARE_SIZE)
-      .add(
-        new Position(
-          BOARD_PADDING - STAR_SUCCESS_SIZE / 2,
-          BOARD_PADDING - STAR_SUCCESS_SIZE / 2,
-        ),
-      );
+    const pos = this.worldToScreenSpace(this.state.player);
 
     const targetAnim = isGold ? "goldAnimation" : "silverAnimation";
     this[targetAnim] = pos;
@@ -719,35 +712,81 @@ class ZoneMap {
                     }
                     this[targetAnim] = undefined;
                     this.animations.push(
-                      new MotionTweenAnimation(this[targetTextScale], new Position(TEXT_BLOWUP_SCALE, 1), new Position(1, 1), TEXT_SHRINK_FRAMES)
+                      new MotionTweenAnimation(
+                        this[targetTextScale],
+                        new Position(TEXT_BLOWUP_SCALE, 1),
+                        new Position(1, 1),
+                        TEXT_SHRINK_FRAMES,
+                      ),
                     );
                     this.animations.push(
-                      new JuiceAnimation(this[targetTextJuice], TEXT_JUICE_AMPLITUDE, TEXT_SHRINK_FRAMES)
+                      new JuiceAnimation(
+                        this[targetTextJuice],
+                        TEXT_JUICE_AMPLITUDE,
+                        TEXT_SHRINK_FRAMES,
+                      ),
                     );
                     if (callback) callback();
                   },
-                  blocksInput: true
+                  blocksInput: true,
                 },
               ),
             );
           },
-          blocksInput: true
+          blocksInput: true,
         },
       ),
     );
   }
 
-  dismantleLock(lock) {}
+  dismantleLocks(locks) {
+    if (locks.length == 0) return () => {};
+    const [lock, ...rest] = locks;
+    // Close it for now
+    lock.closed = true;
+
+    const callback = this.dismantleLocks(rest);
+
+    return () => {
+      lock.closed = false;
+      const vel = new Position(randomRange(-5, 5), -16);
+      this.animations.push(
+        new ParticleAnimation(
+          20,
+          this.worldToScreenSpace(lock),
+          vel,
+          ASSETS.WORLD.LOCK_OPEN,
+          96,
+          {
+            callback,
+            shrink: 3,
+            blocksInput: true,
+            gravity: new Position(0, 2),
+          },
+        ),
+      );
+    };
+  }
 
   returnFromLevel() {
-    const gotSilver = this.silverStars !=
-      this.game.progress.getLevelSilver(this.currentLocation.id)
-    const gotGold = this.goldStars != this.game.progress.getLevelGold(this.currentLocation.id);
-    const callback = !gotGold ? undefined : () => this.spawnProgressStar(true);
-    if(gotSilver) {
+    const gotSilver =
+      this.silverStars !=
+      this.game.progress.getLevelSilver(this.currentLocation.id);
+    const gotGold =
+      this.goldStars !=
+      this.game.progress.getLevelGold(this.currentLocation.id);
+
+    const { openedLocks } = this.state.tick(this.game);
+    console.log(openedLocks);
+    const lockCallback = this.dismantleLocks(openedLocks);
+
+    const callback = !gotGold
+      ? lockCallback
+      : () => this.spawnProgressStar(true, lockCallback);
+    if (gotSilver) {
       this.spawnProgressStar(false, callback);
-    } else if(gotGold) {
-      this.spawnProgressStar(true);
+    } else if (gotGold) {
+      this.spawnProgressStar(true, lockCallback);
     }
   }
 

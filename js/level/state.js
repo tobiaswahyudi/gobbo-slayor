@@ -102,6 +102,17 @@ class LevelState {
     }
   }
 
+  tick(game) {
+    const closedLocks = this.specialTiles.filter((a) => a.closed);
+
+    this.specialTiles.forEach((tile) => {
+      if (tile.tick) tile.tick(game);
+    });
+
+    const openedLocks = closedLocks.filter((a) => !a.closed);
+    return { openedLocks };
+  }
+
   render(game, x, y, inputOffsets, disjointWalls = false) {
     const offsets = {
       ...LEVEL_NO_OFFSETS,
@@ -125,11 +136,11 @@ class LevelState {
       cellCorner(this.player.x) + SPRITE_PADDING + wizPos.x,
       cellCorner(this.player.y) + SPRITE_PADDING + wizPos.y,
       SPRITE_SIZE,
-      SPRITE_SIZE
+      SPRITE_SIZE,
     );
 
     this.gobbos.forEach((gobbo, idx) =>
-      gobbo.render(game, offsets.gobbos[idx])
+      gobbo.render(game, offsets.gobbos[idx]),
     );
     this.crates.forEach((wall) => this.renderCrate(game, wall));
     if (disjointWalls)
@@ -142,7 +153,7 @@ class LevelState {
       wizPos,
       this.player,
       this.remainingBombs > 0,
-      offsets.aimArea
+      offsets.aimArea,
     );
 
     game.ctx.restore();
@@ -169,7 +180,7 @@ class LevelState {
             y: sliceY * sliceSize,
             width: sliceSize,
             height: sliceSize,
-          }
+          },
         );
       }
     }
@@ -181,7 +192,7 @@ class LevelState {
       cellCorner(wall.x) + SPRITE_PADDING,
       cellCorner(wall.y) + SPRITE_PADDING,
       SPRITE_SIZE,
-      SPRITE_SIZE
+      SPRITE_SIZE,
     );
   }
 
@@ -191,13 +202,13 @@ class LevelState {
       cellCorner(wall.x) + SPRITE_PADDING,
       cellCorner(wall.y) + SPRITE_PADDING,
       SPRITE_SIZE,
-      SPRITE_SIZE
+      SPRITE_SIZE,
     );
   }
 
   renderBlocks(game, x, y) {
     const lookup = new Map(
-      this.blocks.map((block) => [block.toString(), true])
+      this.blocks.map((block) => [block.toString(), true]),
     );
     const checker = (row, col) => lookup.get(strPosition(row, col));
 
@@ -208,7 +219,7 @@ class LevelState {
       checker,
       SQUARE_SIZE,
       ASSETS.SPRITE.BLOCK_SHEET,
-      32
+      32,
     );
   }
 }

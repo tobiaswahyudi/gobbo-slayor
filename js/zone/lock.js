@@ -19,8 +19,11 @@ class LockTile extends Position {
     this.closed = this.stars < this.neededStars;
   }
 
-  render(game) {
+  tick(game) {
     this.checkOpen(game);
+  }
+
+  render(game) {
     if (!this.closed) return;
 
     game.drawImage(

@@ -16,8 +16,18 @@ const TUTORIAL_MURALS = {
   TM: [TutorialTile, ASSETS.TUTORIAL.MOVE],
   TU: [TutorialTile, ASSETS.TUTORIAL.UNDO],
   TR: [TutorialTile, ASSETS.TUTORIAL.RESTART],
-  TT: [TutorialTile, ASSETS.TUTORIAL.TOOLTIP, TUTORIAL_MURAL_SIZE, TUTORIAL_MURAL_SIZE * 2.1],
-  TE: [TextTutorialTile, "If you get stuck on\na level, press [esc]\nand come back\nany time", 12, 12],
+  TT: [
+    TutorialTile,
+    ASSETS.TUTORIAL.TOOLTIP,
+    TUTORIAL_MURAL_SIZE,
+    TUTORIAL_MURAL_SIZE * 2.1,
+  ],
+  TE: [
+    TextTutorialTile,
+    "If you get stuck on\na level, press [esc]\nand come back\nany time",
+    12,
+    12,
+  ],
 };
 
 class LevelManager {
@@ -369,8 +379,8 @@ class LevelManager {
   handleAction() {
     if (this.state.remainingBombs == 0) {
       this.animations.push(
-      new JuiceAnimation(this.outOfSpellsJuice, EXPLOSION_FRAMES, 15)
-    )
+        new JuiceAnimation(this.outOfSpellsJuice, EXPLOSION_FRAMES, 15),
+      );
       return false;
     }
 
@@ -710,7 +720,7 @@ class LevelManager {
     );
 
     this.game.ctx.filter = "none";
-    
+
     this.game.drawText(
       `×${this.state.remainingBombs}`,
       736 + this.juiceOffset.x,
@@ -890,9 +900,10 @@ class LevelManager {
     this.animations.push(
       new TransitionAnimation(TRANSITION_DIRECTION.OUT, {}, () => {
         this.game.zoneMap.animations.push(
-          new TransitionAnimation(TRANSITION_DIRECTION.IN),
+          new TransitionAnimation(TRANSITION_DIRECTION.IN, {}, () => {
+            this.game.zoneMap.returnFromLevel();
+          }),
         );
-        this.game.zoneMap.returnFromLevel();
         this.game.scene = "zone";
       }),
     );
