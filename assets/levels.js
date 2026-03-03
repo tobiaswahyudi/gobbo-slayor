@@ -501,14 +501,14 @@ const LEVEL_BLOCK_4 = LevelState.make({
   title: "claustrophobic",
   bombs: 4,
   level: `
-..|Bl|..|Bl|..|..|..|..
-Bl|..|..|..|Bl|..|Bl|..
+Cr|Bl|..|Bl|Cr|Cr|Cr|Cr
+Bl|..|..|..|Bl|..|Bl|Cr
 ..|..|Bl|..|..|..|..|Bl
 Bl|..|..|Bl|..|Bl|..|..
 Bl|..|Bl|Xs|Bl|..|..|Bl
 Cr|Bl|Xs|Vs|..|Bl|..|..
 ..|..|Cr|..|..|..|..|Bl
-Wz|..|Cr|Xs|Bl|..|Bl|..
+Wz|..|Cr|Xs|Bl|..|Bl|Cr
 `,
   aimArea: [
     [1, -3],
@@ -588,11 +588,11 @@ const ZONE_1_MAP = LevelState.make({
 ..|Cr|Cr|Cr|Cr|Cr|Cr|Cr
 Cr|Cr|L3|..|05|..|06|Cr
 04|L3|03|Cr|Cr|L5|Cr|Cr
-Cr|Cr|..|02|Cr|07|..|Cr
+Cr|Cr|..|02|Cr|07|L3|Cr
 ..|Cr|..|..|Cr|L6|Cr|Cr
-..|Cr|Cr|L1|Cr|08|L7|..
-..|Wz|..|01|Cr|Cr|Cr|..
-..|Cr|Cr|Cr|Cr|..|..|09
+L3|Cr|Cr|L1|Cr|08|L7|..
+..|..|Wz|01|Cr|Cr|Cr|..
+..|Cr|Cr|Cr|Cr|..|L3|09
 `,
   aimArea: [],
 });
