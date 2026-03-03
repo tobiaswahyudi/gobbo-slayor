@@ -182,7 +182,7 @@ const RENDER_POPUP = (width, height, hMid, vMid, showBackground, renderContents,
 class PopupAnimation extends GSAnimation {
   constructor(width, height, hMid, vMid, showBackground, renderContents, callback, overrides = {}) {
     const handleInput = () => {
-      return this.frame > this.frames;
+      return this.frame >= this.frames;
     };
 
     super({
