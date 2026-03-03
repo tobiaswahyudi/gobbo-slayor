@@ -14,6 +14,13 @@ const POPUP_HEIGHT = 240;
 const POPUP_H_POS = HALF_SCREEN_WIDTH;
 const POPUP_V_POS = 200;
 
+const ARROW_X = 40;
+const ARROW_Y = 380;
+const ARROW_SIZE = 72;
+
+const ARROW_SHAKE_FRAMES = 18;
+const ARROW_SHAKE_AMPLITUDE = 36;
+
 const WORLD_MAP_BORDERS_AND_SQUISH = true;
 
 const WORLD_MAP_LOCATIONS = [
@@ -133,7 +140,12 @@ class WorldMap {
     this.silverAnimation = undefined;
     this.goldAnimation = undefined;
 
+    this.arrowPositionTween = new Position(0, 0);
+
     this.showPopup();
+    setTimeout(() => {
+      this.shakeArrows();
+    }, 500);
   }
 
   closePopup() {
@@ -192,14 +204,18 @@ class WorldMap {
     }
   }
 
+  shakeArrows() {
+    this.animations.push(
+      new JuiceAnimation(this.arrowPositionTween, ARROW_SHAKE_FRAMES, ARROW_SHAKE_AMPLITUDE)
+    )
+  }
+
   levelMove(goingRight) {
     const delta = goingRight ? 1 : -1;
 
     const targetLevelPos = this.levelIndex + delta;
-    if(targetLevelPos < 0 || targetLevelPos > 3) {
+    if (targetLevelPos < 0 || targetLevelPos > WORLD_MAP_LOCATIONS.length - 1) {
       // limit left
-      this.isLevelMoveAnimating = true;
-
       const bumpScale = 0.03;
       const bumpTimeScale = 0.1;
       this.animations.push(
@@ -216,11 +232,6 @@ class WorldMap {
                   new Position(delta * -0.377 * bumpScale, 0),
                   new Position(0, 0),
                   LEVEL_MOVE_ANIM_HALF_DUR * bumpTimeScale,
-                  {
-                    callback: () => {
-                      this.isLevelMoveAnimating = false;
-                    },
-                  },
                 ),
               );
             },
@@ -239,22 +250,23 @@ class WorldMap {
             blocksInput: true,
             callback: () => {
               this.animations.push(
-              new MotionTweenAnimation(
-                this.levelPositionTweenValue,
-                this.levelPositionTweenValue.clone(),
-                this.levelPositionTweenValue.add(
-                  new Position(delta * MOVE_DISTANCE * bumpScale, 0),
+                new MotionTweenAnimation(
+                  this.levelPositionTweenValue,
+                  this.levelPositionTweenValue.clone(),
+                  this.levelPositionTweenValue.add(
+                    new Position(delta * MOVE_DISTANCE * bumpScale, 0),
+                  ),
+                  LEVEL_MOVE_ANIM_HALF_DUR * bumpTimeScale,
+                  {
+                    blocksInput: true,
+                  },
                 ),
-                LEVEL_MOVE_ANIM_HALF_DUR * bumpTimeScale,
-                {
-                  blocksInput: true,
-                },
-              ),
-            );
-            }
+              );
+            },
           },
         ),
       );
+      this.shakeArrows();
       return;
     }
 
@@ -429,9 +441,32 @@ class WorldMap {
       WORLD_WIZ_SIZE,
     );
 
-    // Draw arrows if not moving
-
     this.game.ctx.restore();
+
+    // Draw arrows if not moving
+    if (!this.isLevelMoveAnimating) {
+      this.game.ctx.save();
+      if (this.levelIndex > 0)
+        this.game.drawImage(
+          ASSETS.WORLD.ARROW.UNLOCKED,
+          ARROW_X + this.arrowPositionTween.x,
+          ARROW_Y + this.arrowPositionTween.y / 4,
+          ARROW_SIZE,
+          ARROW_SIZE,
+        );
+
+      this.game.ctx.scale(-1, 1);
+
+      if (this.levelIndex < WORLD_MAP_LOCATIONS.length - 1)
+        this.game.drawImage(
+          ASSETS.WORLD.ARROW.UNLOCKED,
+          -width + ARROW_X + this.arrowPositionTween.x,
+          ARROW_Y + this.arrowPositionTween.y / 4,
+          ARROW_SIZE,
+          ARROW_SIZE,
+        );
+      this.game.ctx.restore();
+    }
 
     // unsquish
     if (WORLD_MAP_BORDERS_AND_SQUISH) {
