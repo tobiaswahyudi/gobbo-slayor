@@ -892,6 +892,7 @@ class LevelManager {
         this.game.zoneMap.animations.push(
           new TransitionAnimation(TRANSITION_DIRECTION.IN),
         );
+        this.game.zoneMap.returnFromLevel();
         this.game.scene = "zone";
       }),
     );

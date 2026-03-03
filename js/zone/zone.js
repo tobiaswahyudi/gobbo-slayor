@@ -5,6 +5,13 @@ const SIDEBAR_WIDTH = 224;
 const SIDEBAR_CENTER = 688;
 const SIDEBAR_INNER_WIDTH = 176;
 
+// update these when UI changed. Easier than runtime computing.
+const SILVER_STAR_X = SIDEBAR_CENTER - 22 - 42 - 6;
+const GOLD_STAR_X = SIDEBAR_CENTER - 22 + 62 + 6;
+const STARS_Y = 104;
+
+const STAR_SUCCESS_SIZE = 40;
+
 class ZoneMap {
   constructor(game) {
     this.game = game;
@@ -16,9 +23,7 @@ class ZoneMap {
     this.silverStars = this.game.progress.getLevelSilver(
       this.currentLocation.id,
     );
-    this.goldStars = this.game.progress.getLevelGold(
-      this.currentLocation.id,
-    );
+    this.goldStars = this.game.progress.getLevelGold(this.currentLocation.id);
 
     for (let i = 0; i < numLevels; i++) {
       const numString = String(i + 1).padStart(2, "0");
@@ -50,6 +55,12 @@ class ZoneMap {
 
     this.silverAnimation = false;
     this.goldAnimation = false;
+
+    this.silverTextScale = new Position(1, 1);
+    this.goldTextScale = new Position(1, 1);
+
+    this.silverTextJuice = new Position(0, 0);
+    this.goldTextJuice = new Position(0, 0);
   }
 
   get currentLocation() {
@@ -117,13 +128,6 @@ class ZoneMap {
   render() {
     const { width, height } = this.game;
 
-    this.silverStars = this.game.progress.getLevelSilver(
-      this.currentLocation.id,
-    );
-    this.goldStars = this.game.progress.getLevelGold(
-      this.currentLocation.id,
-    );
-
     // Game area background
     this.game.drawRect(0, 0, width, height, { fill: "#C5BAB5" });
     const hadAnimations = this.animations.needsRerender;
@@ -167,6 +171,25 @@ class ZoneMap {
     }
 
     this.animations.tick();
+
+    if (this.silverAnimation) {
+      this.game.drawImage(
+        ASSETS.UI.STAR.SILVER,
+        this.silverAnimation.x,
+        this.silverAnimation.y,
+        STAR_SUCCESS_SIZE,
+        STAR_SUCCESS_SIZE,
+      );
+    }
+    if (this.goldAnimation) {
+      this.game.drawImage(
+        ASSETS.UI.STAR.GOLD,
+        this.goldAnimation.x,
+        this.goldAnimation.y,
+        STAR_SUCCESS_SIZE,
+        STAR_SUCCESS_SIZE,
+      );
+    }
 
     // return true;
     return hadAnimations;
@@ -300,45 +323,58 @@ class ZoneMap {
   renderLevelSidebar(topPosition) {
     const level = this.currentLevelTile.level;
 
+    const isZoneDone = this.silverStars == this.currentLocation.levels;
+    const isGoldDone = this.goldStars == this.currentLocation.levels;
+    
+    this.game.ctx.save();
+    this.game.ctx.translate(SIDEBAR_CENTER - 40, topPosition - 4)
+    this.game.ctx.translate(this.silverTextJuice.x, this.silverTextJuice.y)
+    this.game.ctx.scale(this.silverTextScale.x, this.silverTextScale.x)
+
     this.game.drawImage(
       ASSETS.UI.STAR.SILVER,
-      SIDEBAR_CENTER - 22 - 42 - 6,
-      topPosition - 12,
+      -30,
+      -8,
       16,
       16,
     );
-
-    const isZoneDone = this.silverStars == this.currentLocation.levels;
-
     this.game.drawText(
       `× ${this.silverStars}/${this.currentLocation.levels}`,
-      SIDEBAR_CENTER - 42 - 6,
-      topPosition - 10,
+      -8,
+      -8,
       {
         color: isZoneDone ? "#551280" : "#000",
         font: `500 16px Tiny5`,
         align: "left",
       },
     );
+
+    this.game.ctx.restore();
+
+    this.game.ctx.save();
+    this.game.ctx.translate(SIDEBAR_CENTER + 44, topPosition - 4)
+    this.game.ctx.translate(this.goldTextJuice.x, this.goldTextJuice.y)
+    this.game.ctx.scale(this.goldTextScale.x, this.goldTextScale.x)
 
     this.game.drawImage(
       ASSETS.UI.STAR.GOLD,
-      SIDEBAR_CENTER - 22 + 42 - 6,
-      topPosition - 12,
+      -30,
+      -8,
       16,
       16,
     );
-
     this.game.drawText(
       `× ${this.goldStars}/${this.currentLocation.levels}`,
-      SIDEBAR_CENTER + 42 - 6,
-      topPosition - 10,
+      -8,
+      -8,
       {
-        color: isZoneDone ? "#551280" : "#000",
+        color: isGoldDone ? "#551280" : "#000",
         font: `500 16px Tiny5`,
         align: "left",
       },
     );
+
+    this.game.ctx.restore();
 
     topPosition += 16;
 
@@ -365,9 +401,7 @@ class ZoneMap {
     topPosition += 16;
 
     const titleFontSize =
-      level.title.length < 12 ? 22 :
-      level.title.length < 20 ? 18 :
-      14;
+      level.title.length < 12 ? 22 : level.title.length < 20 ? 18 : 14;
 
     this.game.drawText(level.title, SIDEBAR_CENTER, topPosition, {
       color: "#000",
@@ -531,7 +565,7 @@ class ZoneMap {
       this.game.drawImage(
         ASSETS.UI.SPACEBAR,
         SIDEBAR_CENTER + 4,
-        topPosition - 6
+        topPosition - 6,
       );
 
       this.game.drawText(
@@ -548,7 +582,6 @@ class ZoneMap {
   }
 
   renderZoneSidebar(topPosition) {
-
     topPosition += 12;
 
     this.game.drawImage(
@@ -628,6 +661,94 @@ class ZoneMap {
         lineSpacing: 16,
       },
     );
+  }
+
+  spawnProgressStar(isGold, callback) {
+    const FLOAT_UP_FRAMES = 10;
+    const GO_TO_TARGET_FRAMES = 12;
+    const TEXT_BLOWUP_SCALE = 2.5;
+    const TEXT_JUICE_AMPLITUDE = 16;
+    const TEXT_SHRINK_FRAMES = 14;
+
+    const TARGET = new Position(
+      isGold ? GOLD_STAR_X : SILVER_STAR_X,
+      STARS_Y,
+    ).add(new Position(-STAR_SUCCESS_SIZE / 2, -STAR_SUCCESS_SIZE / 2));
+
+    // starting position is the screen space position of the player.
+    const pos = this.state.player
+      .add(new Position(0.5, 0.5))
+      .scale((DEFAULT_SIZE / this.state.size) * SQUARE_SIZE)
+      .add(
+        new Position(
+          BOARD_PADDING - STAR_SUCCESS_SIZE / 2,
+          BOARD_PADDING - STAR_SUCCESS_SIZE / 2,
+        ),
+      );
+
+    const targetAnim = isGold ? "goldAnimation" : "silverAnimation";
+    this[targetAnim] = pos;
+
+    const targetTextScale = isGold ? "goldTextScale" : "silverTextScale";
+    const targetTextJuice = isGold ? "goldTextJuice" : "silverTextJuice";
+
+    const upABit = pos.add(new Position(0, -0.6 * SQUARE_SIZE));
+
+    this.animations.push(
+      new MotionTweenAnimation(
+        this[targetAnim],
+        pos.clone(),
+        upABit,
+        FLOAT_UP_FRAMES,
+        {
+          ease: 0.3,
+          callback: () => {
+            this.animations.push(
+              new MotionTweenAnimation(
+                this[targetAnim],
+                upABit.clone(),
+                TARGET,
+                GO_TO_TARGET_FRAMES,
+                {
+                  ease: 2,
+                  callback: () => {
+                    if (isGold) {
+                      this.goldStars++;
+                    } else {
+                      this.silverStars++;
+                    }
+                    this[targetAnim] = undefined;
+                    this.animations.push(
+                      new MotionTweenAnimation(this[targetTextScale], new Position(TEXT_BLOWUP_SCALE, 1), new Position(1, 1), TEXT_SHRINK_FRAMES)
+                    );
+                    this.animations.push(
+                      new JuiceAnimation(this[targetTextJuice], TEXT_JUICE_AMPLITUDE, TEXT_SHRINK_FRAMES)
+                    );
+                    if (callback) callback();
+                  },
+                  blocksInput: true
+                },
+              ),
+            );
+          },
+          blocksInput: true
+        },
+      ),
+    );
+  }
+
+  dismantleLock(lock) {}
+
+  returnFromLevel() {
+    const gotSilver = this.silverStars !=
+      this.game.progress.getLevelSilver(this.currentLocation.id)
+    const gotGold = this.goldStars != this.game.progress.getLevelGold(this.currentLocation.id);
+    const callback = !gotGold ? undefined : () => this.spawnProgressStar(true);
+    if(gotSilver) {
+      this.spawnProgressStar(false, callback);
+    } else if(gotGold) {
+      this.spawnProgressStar(true);
+    }
   }
 
   goToLevel() {
