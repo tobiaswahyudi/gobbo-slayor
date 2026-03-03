@@ -94,6 +94,18 @@ const WORLD_LAYERS = [
     filter: "saturate(0.7)",
   },
   {
+    image: ASSETS.WORLD.PEPPER.TREE_BG,
+    rotationParallax: 0.3,
+    offset: 120,
+    filter: "saturate(0.7)",
+  },
+  {
+    image: ASSETS.WORLD.PEPPER.TREE_BG,
+    rotationParallax: 0.3,
+    offset: 280,
+    filter: "saturate(0.7)",
+  },
+  {
     image: ASSETS.WORLD.GROUND,
   },
   {
@@ -107,9 +119,44 @@ const WORLD_LAYERS = [
     offset: 30,
   },
   {
+    image: ASSETS.WORLD.PEPPER.TREE_FG,
+    rotationParallax: 1.5,
+    offset: 70,
+  },
+  {
+    image: ASSETS.WORLD.PEPPER.TREE_FG,
+    rotationParallax: 1.5,
+    offset: 85,
+  },
+  {
+    image: ASSETS.WORLD.PEPPER.TREE_FG,
+    rotationParallax: 1.5,
+    offset: 112,
+  },
+  {
+    image: ASSETS.WORLD.PEPPER.TREE_FG,
+    rotationParallax: 1.5,
+    offset: 140,
+  },
+  {
+    image: ASSETS.WORLD.PEPPER.TREE_FG,
+    rotationParallax: 1.5,
+    offset: 155,
+  },
+  {
     image: ASSETS.WORLD.PEPPER.ROCKS,
-    rotationParallax: 0.5,
+    rotationParallax: 1.5,
     offset: 0,
+  },
+  {
+    image: ASSETS.WORLD.PEPPER.ROCKS,
+    rotationParallax: 1.5,
+    offset: 64,
+  },
+  {
+    image: ASSETS.WORLD.PEPPER.ROCKS,
+    rotationParallax: 1.5,
+    offset: 144,
   },
 ];
 
