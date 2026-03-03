@@ -428,6 +428,7 @@ class LevelManager {
         MOVE_ANIM_DUR,
         {
           blocksInput: true,
+          ease: 0.6,
         },
       ),
     );
@@ -438,6 +439,9 @@ class LevelManager {
         this.aimAreaOffset.clone(),
         new Position(0, 0),
         MOVE_ANIM_DUR,
+        {
+          ease: 0.6,
+        }
       ),
     );
 
@@ -452,6 +456,9 @@ class LevelManager {
           gobPos.clone(),
           new Position(0, 0),
           MOVE_ANIM_DUR,
+          {
+            ease: 0.6,
+          }
         ),
       );
     });
