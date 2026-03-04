@@ -854,7 +854,7 @@ class WorldMap {
 
   resetProgress() {
     const callback = (keyCode) => {
-      if (keyCode == "KeyY") this.actuallyResetProgress;
+      if (keyCode == "KeyY") this.actuallyResetProgress();
       return true;
     };
 
