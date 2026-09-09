@@ -17,6 +17,46 @@ TU|..|TR|..|..|..|..|..
   bestMoves: 6,
 });
 
+const LEVEL_SUPER_FIRST = LevelState.make({
+  id: "super-first",
+  title: "Welcome",
+  bombs: 1,
+  level: `
+..|..|..|..|..|..|TT|..
+..|TM|..|TA|..|..|..|..
+..|..|..|..|..|..|..|..
+TU|..|TR|..|..|..|..|..
+..|..|..|..|..|Vs|..|..
+..|Wz|..|..|..|..|..|..
+..|..|..|..|..|..|..|..
+..|..|..|..|..|..|..|..
+`,
+  aimArea: [
+    [2, 0]
+  ],
+  bestMoves: 4,
+});
+
+const LEVEL_SUPER_SECOND = LevelState.make({
+  id: "super-second",
+  title: "Get 'em",
+  bombs: 2,
+  level: `
+..|..|..|..|Cr|..|..|..
+..|..|..|..|Cr|..|..|..
+..|..|..|..|Cr|..|..|..
+..|..|Wz|..|Cr|..|Xs|..
+..|..|..|..|Cr|..|..|..
+..|..|..|..|Cr|..|..|..
+..|..|..|..|Cr|..|..|..
+..|..|..|..|Cr|Hs|..|..
+`,
+  aimArea: [
+    [2, 0]
+  ],
+  bestMoves: 11,
+});
+
 const LEVEL_MINUS_2 = LevelState.make({
   id: "bug-test",
   title: "bug test",
@@ -586,18 +626,20 @@ const ZONE_1_MAP = LevelState.make({
   bombs: 0,
   level: `
 ..|Cr|Cr|Cr|Cr|Cr|Cr|Cr
-Cr|Cr|L3|..|05|..|06|Cr
-04|L3|03|Cr|Cr|L5|Cr|Cr
-Cr|Cr|..|02|Cr|07|..|Cr
-..|Cr|..|..|Cr|L6|Cr|Cr
-..|Cr|Cr|L1|Cr|08|L7|..
-..|..|Wz|01|Cr|Cr|Cr|..
-..|Cr|Cr|Cr|Cr|..|..|09
+Cr|Cr|L5|..|07|..|08|Cr
+06|L5|05|Cr|Cr|L7|Cr|Cr
+Cr|Cr|..|04|Cr|09|..|Cr
+..|Cr|03|..|Cr|L8|Cr|Cr
+..|Cr|Cr|L2|Cr|10|L9|..
+Wz|01|L1|02|Cr|Cr|Cr|..
+..|Cr|Cr|Cr|Cr|..|..|11
 `,
   aimArea: [],
 });
 
 const ZONE_1_LEVELS = [
+  LEVEL_SUPER_FIRST,
+  LEVEL_SUPER_SECOND,
   LEVEL_MINUS_1,
   LEVEL_0,
   LEVEL_SLEEPING_GOBBOS_1,
